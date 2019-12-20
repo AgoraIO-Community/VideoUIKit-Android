@@ -24,6 +24,19 @@ startActivity(intent);
 
 ## Customization Options
 
+Important: For customization to work, data binding must be enabled
+
+Go to your app build.gradle file
+
+Add the following under android
+
+```
+    dataBinding {
+        enabled = true
+    }
+```
+
+
 For customizing the call screen a few methods are provided  
 
 First create the config object
