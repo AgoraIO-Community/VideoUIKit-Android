@@ -8,6 +8,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
@@ -26,6 +27,8 @@ import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
 public class CallActivity extends Activity implements EventHandler {
+    private static final String TAG = CallActivity.class.getSimpleName();
+
     private VideoGridContainer mVideoGridContainer;
     private RtcEngine rtcEngine;
 
@@ -40,7 +43,6 @@ public class CallActivity extends Activity implements EventHandler {
     private String channelName;
     private String token;
     private AgoraEventHandler mHandler;
-    private UIConfig mConfig;
     private String appId;
     private Intent mIntent;
 
@@ -58,7 +60,7 @@ public class CallActivity extends Activity implements EventHandler {
         appId = intent.getStringExtra("APP_ID");
         channelName = intent.getStringExtra("CHANNEL");
         token = intent.getStringExtra("TOKEN");
-        mConfig = (UIConfig) intent.getSerializableExtra("CONFIG");
+        UIConfig mConfig = (UIConfig) intent.getSerializableExtra("CONFIG");
         mIntent = intent.getParcelableExtra(Intent.EXTRA_INTENT);
 
         if (mConfig == null) {
@@ -75,7 +77,9 @@ public class CallActivity extends Activity implements EventHandler {
         try {
             rtcEngine = RtcEngine.create(getBaseContext(), appId, mHandler);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "SDK init failed. Please check if you have entered a valid APP ID\n" + Log.getStackTraceString(e));
+            showLongToast("SDK init failed. Please check if you have entered a valid APP ID");
+            return;
         }
         configVideo();
         joinChannel();
@@ -118,8 +122,10 @@ public class CallActivity extends Activity implements EventHandler {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        rtcEngine.leaveChannel();
-        RtcEngine.destroy();
+        if (rtcEngine != null) {
+            rtcEngine.leaveChannel();
+            RtcEngine.destroy();
+        }
     }
 
     private void initUI() {
@@ -164,31 +170,6 @@ public class CallActivity extends Activity implements EventHandler {
                 Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    @Override
-    public void onUserOffline(final int uid, int reason) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                removeRemoteUser(uid);
-            }
-        });
-    }
-
-    @Override
-    public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                renderRemoteUser(uid);
-            }
-        });
-    }
-
-    @Override
-    public void onLeaveChannel(IRtcEngineEventHandler.RtcStats stats) {
-
     }
 
     private void renderRemoteUser(int uid) {
@@ -253,6 +234,33 @@ public class CallActivity extends Activity implements EventHandler {
     }
 
     @Override
+    public void onUserOffline(final int uid, int reason) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "User offline, uid: " + (uid & 0xFFFFFFFFL));
+                removeRemoteUser(uid);
+            }
+        });
+    }
+
+    @Override
+    public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "First remote video decoded, uid: " + (uid & 0xFFFFFFFFL));
+                renderRemoteUser(uid);
+            }
+        });
+    }
+
+    @Override
+    public void onLeaveChannel(IRtcEngineEventHandler.RtcStats stats) {
+
+    }
+
+    @Override
     public void onLocalVideoStats(IRtcEngineEventHandler.LocalVideoStats stats) {
     }
 
@@ -273,8 +281,13 @@ public class CallActivity extends Activity implements EventHandler {
     }
 
     @Override
-    public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-        // Do nothing at the moment
+    public void onJoinChannelSuccess(final String channel, final int uid, int elapsed) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Join channel success, uid: " + (uid & 0xFFFFFFFFL) + " channel: " + channel);
+            }
+        });
     }
 
     @Override
