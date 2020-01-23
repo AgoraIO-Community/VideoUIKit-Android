@@ -4,10 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -21,6 +21,7 @@ import io.agora.agorauikit.config.UIConfig;
 import io.agora.agorauikit.databinding.ActivityCallBinding;
 import io.agora.agorauikit.rtc.AgoraEventHandler;
 import io.agora.agorauikit.rtc.EventHandler;
+import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
@@ -139,6 +140,7 @@ public class CallActivity extends Activity implements EventHandler {
     }
 
     private void stopBroadcast() {
+        rtcEngine.muteLocalVideoStream(true);
         removeRtcVideo(0, true);
         mVideoGridContainer.removeUserVideo(0, true);
     }
@@ -245,12 +247,14 @@ public class CallActivity extends Activity implements EventHandler {
     }
 
     @Override
-    public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
+    public void onRemoteVideoStateChanged(final int uid, final int state, final int reason, int elapsed) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG, "First remote video decoded, uid: " + (uid & 0xFFFFFFFFL));
-                renderRemoteUser(uid);
+                if (state == Constants.REMOTE_VIDEO_STATE_DECODING) {
+                    Log.i(TAG, "First remote video decoded, uid: " + (uid & 0xFFFFFFFFL));
+                    renderRemoteUser(uid);
+                }
             }
         });
     }
