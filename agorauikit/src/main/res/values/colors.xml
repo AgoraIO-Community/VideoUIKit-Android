@@ -7,4 +7,5 @@
     <!-- Chat Activity -->
     <color name="localBackground">#827b92</color>
     <color name="remoteBackground">#484258</color>
+    <color name="agora_blue">#006AD8</color>
 </resources>

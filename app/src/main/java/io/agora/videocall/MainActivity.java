@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import io.agora.agorauikit.AgoraVideoCall;
+import io.agora.agorauikit.config.UIConfig;
 
 public class MainActivity extends Activity {
 
@@ -20,7 +21,9 @@ public class MainActivity extends Activity {
         String appId = ((EditText) findViewById(R.id.app_id)).getText().toString();
         String channel = ((EditText) findViewById(R.id.channel_name)).getText().toString();
 
-        AgoraVideoCall videoCall = new AgoraVideoCall(getApplicationContext(), appId, null, channel);
+        AgoraVideoCall videoCall = new AgoraVideoCall(getApplicationContext(), "appid", null, channel);
+        UIConfig conf = new UIConfig();
+        videoCall.setConfig(conf);
         Intent intent = videoCall.start();
         startActivity(intent);
     }

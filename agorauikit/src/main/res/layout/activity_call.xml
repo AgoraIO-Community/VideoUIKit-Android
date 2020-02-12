@@ -12,13 +12,23 @@
         android:layout_height="match_parent"
         tools:context=".ui.CallActivity">
 
-        <io.agora.agorauikit.ui.VideoGridContainer
-            android:id="@+id/live_video_grid_layout"
+        <io.agora.agorauikit.ui.GridVideoViewContainer
+            android:id="@+id/grid_video_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
+        <ViewStub
+            android:id="@id/small_video_view_dock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="60dp"
+            android:inflatedId="@id/small_video_view_dock"
+            android:layout="@layout/small_video_view_dock" />
+
+        <io.agora.agorauikit.ui.AGRelativeLayout
             android:id="@+id/control_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,74 +37,72 @@
 
             <ImageButton
                 android:id="@+id/btn_call"
-                android:background="?android:selectableItemBackground"
+                android:background="@drawable/background_circle"
                 android:layout_width="@dimen/call_button_size"
                 android:layout_height="@dimen/call_button_size"
                 android:layout_centerInParent="true"
                 android:onClick="onCallClicked"
-                android:src="@drawable/btn_endcall"
-                android:scaleType="centerCrop"/>
+                android:src="@drawable/ic_call_black_24dp" />
 
             <ImageButton
                 android:id="@+id/btn_switch_camera"
                 android:visibility="@{config.mSwitchCamera ? View.VISIBLE : View.GONE}"
-                android:background="?android:selectableItemBackground"
-                android:layout_width="@dimen/other_button_size"
-                android:layout_height="@dimen/other_button_size"
-                android:layout_toRightOf="@id/btn_call"
+                android:background="@drawable/background_circle"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
                 android:layout_toEndOf="@id/btn_call"
-                android:layout_marginLeft="@dimen/control_bottom_horizontal_margin"
                 android:layout_centerVertical="true"
                 android:onClick="onSwitchCameraClicked"
-                android:src="@drawable/btn_switch_camera"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="@dimen/control_bottom_horizontal_margin" />
+                android:src="@drawable/ic_switch_camera_black_24dp"
+                android:elevation="2dp"
+                android:layout_marginStart="@dimen/control_bottom_horizontal_margin"
+                android:layout_toRightOf="@id/btn_call"
+                android:layout_marginLeft="@dimen/control_bottom_horizontal_margin" />
 
             <ImageButton
                 android:id="@+id/btn_mute"
                 android:visibility="@{config.mAudioMute ? View.VISIBLE : View.GONE}"
-                android:background="?android:selectableItemBackground"
+                android:background="@drawable/background_circle"
                 android:layout_width="@dimen/other_button_size"
                 android:layout_height="@dimen/other_button_size"
-                android:layout_toLeftOf="@id/btn_call"
                 android:layout_toStartOf="@id/btn_call"
-                android:layout_marginRight="@dimen/control_bottom_horizontal_margin"
                 android:layout_centerVertical="true"
                 android:onClick="onLocalAudioMuteClicked"
-                android:src="@drawable/btn_unmute"
-                android:scaleType="centerCrop"
-                android:layout_marginEnd="@dimen/control_bottom_horizontal_margin" />
+                android:src="@drawable/ic_mic_black_24dp"
+                android:layout_marginEnd="@dimen/control_bottom_horizontal_margin"
+                android:layout_marginRight="@dimen/control_bottom_horizontal_margin"
+                android:layout_toLeftOf="@id/btn_call" />
 
             <ImageButton
                 android:id="@+id/check"
+                android:visibility="@{config.mCheck ? View.VISIBLE : View.GONE}"
                 android:layout_width="47dp"
                 android:layout_height="47dp"
-                android:visibility="@{config.mCheck ? View.VISIBLE : View.GONE}"
                 android:layout_centerVertical="true"
                 android:background="@drawable/background_circle"
                 android:src="@drawable/ic_check_black_24dp"
                 android:onClick="onCheckClicked"
-                android:layout_toRightOf="@+id/btn_switch_camera"
-                android:layout_marginLeft="@dimen/control_bottom_horizontal_margin"
                 android:layout_toEndOf="@+id/btn_switch_camera"
-                android:layout_marginStart="@dimen/control_bottom_horizontal_margin" />
+                android:layout_marginStart="@dimen/control_bottom_horizontal_margin"
+                android:layout_toRightOf="@+id/btn_switch_camera"
+                android:layout_marginLeft="@dimen/control_bottom_horizontal_margin" />
 
             <ImageButton
                 android:id="@+id/mute_video"
+                android:visibility="@{config.mVideoMute ? View.VISIBLE : View.GONE}"
                 android:layout_width="47dp"
                 android:layout_height="47dp"
-                android:visibility="@{config.mVideoMute ? View.VISIBLE : View.GONE}"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_videocam_black_24dp"
                 android:background="@drawable/background_circle"
                 android:onClick="onMuteVideoClicked"
-                android:layout_toLeftOf="@+id/btn_mute"
-                android:layout_marginRight="@dimen/control_bottom_horizontal_margin"
                 android:layout_toStartOf="@+id/btn_mute"
-                android:layout_marginEnd="@dimen/control_bottom_horizontal_margin" />
+                android:layout_marginEnd="@dimen/control_bottom_horizontal_margin"
+                android:layout_toLeftOf="@+id/btn_mute"
+                android:layout_marginRight="@dimen/control_bottom_horizontal_margin" />
 
 
-        </RelativeLayout>
+        </io.agora.agorauikit.ui.AGRelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

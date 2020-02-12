@@ -3,7 +3,9 @@ package io.agora.agorauikit.rtc;
 import io.agora.rtc.IRtcEngineEventHandler;
 
 public interface EventHandler {
-    void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed);
+//    void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed);
+
+    void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed);
 
     void onLeaveChannel(IRtcEngineEventHandler.RtcStats stats);
 

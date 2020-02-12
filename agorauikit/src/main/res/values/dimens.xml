@@ -7,6 +7,6 @@
 
     <!-- buttons -->
     <dimen name="call_button_size">60dp</dimen>
-    <dimen name="other_button_size">54dp</dimen>
+    <dimen name="other_button_size">47dp</dimen>
     <dimen name="live_stat_margin_bottom">20dp</dimen>
 </resources>
