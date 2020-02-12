@@ -161,6 +161,8 @@ public class CallActivity extends Activity implements EventHandler {
         ActivityCallBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_call);
         binding.setConfig(mConfig);
 
+        setButtonColor("#FF0000", null, (ImageButton) findViewById(R.id.btn_call));
+
         setButtonColorandListener(mConfig.getmSwitchCameraBackground(), mConfig.getmSwitchCameraForeground(), R.id.btn_switch_camera);
         setButtonColorandListener(mConfig.getmAudioMuteBackground(), mConfig.getmAudioMuteForeground(), R.id.btn_mute);
         setButtonColorandListener(mConfig.getmVideoMuteBackground(), mConfig.getmVideoMuteForeground(), R.id.mute_video);
@@ -189,17 +191,20 @@ public class CallActivity extends Activity implements EventHandler {
 
         initAgoraEngineAndJoinChannel();
 
-        SurfaceView surfaceV = RtcEngine.CreateRendererView(getApplicationContext());
-        mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, 0));
-        surfaceV.setZOrderOnTop(false);
-        surfaceV.setZOrderMediaOverlay(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SurfaceView surfaceV = RtcEngine.CreateRendererView(getApplicationContext());
+                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, 0));
+                surfaceV.setZOrderOnTop(false);
+                surfaceV.setZOrderMediaOverlay(false);
 
-        mUidsList.put(0, surfaceV); // get first surface view
-        Log.w(TAG, "TTTTT " + mUidsList);
+                mUidsList.put(0, surfaceV); // get first surface view
+            }
+        });
+
 
         mGridVideoViewContainer.initViewContainer(CallActivity.this, 0, mUidsList, mIsLandscape); // first is now full view
-        Log.w(TAG, "TTTTT " + mUidsList);
-
         mRtcEngine.enableVideo();
         mRtcEngine.joinChannel(token, channelName, "", 0);
 
@@ -403,26 +408,26 @@ public class CallActivity extends Activity implements EventHandler {
         }
 
         SurfaceView surfaceV = getLocalView();
-        ViewParent parent;
-        if (surfaceV == null || (parent = surfaceV.getParent()) == null) {
-            Log.w(TAG, "onVoiceChatClicked " + " " + surfaceV);
+        if (surfaceV == null || surfaceV.getParent() == null) {
+            Log.w(TAG, "onVoiceChatClicked failed" + " " + surfaceV);
             return;
         }
 
         mVideoMuted = !mVideoMuted;
 
         if (mVideoMuted) {
-            mRtcEngine.disableVideo();
+            mRtcEngine.enableLocalVideo(false);
         } else {
-            mRtcEngine.enableVideo();
+            mRtcEngine.enableLocalVideo(true);
         }
 
         hideLocalView(mVideoMuted);
+        switchToDefaultVideoView();
     }
 
     private SurfaceView getLocalView() {
         for (HashMap.Entry<Integer, SurfaceView> entry : mUidsList.entrySet()) {
-            if (entry.getKey() == 0 || entry.getKey() == 0) {
+            if (entry.getKey() == 0) {
                 return entry.getValue();
             }
         }
@@ -440,16 +445,13 @@ public class CallActivity extends Activity implements EventHandler {
         status.put(targetUid, hide ? UserStatusData.VIDEO_MUTED : UserStatusData.DEFAULT_STATUS);
         if (mLayoutType == LAYOUT_TYPE_DEFAULT) {
             mGridVideoViewContainer.notifyUiChanged(mUidsList, targetUid, status, null);
-            Log.w(TAG, "TTTTT " + mUidsList);
         } else if (mLayoutType == LAYOUT_TYPE_SMALL) {
             UserStatusData bigBgUser = mGridVideoViewContainer.getItem(0);
             if (bigBgUser.mUid == targetUid) { // big background is target view
                 mGridVideoViewContainer.notifyUiChanged(mUidsList, targetUid, status, null);
-                Log.w(TAG, "TTTTT " + mUidsList);
             } else { // find target view in small video view list
                 Log.w(TAG, "SmallVideoViewAdapter call notifyUiChanged " + mUidsList + " " + (bigBgUser.mUid & 0xFFFFFFFFL) + " target: " + (targetUid & 0xFFFFFFFFL) + "==" + targetUid + " " + status);
                 mSmallVideoViewAdapter.notifyUiChanged(mUidsList, bigBgUser.mUid, status, null);
-                Log.w(TAG, "TTTTT " + mUidsList);
             }
         }
     }

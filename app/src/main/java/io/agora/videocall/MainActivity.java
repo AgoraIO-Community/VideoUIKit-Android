@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
         String appId = ((EditText) findViewById(R.id.app_id)).getText().toString();
         String channel = ((EditText) findViewById(R.id.channel_name)).getText().toString();
 
-        AgoraVideoCall videoCall = new AgoraVideoCall(getApplicationContext(), "appid", null, channel);
+        AgoraVideoCall videoCall = new AgoraVideoCall(getApplicationContext(), appId, null, channel);
         UIConfig conf = new UIConfig();
         videoCall.setConfig(conf);
         Intent intent = videoCall.start();

@@ -50,6 +50,7 @@ Call the methods that you want to use
 ```
 config.hideSwitchCamera();
 config.hideVideoMute();
+config.setSwitchCameraColor("#FFFFFF", "#000000");
 ```
 
 You can also chain the methods
@@ -109,3 +110,19 @@ This function will hide the button repsosible for mute the local audio feed
 ```showCheckButton()```
 
 This function adds a check button which can be remappable to what the user wants to do
+
+```setSwitchCameraColor(String background, String foreground)```
+
+This function changes the background and the foreground color of the switch camera button according to the hex code specified. 
+
+```setAudioMuteColor(String background, String foreground)```
+
+This function changes the background and the foreground color of the Audio Mute button according to the hex code specified
+
+```setVideoMuteColor(String background, String foreground)```
+
+This function changes the background and the foreground color of the Video Mute button according to the hex code specified
+
+```setCheckColor(String foreground, String background)```
+
+This function changes the background and the foreground color of the Check button according to the hex code specified

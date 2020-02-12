@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
+        android:src="@drawable/icon_default_avatar"
         android:contentDescription="DEFAULT_AVATAR" />
 
     <ImageView

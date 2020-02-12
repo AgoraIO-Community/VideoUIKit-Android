@@ -5,4 +5,9 @@
     android:id="@+id/video_view_container"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
+
+    <include
+        layout="@layout/user_control_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>
