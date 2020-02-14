@@ -4,6 +4,12 @@
 
 1. Import Library
 
+Go to your app build.gradle and add the following
+
+```
+implementation 'io.agora.uikit:agorauikit:1.0.0'
+```
+
 2. Create a videocall object
 
 ```
