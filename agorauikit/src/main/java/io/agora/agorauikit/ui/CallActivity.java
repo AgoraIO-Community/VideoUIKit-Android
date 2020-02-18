@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewParent;
 import android.view.ViewStub;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -29,6 +27,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -296,17 +295,30 @@ public class CallActivity extends Activity implements EventHandler {
 
     private void setButtonColorandListener(final String background, final String foreground, @IdRes final int id) {
         final ImageButton sb = findViewById(id);
-        final Drawable offIcon;
+        final int offIcon;
+        final int onIcon;
 
-        if (id == R.id.mute_video) {
-            offIcon = getResources().getDrawable(R.drawable.ic_videocam_off_black_24dp);
-        } else if (id == R.id.btn_mute) {
-            offIcon = getResources().getDrawable(R.drawable.ic_mic_off_black_24dp);
+
+
+        if (id == R.id.btn_mute) {
+            offIcon = mConfig.getMuteAudioPressedIcon();
+            onIcon = mConfig.getMuteAudioIcon();
+        } else if (id == R.id.btn_switch_camera) {
+            offIcon = mConfig.getSwitchCameraPressedIcon();
+            onIcon = mConfig.getSwitchCameraIcon();
+        } else if (id == R.id.mute_video) {
+            offIcon = mConfig.getMuteVideoPressedIcon();
+            onIcon = mConfig.getMuteVideoIcon();
+        } else if (id == R.id.check) {
+            offIcon = mConfig.getCheckIcon();
+            onIcon = mConfig.getCheckIcon();
         } else {
-            offIcon = sb.getDrawable();
+            offIcon = mConfig.getCallIcon();
+            onIcon = mConfig.getCallIcon();
         }
 
-        final Drawable onIcon = sb.getDrawable();
+        setButtonColor(background, foreground, sb);
+        sb.setImageDrawable(getResources().getDrawable(onIcon));
 
         sb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,11 +327,11 @@ public class CallActivity extends Activity implements EventHandler {
 
                 if (sb.isSelected()) {
                     setButtonColor("#BBBBBB", foreground, sb);
-                    sb.setImageDrawable(offIcon);
+                    sb.setImageDrawable(getResources().getDrawable(offIcon));
                 }
                 else {
                     setButtonColor(background, foreground, sb);
-                    sb.setImageDrawable(onIcon);
+                    sb.setImageDrawable(getResources().getDrawable(onIcon));
                 }
 
                 if (id == R.id.btn_switch_camera) {
@@ -383,6 +395,7 @@ public class CallActivity extends Activity implements EventHandler {
     @Override
     protected void onDestroy() {
         deInitUIandEvent();
+        RtcEngine.destroy();
         super.onDestroy();
     }
 
@@ -577,7 +590,6 @@ public class CallActivity extends Activity implements EventHandler {
                 }
 
                 Object target = mUidsList.remove(uid);
-                Log.w(TAG, "TTTTT RRRRR2 " + mUidsList);
 
                 if (target == null) {
                     return;
@@ -604,7 +616,6 @@ public class CallActivity extends Activity implements EventHandler {
             mSmallVideoViewDock.setVisibility(View.GONE);
         }
         mGridVideoViewContainer.initViewContainer(this, 0, mUidsList, mIsLandscape);
-        Log.w(TAG, "TTTTT " + mUidsList);
 
         mLayoutType = LAYOUT_TYPE_DEFAULT;
         boolean setRemoteUserPriorityFlag = false;
@@ -664,7 +675,6 @@ public class CallActivity extends Activity implements EventHandler {
         if (mSmallVideoViewAdapter == null) {
             create = true;
             mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, 0, exceptUid, mUidsList);
-            Log.w(TAG, "TTTTT " + mUidsList);
             mSmallVideoViewAdapter.setHasStableIds(true);
         }
         recycler.setHasFixedSize(true);
@@ -697,7 +707,6 @@ public class CallActivity extends Activity implements EventHandler {
         if (!create) {
             mSmallVideoViewAdapter.setLocalUid(0);
             mSmallVideoViewAdapter.notifyUiChanged(mUidsList, exceptUid, null, null);
-            Log.w(TAG, "TTTTT " + mUidsList);
         }
         for (Integer tempUid : mUidsList.keySet()) {
             if (tempUid != 0) {
