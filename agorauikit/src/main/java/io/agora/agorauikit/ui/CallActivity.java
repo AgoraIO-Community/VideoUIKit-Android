@@ -27,7 +27,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -160,12 +159,11 @@ public class CallActivity extends Activity implements EventHandler {
         ActivityCallBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_call);
         binding.setConfig(mConfig);
 
-        setButtonColor("#FF0000", null, (ImageButton) findViewById(R.id.btn_call));
-
-        setButtonColorandListener(mConfig.getmSwitchCameraBackground(), mConfig.getmSwitchCameraForeground(), R.id.btn_switch_camera);
-        setButtonColorandListener(mConfig.getmAudioMuteBackground(), mConfig.getmAudioMuteForeground(), R.id.btn_mute);
-        setButtonColorandListener(mConfig.getmVideoMuteBackground(), mConfig.getmVideoMuteForeground(), R.id.mute_video);
-        setButtonColorandListener(mConfig.getmCheckBackground(), mConfig.getmCheckForeground(), R.id.check);
+        setButtonColorAndListener(mConfig.getmSwitchCameraBackground(), mConfig.getmSwitchCameraForeground(), R.id.btn_switch_camera);
+        setButtonColorAndListener(mConfig.getmAudioMuteBackground(), mConfig.getmAudioMuteForeground(), R.id.btn_mute);
+        setButtonColorAndListener(mConfig.getmVideoMuteBackground(), mConfig.getmVideoMuteForeground(), R.id.mute_video);
+        setButtonColorAndListener(mConfig.getmCheckBackground(), mConfig.getmCheckForeground(), R.id.check);
+        setButtonColorAndListener(mConfig.getmCallBackground(), mConfig.getmCallForeground(), R.id.btn_call);
 
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQ_CODE);
 
@@ -271,7 +269,7 @@ public class CallActivity extends Activity implements EventHandler {
         }
     }
 
-    private void setButtonColor(String background, String foreground, ImageButton sb) {
+    private void setButtonColor(String background, String foreground, ImageButton sb, boolean pressed) {
         if (foreground != null) {
             DrawableCompat.setTint(
                     DrawableCompat.wrap(sb.getDrawable()),
@@ -284,16 +282,15 @@ public class CallActivity extends Activity implements EventHandler {
                     DrawableCompat.wrap(sb.getBackground()),
                     Color.parseColor(background)
             );
-        }
-        else {
+        } else {
             DrawableCompat.setTint(
                     DrawableCompat.wrap(sb.getBackground()),
-                    Color.parseColor("#FFFFFF")
+                    Color.parseColor(pressed ? "#BBBBBB" : "#FFFFFF")
             );
         }
     }
 
-    private void setButtonColorandListener(final String background, final String foreground, @IdRes final int id) {
+    private void setButtonColorAndListener(final String background, final String foreground, @IdRes final int id) {
         final ImageButton sb = findViewById(id);
         final int offIcon;
         final int onIcon;
@@ -317,8 +314,10 @@ public class CallActivity extends Activity implements EventHandler {
             onIcon = mConfig.getCallIcon();
         }
 
-        setButtonColor(background, foreground, sb);
         sb.setImageDrawable(getResources().getDrawable(onIcon));
+        setButtonColor(background, foreground, sb, false);
+
+        if (id == R.id.btn_call) return;
 
         sb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,12 +325,18 @@ public class CallActivity extends Activity implements EventHandler {
                 sb.setSelected(!sb.isSelected());
 
                 if (sb.isSelected()) {
-                    setButtonColor("#BBBBBB", foreground, sb);
+                    if (id == R.id.btn_switch_camera) {
+                        setButtonColor(mConfig.getmSwitchCameraPressedBackground(), mConfig.getmSwitchCameraPressedForeground(), sb, true);
+                    } else if (id == R.id.mute_video) {
+                        setButtonColor(mConfig.getmVideoMutePressedBackground(), mConfig.getmVideoMutePressedForeground(), sb, true);
+                    } else if (id == R.id.btn_mute) {
+                        setButtonColor(mConfig.getmAudioMutePressedBackground(), mConfig.getmAudioMutePressedForeground(), sb, true);
+                    }
                     sb.setImageDrawable(getResources().getDrawable(offIcon));
                 }
                 else {
-                    setButtonColor(background, foreground, sb);
                     sb.setImageDrawable(getResources().getDrawable(onIcon));
+                    setButtonColor(background, foreground, sb, false);
                 }
 
                 if (id == R.id.btn_switch_camera) {
@@ -345,8 +350,6 @@ public class CallActivity extends Activity implements EventHandler {
                 }
             }
         });
-
-        setButtonColor(background, foreground, sb);
     }
 
     private void toggleFullscreen() {
@@ -674,7 +677,9 @@ public class CallActivity extends Activity implements EventHandler {
 
         if (mSmallVideoViewAdapter == null) {
             create = true;
-            mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, 0, exceptUid, mUidsList);
+            HashMap<Integer, SurfaceView> mUidsListChanged = new HashMap<Integer, SurfaceView>(mUidsList);
+            mUidsListChanged.remove(exceptUid);
+            mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, 0, -1, mUidsListChanged);
             mSmallVideoViewAdapter.setHasStableIds(true);
         }
         recycler.setHasFixedSize(true);
@@ -715,7 +720,7 @@ public class CallActivity extends Activity implements EventHandler {
                     Log.d(TAG, "setRemoteUserPriority USER_PRIORITY_HIGH " + mUidsList.size() + " " + (tempUid & 0xFFFFFFFFL));
                 } else {
                     mRtcEngine.setRemoteUserPriority(tempUid, Constants.USER_PRIORITY_NORANL);
-                    Log.d(TAG, "setRemoteUserPriority USER_PRIORITY_NORANL " + mUidsList.size() + " " + (tempUid & 0xFFFFFFFFL));
+                    Log.d(TAG, "setRemoteUserPriority USER_PRIORITY_NORMAL " + mUidsList.size() + " " + (tempUid & 0xFFFFFFFFL));
                 }
             }
         }

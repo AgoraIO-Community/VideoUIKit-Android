@@ -1,7 +1,6 @@
 package io.agora.agorauikit.config;
 
 import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
 
 import java.io.Serializable;
 
@@ -21,6 +20,15 @@ public class UIConfig implements Serializable{
     private String mVideoMuteForeground;
     private String mCheckBackground;
     private String mCheckForeground;
+    private String mCallBackground;
+    private String mCallForeground;
+
+    private String mSwitchCameraPressedBackground;
+    private String mSwitchCameraPressedForeground;
+    private String mAudioMutePressedBackground;
+    private String mAudioMutePressedForeground;
+    private String mVideoMutePressedBackground;
+    private String mVideoMutePressedForeground;
 
     private int switchCameraIcon;
     private int switchCameraPressedIcon;
@@ -55,7 +63,7 @@ public class UIConfig implements Serializable{
         muteVideoPressedIcon = R.drawable.ic_videocam_off_black_24dp;
         muteAudioPressedIcon = R.drawable.ic_mic_off_black_24dp;
         muteAudioIcon = R.drawable.ic_mic_black_24dp;
-        muteVideoIcon = R.drawable.ic_videocam_off_black_24dp;
+        muteVideoIcon = R.drawable.ic_videocam_black_24dp;
         switchCameraPressedIcon = R.drawable.ic_switch_camera_black_24dp;
         switchCameraIcon = R.drawable.ic_switch_camera_black_24dp;
         checkIcon = R.drawable.ic_check_black_24dp;
@@ -372,6 +380,199 @@ public class UIConfig implements Serializable{
      */
     public UIConfig setCallIcon(@DrawableRes int callIcon) {
         this.callIcon = callIcon;
+        return this;
+    }
+
+    public String getmCallBackground() {
+        if (mCallBackground == null) {
+            return "#FF0000";
+        }
+        return mCallBackground;
+    }
+
+    /**
+     * Sets the background color of the Check Button.
+     * @param background Hex code for the background color
+     *
+     *                   Example: config.setCallBackgroundColor("#00FFFF")
+     */
+    public UIConfig setCallBackgroundColor(String background) {
+        this.mCallBackground = background;
+        return this;
+    }
+
+    public String getmCallForeground() {
+        return mCallForeground;
+    }
+
+    /**
+     * Sets the foreground color of the Call Button.
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setCallForegroundColor("#FF0000")
+     */
+    public UIConfig setCallForegroundColor(String foreground) {
+        this.mCallForeground = foreground;
+        return this;
+    }
+
+    /**
+     * Sets the background and foreground color of the Call Button.
+     * @param background Hex code for the background color
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setCallColor("#00FFFF", "#FF0000")
+     */
+    public UIConfig setCallColor(String background, String foreground) {
+        this.mCallBackground = background;
+        this.mCallForeground = foreground;
+        return this;
+    }
+
+    public String getmSwitchCameraPressedBackground() {
+        if (mSwitchCameraPressedBackground == null) {
+            return mSwitchCameraBackground;
+        }
+        return mSwitchCameraPressedBackground;
+    }
+
+    /**
+     * Sets the background color of the Switch Camera Button when the button is pressed.
+     * @param background Hex code for the background color
+     *
+     *                   Example: config.setSwitchCameraPressedBackgroundColor("#00FFFF")
+     */
+    public UIConfig setSwitchCameraPressedBackgroundColor(String background) {
+        this.mSwitchCameraPressedBackground = background;
+        return this;
+    }
+
+    public String getmSwitchCameraPressedForeground() {
+        if (mSwitchCameraPressedForeground == null) {
+            return mSwitchCameraForeground;
+        }
+        return mSwitchCameraPressedForeground;
+    }
+
+    /**
+     * Sets the foreground color of the Switch Camera Button when the button is pressed.
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setSwitchCameraPressedForegroundColor("#FF0000")
+     */
+    public UIConfig setSwitchCameraPressedForegroundColor(String foreground) {
+        this.mSwitchCameraPressedForeground = foreground;
+        return this;
+    }
+
+    /**
+     * Sets the background and foreground color of the Switch Camera Button when the button is pressed.
+     * @param background Hex code for the background color
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setSwitchCameraPressedColor("#00FFFF", "#FF0000")
+     */
+    public UIConfig setSwitchCameraPressedColor(String background, String foreground) {
+        this.mSwitchCameraPressedForeground = foreground;
+        this.mSwitchCameraPressedBackground = background;
+        return this;
+    }
+
+    public String getmAudioMutePressedBackground() {
+        if (mAudioMutePressedBackground == null) {
+            return mAudioMuteBackground;
+        }
+        return mAudioMutePressedBackground;
+    }
+
+    /**
+     * Sets the background color of the Mute Audio Button when the button is pressed.
+     * @param background Hex code for the background color
+     *
+     *                   Example: config.setAudioMutePressedBackgroundColor("#00FFFF")
+     */
+    public UIConfig setAudioMutePressedBackgroundColor(String background) {
+        this.mAudioMutePressedBackground = background;
+        return this;
+    }
+
+    public String getmAudioMutePressedForeground() {
+        if (mAudioMutePressedForeground == null) {
+            return mAudioMuteForeground;
+        }
+        return mAudioMutePressedForeground;
+    }
+
+    /**
+     * Sets the foreground color of the Mute Audio Button when the button is pressed.
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setAudioMutePressedForegroundColor("#FF0000")
+     */
+    public UIConfig setAudioMutePressedForegroundColor(String foreground) {
+        this.mAudioMutePressedForeground = foreground;
+        return this;
+    }
+
+    /**
+     * Sets the background and foreground color of the Mute Audio Button when the button is pressed.
+     * @param background Hex code for the background color
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setAudioMutePressedColor("#00FFFF", "#FF0000")
+     */
+    public UIConfig setAudioMutePressedColor(String background, String foreground) {
+        this.mAudioMutePressedBackground = background;
+        this.mAudioMutePressedForeground = foreground;
+        return this;
+    }
+
+    public String getmVideoMutePressedBackground() {
+        if (mVideoMutePressedBackground == null) {
+            return mVideoMuteBackground;
+        }
+        return mVideoMutePressedBackground;
+    }
+
+    /**
+     * Sets the background color of the Mute Video Button when the button is pressed.
+     * @param background Hex code for the background color
+     *
+     *                   Example: config.setVideoMutePressedBackgroundColor("#FF0000")
+     */
+    public UIConfig setVideoMutePressedBackgroundColor(String background) {
+        this.mVideoMutePressedBackground = background;
+        return this;
+    }
+
+    public String getmVideoMutePressedForeground() {
+        if (mVideoMutePressedForeground == null) {
+            return mVideoMuteForeground;
+        }
+        return mVideoMutePressedForeground;
+    }
+
+    /**
+     * Sets the foreground color of the Mute Video Button when the button is pressed.
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setVideoMutePressedForegroundColor("#FF0000")
+     */
+    public UIConfig setVideoMutePressedForegroundColor(String foreground) {
+        this.mVideoMutePressedForeground = foreground;
+        return this;
+    }
+
+    /**
+     * Sets the background and foreground color of the Mute Video Button when the button is pressed.
+     * @param background Hex code for the background color
+     * @param foreground Hex code for the foreground color
+     *
+     *                   Example: config.setVideoMutePressedColor("#00FFFF", "#FF0000")
+     */
+    public UIConfig setVideoMutePressedColor(String background, String foreground) {
+        this.mVideoMutePressedBackground = background;
+        this.mVideoMutePressedForeground = foreground;
         return this;
     }
 }

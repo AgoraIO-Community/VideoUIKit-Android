@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
 
         AgoraVideoCall videoCall = new AgoraVideoCall(getApplicationContext(), appId, null, channel);
         UIConfig conf = new UIConfig();
-        conf.setAudioMuteColor("#ABCDEF", "#FEDCBA").setMuteAudioIcon(R.drawable.ic_music_note_black_24dp);
+        conf.showCheckButton();
         videoCall.setConfig(conf);
         Intent intent = videoCall.start();
         startActivity(intent);
