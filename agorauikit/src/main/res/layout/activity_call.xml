@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <data>
-        <import type="android.view.View" />
-        <variable name="config"
-            type="io.agora.agorauikit.config.UIConfig" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.CallActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.CallActivity">
 
         <io.agora.agorauikit.ui.GridVideoViewContainer
             android:id="@+id/grid_video_view_container"
@@ -46,7 +40,6 @@
 
             <ImageButton
                 android:id="@+id/btn_switch_camera"
-                android:visibility="@{config.mSwitchCamera ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/background_circle"
                 android:layout_width="47dp"
                 android:layout_height="47dp"
@@ -60,7 +53,6 @@
 
             <ImageButton
                 android:id="@+id/btn_mute"
-                android:visibility="@{config.mAudioMute ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/background_circle"
                 android:layout_width="@dimen/other_button_size"
                 android:layout_height="@dimen/other_button_size"
@@ -73,7 +65,6 @@
 
             <ImageButton
                 android:id="@+id/check"
-                android:visibility="@{config.mCheck ? View.VISIBLE : View.GONE}"
                 android:layout_width="47dp"
                 android:layout_height="47dp"
                 android:layout_centerVertical="true"
@@ -86,7 +77,6 @@
 
             <ImageButton
                 android:id="@+id/mute_video"
-                android:visibility="@{config.mVideoMute ? View.VISIBLE : View.GONE}"
                 android:layout_width="47dp"
                 android:layout_height="47dp"
                 android:layout_centerVertical="true"
@@ -100,5 +90,4 @@
 
         </io.agora.agorauikit.ui.AGRelativeLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

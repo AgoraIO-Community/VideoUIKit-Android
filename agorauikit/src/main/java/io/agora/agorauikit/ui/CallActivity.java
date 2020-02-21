@@ -23,7 +23,6 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +31,6 @@ import java.util.Iterator;
 
 import io.agora.agorauikit.R;
 import io.agora.agorauikit.config.UIConfig;
-import io.agora.agorauikit.databinding.ActivityCallBinding;
 import io.agora.agorauikit.rtc.AgoraEventHandler;
 import io.agora.agorauikit.rtc.EventHandler;
 import io.agora.rtc.Constants;
@@ -83,6 +81,7 @@ public class CallActivity extends Activity implements EventHandler {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_call);
         initUIandEvent();
     }
 
@@ -155,9 +154,6 @@ public class CallActivity extends Activity implements EventHandler {
         if (mConfig == null) {
             mConfig = new UIConfig();
         }
-
-        ActivityCallBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_call);
-        binding.setConfig(mConfig);
 
         setButtonColorAndListener(mConfig.getmSwitchCameraBackground(), mConfig.getmSwitchCameraForeground(), R.id.btn_switch_camera);
         setButtonColorAndListener(mConfig.getmAudioMuteBackground(), mConfig.getmAudioMuteForeground(), R.id.btn_mute);
@@ -295,18 +291,40 @@ public class CallActivity extends Activity implements EventHandler {
         final int offIcon;
         final int onIcon;
 
-
-
         if (id == R.id.btn_mute) {
+
+            if (!mConfig.isAudioMute()) {
+                sb.setVisibility(View.GONE);
+                return;
+            }
+
             offIcon = mConfig.getMuteAudioPressedIcon();
             onIcon = mConfig.getMuteAudioIcon();
         } else if (id == R.id.btn_switch_camera) {
+
+            if (!mConfig.isSwitchCamera()) {
+                sb.setVisibility(View.GONE);
+                return;
+            }
+
             offIcon = mConfig.getSwitchCameraPressedIcon();
             onIcon = mConfig.getSwitchCameraIcon();
         } else if (id == R.id.mute_video) {
+
+            if (!mConfig.isVideoMute()) {
+                sb.setVisibility(View.GONE);
+                return;
+            }
+
             offIcon = mConfig.getMuteVideoPressedIcon();
             onIcon = mConfig.getMuteVideoIcon();
         } else if (id == R.id.check) {
+
+            if (!mConfig.isCheck()) {
+                sb.setVisibility(View.GONE);
+                return;
+            }
+
             offIcon = mConfig.getCheckIcon();
             onIcon = mConfig.getCheckIcon();
         } else {
