@@ -1,4 +1,6 @@
-# Agora UI KIT
+# Android-UIKit
+
+UI Kit for the Agora Video Android SDK
 
 ## How to Use
 
