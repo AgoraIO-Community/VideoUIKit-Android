@@ -391,7 +391,7 @@ public class UIConfig implements Serializable{
     }
 
     /**
-     * Sets the background color of the Check Button.
+     * Sets the background color of the End Call Button.
      * @param background Hex code for the background color
      *
      *                   Example: config.setCallBackgroundColor("#00FFFF")
@@ -406,7 +406,7 @@ public class UIConfig implements Serializable{
     }
 
     /**
-     * Sets the foreground color of the Call Button.
+     * Sets the foreground color of the End Call Button.
      * @param foreground Hex code for the foreground color
      *
      *                   Example: config.setCallForegroundColor("#FF0000")
@@ -417,7 +417,7 @@ public class UIConfig implements Serializable{
     }
 
     /**
-     * Sets the background and foreground color of the Call Button.
+     * Sets the background and foreground color of the End Call Button.
      * @param background Hex code for the background color
      * @param foreground Hex code for the foreground color
      *
