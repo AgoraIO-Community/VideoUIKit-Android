@@ -14,18 +14,17 @@ import java.util.HashMap;
 public class SmallVideoViewAdapter extends VideoViewAdapter {
 
     private final static Logger log = LoggerFactory.getLogger(SmallVideoViewAdapter.class);
-
-    private int mExceptedUid;
+    private int mEid;
 
     public SmallVideoViewAdapter(Activity activity, int localUid, int exceptedUid, HashMap<Integer, SurfaceView> uids) {
         super(activity, localUid, uids);
-        mExceptedUid = exceptedUid;
-        log.debug("SmallVideoViewAdapter " + (mLocalUid & 0xFFFFFFFFL) + " " + (mExceptedUid & 0xFFFFFFFFL));
+        mEid = exceptedUid;
+        log.debug("SmallVideoViewAdapter " + (mLocalUid & 0xFFFFFFFFL) + " ");
     }
 
     @Override
     protected void customizedInit(HashMap<Integer, SurfaceView> uids, boolean force) {
-        VideoViewAdapterUtil.composeDataItem(mUsers, uids, mLocalUid, null, null, mVideoInfo, mExceptedUid);
+        VideoViewAdapterUtil.composeDataItem(mUsers, uids, mLocalUid, null, null, mVideoInfo);
 
         if (force || mItemWidth == 0 || mItemHeight == 0) {
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -40,16 +39,18 @@ public class SmallVideoViewAdapter extends VideoViewAdapter {
     public void notifyUiChanged(HashMap<Integer, SurfaceView> uids, int uidExcepted, HashMap<Integer, Integer> status, HashMap<Integer, Integer> volume) {
         mUsers.clear();
 
-        mExceptedUid = uidExcepted;
-
         log.debug("notifyUiChanged " + (mLocalUid & 0xFFFFFFFFL) + " " + (uidExcepted & 0xFFFFFFFFL) + " " + uids + " " + status + " " + volume);
         VideoViewAdapterUtil.composeDataItem(mUsers, uids, mLocalUid, status, volume, mVideoInfo, uidExcepted);
 
         notifyDataSetChanged();
     }
 
+    public void setExceptedUid(int mEid) {
+        this.mEid = mEid;
+    }
+
     public int getExceptedUid() {
-        return mExceptedUid;
+        return mEid;
     }
 }
 

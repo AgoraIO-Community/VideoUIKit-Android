@@ -693,13 +693,12 @@ public class CallActivity extends Activity implements EventHandler {
 
         boolean create = false;
 
-        if (mSmallVideoViewAdapter == null) {
-            create = true;
-            HashMap<Integer, SurfaceView> mUidsListChanged = new HashMap<Integer, SurfaceView>(mUidsList);
-            mUidsListChanged.remove(exceptUid);
-            mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, 0, -1, mUidsListChanged);
-            mSmallVideoViewAdapter.setHasStableIds(true);
-        }
+        create = true;
+        HashMap<Integer, SurfaceView> mUidsListChanged = new HashMap<Integer, SurfaceView>(mUidsList);
+        mUidsListChanged.remove(exceptUid);
+        mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, 0, exceptUid, mUidsListChanged);
+        mSmallVideoViewAdapter.setHasStableIds(true);
+
         recycler.setHasFixedSize(true);
 
         Log.d(TAG, "bindToSmallVideoView " + twoWayVideoCall + " " + (exceptUid & 0xFFFFFFFFL));
