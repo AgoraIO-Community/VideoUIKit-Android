@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,6 +87,25 @@ public class CallActivity extends Activity implements EventHandler {
     }
 
     private void initAgoraEngineAndJoinChannel() {
+        mGridVideoViewContainer = findViewById(R.id.grid_video_view_container);
+        Log.w(TAG, "grid view container is " + mGridVideoViewContainer);
+        mGridVideoViewContainer.setItemEventHandler(new RecyclerItemClickListener.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(View view, int position) {
+                onBigVideoViewClicked(view, position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+            }
+
+            @Override
+            public void onItemDoubleClick(View view, int position) {
+                onBigVideoViewDoubleClicked(view, position);
+            }
+        });
+
         try {
             mRtcEngine = RtcEngine.create(getBaseContext(), appId, mHandler);
         } catch (Exception e) {
@@ -95,6 +115,25 @@ public class CallActivity extends Activity implements EventHandler {
         }
 
         configVideo();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SurfaceView surfaceV = RtcEngine.CreateRendererView(getApplicationContext());
+                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, 0));
+                surfaceV.setZOrderOnTop(false);
+                surfaceV.setZOrderMediaOverlay(false);
+
+                mUidsList.put(0, surfaceV); // get first surface view
+            }
+        });
+
+
+        mGridVideoViewContainer.initViewContainer(CallActivity.this, 0, mUidsList, mIsLandscape); // first is now full view
+        mRtcEngine.enableVideo();
+        mRtcEngine.joinChannel(token, channelName, "", 0);
+
+        optional();
     }
 
     private void configVideo() {
@@ -135,6 +174,8 @@ public class CallActivity extends Activity implements EventHandler {
 
             // Here we continue only if all permissions are granted.
             // The permissions can also be granted in the system settings manually.
+
+            initAgoraEngineAndJoinChannel();
         }
     }
 
@@ -161,47 +202,13 @@ public class CallActivity extends Activity implements EventHandler {
         setButtonColorAndListener(mConfig.getmCheckBackground(), mConfig.getmCheckForeground(), R.id.check);
         setButtonColorAndListener(mConfig.getmCallBackground(), mConfig.getmCallForeground(), R.id.btn_call);
 
-        ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQ_CODE);
-
-        mGridVideoViewContainer = findViewById(R.id.grid_video_view_container);
-        Log.w(TAG, "grid view container is " + mGridVideoViewContainer);
-        mGridVideoViewContainer.setItemEventHandler(new RecyclerItemClickListener.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(View view, int position) {
-                onBigVideoViewClicked(view, position);
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-            }
-
-            @Override
-            public void onItemDoubleClick(View view, int position) {
-                onBigVideoViewDoubleClicked(view, position);
-            }
-        });
-
-        initAgoraEngineAndJoinChannel();
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                SurfaceView surfaceV = RtcEngine.CreateRendererView(getApplicationContext());
-                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, 0));
-                surfaceV.setZOrderOnTop(false);
-                surfaceV.setZOrderMediaOverlay(false);
-
-                mUidsList.put(0, surfaceV); // get first surface view
-            }
-        });
-
-
-        mGridVideoViewContainer.initViewContainer(CallActivity.this, 0, mUidsList, mIsLandscape); // first is now full view
-        mRtcEngine.enableVideo();
-        mRtcEngine.joinChannel(token, channelName, "", 0);
-
-        optional();
+        if (ContextCompat.checkSelfPermission(getBaseContext(), PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getBaseContext(), PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getBaseContext(), PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED) {
+            initAgoraEngineAndJoinChannel();
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQ_CODE);
+        }
     }
 
     private void onBigVideoViewClicked(View view, int position) {
