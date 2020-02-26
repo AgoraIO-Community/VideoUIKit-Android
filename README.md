@@ -9,7 +9,7 @@ UI Kit for the Agora Video Android SDK
 Go to your app build.gradle and add the following
 
 ```
-implementation 'io.agora.uikit:agorauikit:1.0.1'
+implementation 'io.agora.uikit:agorauikit:1.0.2'
 ```
 
 2. Create a videocall object
