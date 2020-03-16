@@ -54,12 +54,19 @@ You can also chain the methods
 config.hideAudioMute().showCheckButton();
 ```
 
+You can set the config like this
+
+```
+videocall.setConfig(config);
+```
+
 We also provide a check button which you can use to start your custom intent. For example:  
 
 Say you want the check button to start your custom activity called TestActivity
 
 ```
 config.showCheckButton();
+videocall.setConfig(config);
 Intent intent = new Intent(getBaseContext(), TestActivity.class);
 videocall.setIntent(intent);
 ```
