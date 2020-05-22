@@ -107,7 +107,7 @@ This function will hide the button responsible for muting the local video feed
 
 ```hideAudioMute()```
 
-This function will hide the button repsosible for mute the local audio feed
+This function will hide the button responsible for mute the local audio feed
 
 ```showCheckButton()```
 
