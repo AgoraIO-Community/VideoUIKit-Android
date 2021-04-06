@@ -1,4 +1,4 @@
-# Agora UIKit for iOS and macOS
+# Agora UIKit for Android
 
 [![](https://jitpack.io/v/AgoraIO-Community/Android-UIKit.svg)](https://jitpack.io/#AgoraIO-Community/Android-UIKit)
 
@@ -16,10 +16,10 @@ Instantly integrate Agora in your own Android application or prototype.
 
 ```css
 allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+  repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+  }
 }
 ```
 
