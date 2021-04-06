@@ -20,24 +20,30 @@ interface AgoraVideoViewerDelegate {
 }
 
 @ExperimentalUnsignedTypes
+/**
+ * View to contain all the video session objects, including camera feeds and buttons for settings
+ */
 open class AgoraVideoViewer: FrameLayout {
 
     enum class Style {
         GRID, FLOATING, COLLECTION
     }
-    /// Gets and sets the role for the user. Either `.audience` or `.broadcaster`.
+
+    /**
+     * Gets and sets the role for the user. Either `.audience` or `.broadcaster`.
+     */
     public var userRole: Int = Constants.CLIENT_ROLE_BROADCASTER
         set(value: Int) {
             field = value
             this.agkit.setClientRole(value)
         }
 
-    var controlContainer: ButtonContainer? = null
-    var camButton: AgoraButton? = null
-    var micButton: AgoraButton? = null
-    var flipButton: AgoraButton? = null
-    var beautyButton: AgoraButton? = null
-    var screenShareButton: AgoraButton? = null
+    internal var controlContainer: ButtonContainer? = null
+    internal var camButton: AgoraButton? = null
+    internal var micButton: AgoraButton? = null
+    internal var flipButton: AgoraButton? = null
+    internal var beautyButton: AgoraButton? = null
+    internal var screenShareButton: AgoraButton? = null
 
     companion object {}
     var remoteUserIDs: MutableSet<Int> = mutableSetOf()
@@ -71,7 +77,9 @@ open class AgoraVideoViewer: FrameLayout {
     }
 
     public var userID: Int = 0
-    var activeSpeaker: Int? = null
+        internal set
+    public var activeSpeaker: Int? = null
+        internal set
     private val newHandler = AgoraVideoViewerHandler(this)
 
     fun addUserVideo(userId: Int): AgoraSingleVideoView {
@@ -131,7 +139,7 @@ open class AgoraVideoViewer: FrameLayout {
     }
 
 
-    var connectionData: AgoraConnectionData
+    internal var connectionData: AgoraConnectionData
     public constructor(
         context: Context, connectionData: AgoraConnectionData,
         style: Style = Style.FLOATING,
@@ -162,11 +170,12 @@ open class AgoraVideoViewer: FrameLayout {
     /// Delegate for the AgoraVideoViewer, used for some important callback methods.
     public var delegate: AgoraVideoViewerDelegate? = null
 
-    var floatingVideoHolder: RecyclerView = RecyclerView(context)
-    var backgroundVideoHolder: RecyclerView = RecyclerView(context)
+    internal var floatingVideoHolder: RecyclerView = RecyclerView(context)
+    internal var backgroundVideoHolder: RecyclerView = RecyclerView(context)
     /// Settings and customisations such as position of on-screen buttons, collection view of all channel members,
     /// as well as agora video configuration.
     public var agoraSettings: AgoraSettings = AgoraSettings()
+        internal set
 
     /// Style and organisation to be applied to all the videos in this AgoraVideoViewer.
     public var style: Style
