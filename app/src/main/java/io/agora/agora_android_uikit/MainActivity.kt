@@ -35,10 +35,6 @@ class MainActivity : AppCompatActivity() {
     fun settingsWithExtraButtons(): AgoraSettings {
         val agoraSettings = AgoraSettings()
 
-        val beautyOptions = BeautyOptions()
-        beautyOptions.smoothnessLevel = 1f
-        beautyOptions.rednessLevel = 0.1f
-
         val agBeautyButton = AgoraButton(this)
         agBeautyButton.clickAction = {
             it.isSelected = !it.isSelected
@@ -46,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                 if (it.isSelected) android.R.drawable.star_on else android.R.drawable.star_off
             )
             it.background.setTint(if (it.isSelected) Color.GREEN else Color.GRAY)
-            this.agView?.agkit?.setBeautyEffectOptions(it.isSelected, beautyOptions)
+            this.agView?.agkit?.setBeautyEffectOptions(it.isSelected, this.agView?.beautyOptions)
         }
         agBeautyButton.setImageResource(android.R.drawable.star_off)
 

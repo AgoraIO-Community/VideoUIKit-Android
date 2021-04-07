@@ -13,10 +13,20 @@ public interface TokenCallback {
     fun onError(error: TokenError)
 }
 
+/**
+ * Error types to expect from fetchToken on failing ot retrieve valid token.
+ */
 enum class TokenError {
     NODATA, INVALIDDATA, INVALIDURL
 }
 
+/**
+ * Requests the token from our backend token service
+ * @param urlBase: base URL specifying where the token server is located
+ * @param channelName: Name of the channel we're requesting for
+ * @param userId: User ID of the user trying to join (0 for any user)
+ * @param callback: Callback method for returning either the string token or error
+ */
 @ExperimentalUnsignedTypes
 fun AgoraVideoViewer.Companion.fetchToken(urlBase: String, channelName: String, userId: Int, completion: TokenCallback) {
     val log: Logger = Logger.getLogger("AgoraUIKit")
@@ -54,7 +64,7 @@ fun AgoraVideoViewer.Companion.fetchToken(urlBase: String, channelName: String, 
 }
 
 @ExperimentalUnsignedTypes
-fun AgoraVideoViewer.fetchRenewToken() {
+internal fun AgoraVideoViewer.fetchRenewToken() {
     (this.agoraSettings.tokenURL)?.let { tokenURL ->
         this.connectionData.channel?.let { channelName ->
             val callback: TokenCallback = object : TokenCallback {

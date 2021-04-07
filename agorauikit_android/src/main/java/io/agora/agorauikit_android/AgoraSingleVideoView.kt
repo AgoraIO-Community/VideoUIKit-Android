@@ -15,15 +15,24 @@ import io.agora.rtc.RtcEngine
 import io.agora.rtc.mediaio.AgoraTextureView
 import io.agora.rtc.video.VideoCanvas
 
-
+/**
+ * View for the individual Agora Camera Feed.
+ */
 @ExperimentalUnsignedTypes
 class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int, engine: RtcEngine) : FrameLayout(context) {
 
-    /// Canvas used to render the Agora RTC Video.
+    /**
+     * Canvas used to render the Agora RTC Video.
+     */
     var canvas: VideoCanvas
+        internal set
     internal var uid: Int
 //    internal var textureView: AgoraTextureView = AgoraTextureView(context)
     internal var engine: RtcEngine
+
+    /**
+     * Is the microphone muted for this user.
+     */
     var audioMuted: Boolean = true
         set(value: Boolean) {
             field = value
@@ -32,6 +41,9 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int, engine: Rt
             }
         }
 
+    /**
+     * Is the video turned off for this user.
+     */
     var videoMuted: Boolean = true
         set(value: Boolean) {
             if (this.videoMuted != value) {
@@ -41,14 +53,23 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int, engine: Rt
             field = value
         }
 
-    val hostingView: View
+    internal val hostingView: View
         get() {
             return this.canvas.view
         }
+
+    /**
+     * Icon to show if this user is muting their microphone
+     */
     var mutedFlag: ImageView
     var backgroundView: FrameLayout
     var micFlagColor: Int = micColor
 
+    /**
+     * Create a new AgoraSingleVideoView to be displayed in your app
+     * @param uid: User ID of the `AgoraRtcVideoCanvas` inside this view
+     * @param micColor: Color to be applied when the local or remote user mutes their microphone
+     */
     init {
         this.uid = uid
         this.engine = engine

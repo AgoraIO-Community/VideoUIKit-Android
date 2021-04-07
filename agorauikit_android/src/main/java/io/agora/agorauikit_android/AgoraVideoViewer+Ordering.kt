@@ -14,7 +14,9 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.sqrt
 
-
+/**
+ * Shuffle around the videos depending on the style
+ */
 @ExperimentalUnsignedTypes
 fun AgoraVideoViewer.reorganiseVideos() {
     this.organiseRecycleFloating()

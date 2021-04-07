@@ -90,8 +90,20 @@ class AgoraViewerColors {
      * Color of the view that signals a user has their mic muted. Default `Color.BLUE`
      */
     var micFlag: Int = Color.BLUE
+    /**
+     * Background colour of the scrollable floating viewer
+     */
     var floatingBackgroundColor: Int = Color.LTGRAY
+    /**
+     * Opacity of the floating viewer background (0-255)
+     */
     var floatingBackgroundAlpha: Int = 100
+    /**
+     * Background colour of the button holder
+     */
     var buttonBackgroundColor: Int = Color.LTGRAY
+    /**
+     * Opacity of the button holder background (0-255)
+     */
     var buttonBackgroundAlpha: Int = 255 / 5
 }

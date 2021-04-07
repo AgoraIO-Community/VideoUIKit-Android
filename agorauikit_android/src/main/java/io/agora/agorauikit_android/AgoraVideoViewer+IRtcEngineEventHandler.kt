@@ -6,7 +6,7 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 @ExperimentalUnsignedTypes
-class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRtcEngineEventHandler() {
+open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRtcEngineEventHandler() {
     override fun onClientRoleChanged(oldRole: Int, newRole: Int) {
         super.onClientRoleChanged(oldRole, newRole)
         val isHost = newRole == Constants.CLIENT_ROLE_BROADCASTER

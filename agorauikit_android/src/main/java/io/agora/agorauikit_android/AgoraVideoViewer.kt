@@ -25,6 +25,9 @@ interface AgoraVideoViewerDelegate {
  */
 open class AgoraVideoViewer: FrameLayout {
 
+    /**
+     * Style and organisation to be applied to all the videos in this view.
+     */
     enum class Style {
         GRID, FLOATING, COLLECTION
     }
@@ -32,7 +35,7 @@ open class AgoraVideoViewer: FrameLayout {
     /**
      * Gets and sets the role for the user. Either `.audience` or `.broadcaster`.
      */
-    public var userRole: Int = Constants.CLIENT_ROLE_BROADCASTER
+     var userRole: Int = Constants.CLIENT_ROLE_BROADCASTER
         set(value: Int) {
             field = value
             this.agkit.setClientRole(value)
@@ -46,9 +49,9 @@ open class AgoraVideoViewer: FrameLayout {
     internal var screenShareButton: AgoraButton? = null
 
     companion object {}
-    var remoteUserIDs: MutableSet<Int> = mutableSetOf()
-    var userVideoLookup: MutableMap<Int, AgoraSingleVideoView> = mutableMapOf()
-    val userVideosForGrid: Map<Int, AgoraSingleVideoView>
+    internal var remoteUserIDs: MutableSet<Int> = mutableSetOf()
+    internal var userVideoLookup: MutableMap<Int, AgoraSingleVideoView> = mutableMapOf()
+    internal val userVideosForGrid: Map<Int, AgoraSingleVideoView>
         get() {
             return if (this.style == Style.FLOATING) {
                 this.userVideoLookup.filterKeys { it == this.overrideActiveSpeaker ?: this.activeSpeaker ?: this.userID }
@@ -59,6 +62,9 @@ open class AgoraVideoViewer: FrameLayout {
             }
         }
 
+    /**
+     * Default beautification settings
+     */
     open val beautyOptions: BeautyOptions
         get() {
             val beautyOptions = BeautyOptions()
@@ -67,6 +73,9 @@ open class AgoraVideoViewer: FrameLayout {
             return beautyOptions
         }
 
+    /**
+     * Video views to be displayed in the floating collection view.
+     */
     val collectionViewVideos: Map<Int, AgoraSingleVideoView>
     get() {
         return if (this.style == Style.FLOATING) {
@@ -76,13 +85,22 @@ open class AgoraVideoViewer: FrameLayout {
         }
     }
 
+    /**
+     * ID of the local user.
+     * Setting to zero will tell Agora to assign one for you once connected.
+     */
     public var userID: Int = 0
         internal set
+
+    /**
+     * The most recently active speaker in the session.
+     * This will only ever be set to remote users, not the local user.
+     */
     public var activeSpeaker: Int? = null
         internal set
     private val newHandler = AgoraVideoViewerHandler(this)
 
-    fun addUserVideo(userId: Int): AgoraSingleVideoView {
+    internal fun addUserVideo(userId: Int): AgoraSingleVideoView {
         this.userVideoLookup[userId]?.let { remoteView ->
             return remoteView
         }
@@ -98,7 +116,7 @@ open class AgoraVideoViewer: FrameLayout {
         return remoteVideoView
     }
 
-    fun removeUserVideo(uid: Int, reogranise: Boolean = true) {
+    internal fun removeUserVideo(uid: Int, reogranise: Boolean = true) {
         val userSingleView = this.userVideoLookup[uid] ?: return
 //        val canView = userSingleView.hostingView ?: return
         this.agkit.muteRemoteVideoStream(uid, true)
@@ -117,6 +135,9 @@ open class AgoraVideoViewer: FrameLayout {
         this.activeSpeaker = this.userVideoLookup.keys.shuffled().firstOrNull { it != this.userID }
     }
 
+    /**
+     * Active speaker override.
+     */
     public var overrideActiveSpeaker: Int? = null
         set(newValue) {
             val oldValue = this.overrideActiveSpeaker
@@ -140,6 +161,15 @@ open class AgoraVideoViewer: FrameLayout {
 
 
     internal var connectionData: AgoraConnectionData
+
+    /**
+     * Creates an AgoraVideoViewer object, to be placed anywhere in your application.
+     * @param context: Application context
+     * @param connectionData: Storing struct for holding data about the connection to Agora service.
+     * @param style: Style and organisation to be applied to all the videos in this AgoraVideoViewer.
+     * @param agoraSettings: Settings for this viewer. This can include style customisations and information of where to get new tokens from.
+     * @param delegate: Delegate for the AgoraVideoViewer, used for some important callback methods.
+     */
     public constructor(
         context: Context, connectionData: AgoraConnectionData,
         style: Style = Style.FLOATING,
@@ -167,17 +197,24 @@ open class AgoraVideoViewer: FrameLayout {
         agkit.setVideoEncoderConfiguration(VideoEncoderConfiguration())
     }
 //    constructor(context: Context) : super(context)
-    /// Delegate for the AgoraVideoViewer, used for some important callback methods.
+    /**
+     * Delegate for the AgoraVideoViewer, used for some important callback methods.
+     */
     public var delegate: AgoraVideoViewerDelegate? = null
 
     internal var floatingVideoHolder: RecyclerView = RecyclerView(context)
     internal var backgroundVideoHolder: RecyclerView = RecyclerView(context)
-    /// Settings and customisations such as position of on-screen buttons, collection view of all channel members,
-    /// as well as agora video configuration.
+
+    /**
+     * Settings and customisations such as position of on-screen buttons, collection view of all channel members,
+     * as well as agora video configuration.
+     */
     public var agoraSettings: AgoraSettings = AgoraSettings()
         internal set
 
-    /// Style and organisation to be applied to all the videos in this AgoraVideoViewer.
+    /**
+     * Style and organisation to be applied to all the videos in this AgoraVideoViewer.
+     */
     public var style: Style
         set(value: Style) {
             val oldValue = field
@@ -188,13 +225,17 @@ open class AgoraVideoViewer: FrameLayout {
             }
         }
 
+    /**
+     * RtcEngine being used by this AgoraVideoViewer
+     */
     public lateinit var agkit: RtcEngine
+        internal set
 
     /// VideoControl
 
-    fun setupAgoraVideo() {
+    internal fun setupAgoraVideo() {
         if (this.agkit.enableVideo() < 0) {
-//            AgoraVideoViewer.agoraPrint(.error, message: "Could not enable video")
+            Logger.getLogger("AgoraUIKit").log(Level.WARNING, "Could not enable video")
             return
         }
         if (this.controlContainer == null) {
@@ -203,6 +244,10 @@ open class AgoraVideoViewer: FrameLayout {
         this.agkit.setVideoEncoderConfiguration(this.agoraSettings.videoConfiguration)
     }
 
+    /**
+     * Leave channel stops all preview elements
+     * @return Same return as RtcEngine.leaveChannel, 0 means no problem, less than 0 means there was an issue leaving
+     */
     fun leaveChannel(): Int {
         val channelName = this.connectionData.channel
         if (channelName == null) {
@@ -228,6 +273,13 @@ open class AgoraVideoViewer: FrameLayout {
         return leaveChannelRtn
     }
 
+    /**
+     * Join the Agora channel with optional token request
+     * @param channel: Channel name to join
+     * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as. Default: `.broadcaster`
+     * @param fetchToken: Whether the token should be fetched before joining the channel. A token will only be fetched if a token URL is provided in AgoraSettings.
+     * @param uid: UID to be set when user joins the channel, default will be 0.
+     */
     fun join(channel: String, role: Int, fetchToken: Boolean, uid: Int? = null) {
         if (fetchToken) {
             this.agoraSettings.tokenURL?.let { tokenURL ->
@@ -249,6 +301,13 @@ open class AgoraVideoViewer: FrameLayout {
         this.join(channel, this.connectionData.appToken, role, uid)
     }
 
+    /**
+     * Join the Agora channel with optional token request
+     * @param channel: Channel name to join
+     * @param token: token to be applied to the channel join. Leave null to use an existing token or no token.
+     * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as.
+     * @param uid: UID to be set when user joins the channel, default will be 0.
+     */
     fun join(channel: String, token: String? = null, role: Int? = null, uid: Int? = null) {
         if (role == Constants.CLIENT_ROLE_BROADCASTER) {
             AgoraVideoViewer.requestPermissions(this.context)
