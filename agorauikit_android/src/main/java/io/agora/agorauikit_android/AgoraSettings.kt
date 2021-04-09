@@ -36,10 +36,12 @@ class AgoraSettings {
     public var videoRenderMode = Constants.RENDER_MODE_FIT
     /**
      * Where the buttons such as camera enable/disable should be positioned within the view.
+     * TODO: This is not yet implemented
      */
     public var buttonPosition = Position.BOTTOM
     /**
      * Where the floating collection view of video members be positioned within the view.
+     * TODO: This is not yet implemented
      */
     public var floatPosition = Position.TOP
     /**
