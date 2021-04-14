@@ -62,6 +62,7 @@ internal fun AgoraVideoViewer.getMicButton(): AgoraButton? {
     agMicButton.clickAction = {
         it.isSelected = !it.isSelected
         it.background.setTint(if (it.isSelected) Color.RED else Color.GRAY)
+        this.userVideoLookup[this.userID]?.audioMuted = it.isSelected
         this.agkit.muteLocalAudioStream(it.isSelected)
     }
     this.micButton = agMicButton
