@@ -45,7 +45,7 @@ open class AgoraVideoViewer: FrameLayout {
     internal var camButton: AgoraButton? = null
     internal var micButton: AgoraButton? = null
     internal var flipButton: AgoraButton? = null
-    internal var beautyButton: AgoraButton? = null
+    internal var endCallButton: AgoraButton? = null
     internal var screenShareButton: AgoraButton? = null
 
     companion object {}
@@ -280,7 +280,7 @@ open class AgoraVideoViewer: FrameLayout {
      * @param fetchToken: Whether the token should be fetched before joining the channel. A token will only be fetched if a token URL is provided in AgoraSettings.
      * @param uid: UID to be set when user joins the channel, default will be 0.
      */
-    fun join(channel: String, role: Int, fetchToken: Boolean, uid: Int? = null) {
+    fun join(channel: String, role: Int = Constants.CLIENT_ROLE_BROADCASTER, fetchToken: Boolean = false, uid: Int? = null) {
         if (fetchToken) {
             this.agoraSettings.tokenURL?.let { tokenURL ->
                 AgoraVideoViewer.Companion.fetchToken(

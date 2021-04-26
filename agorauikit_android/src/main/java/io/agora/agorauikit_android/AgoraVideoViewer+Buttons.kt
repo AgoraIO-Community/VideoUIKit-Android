@@ -30,10 +30,7 @@ internal fun AgoraVideoViewer.getControlContainer(): ButtonContainer {
 }
 
 @ExperimentalUnsignedTypes
-internal fun AgoraVideoViewer.getCameraButton(): AgoraButton? {
-    if (!this.agoraSettings.enabledButtons.contains(AgoraSettings.BuiltinButton.CAMERA)) {
-        return null
-    }
+internal fun AgoraVideoViewer.getCameraButton(): AgoraButton {
     this.camButton?.let {
         return it
     }
@@ -51,10 +48,7 @@ internal fun AgoraVideoViewer.getCameraButton(): AgoraButton? {
 }
 
 @ExperimentalUnsignedTypes
-internal fun AgoraVideoViewer.getMicButton(): AgoraButton? {
-    if (!this.agoraSettings.enabledButtons.contains(AgoraSettings.BuiltinButton.MIC)) {
-        return null
-    }
+internal fun AgoraVideoViewer.getMicButton(): AgoraButton {
     this.micButton?.let {
         return it
     }
@@ -70,10 +64,7 @@ internal fun AgoraVideoViewer.getMicButton(): AgoraButton? {
     return agMicButton
 }
 @ExperimentalUnsignedTypes
-internal fun AgoraVideoViewer.getFlipButton(): AgoraButton? {
-    if (!this.agoraSettings.enabledButtons.contains(AgoraSettings.BuiltinButton.FLIP)) {
-        return null
-    }
+internal fun AgoraVideoViewer.getFlipButton(): AgoraButton {
     this.flipButton?.let {
         return it
     }
@@ -85,18 +76,43 @@ internal fun AgoraVideoViewer.getFlipButton(): AgoraButton? {
     agFlipButton.setImageResource(R.drawable.btn_switch_camera)
     return agFlipButton
 }
+@ExperimentalUnsignedTypes
+internal fun AgoraVideoViewer.getEndCallButton(): AgoraButton {
+    this.endCallButton?.let {
+        return it
+    }
+    val hangupButton = AgoraButton(this)
+    hangupButton.clickAction = {
+        this.leaveChannel()
+    }
+    hangupButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+    hangupButton.background.setTint(Color.RED)
+    this.endCallButton = hangupButton
+    return hangupButton
+}
 
 @ExperimentalUnsignedTypes
 internal fun AgoraVideoViewer.getScreenShareButton(): AgoraButton? {
     return null
 }
 
+internal fun AgoraVideoViewer.builtinButtons(): MutableList<AgoraButton> {
+    val rtnButtons = mutableListOf<AgoraButton>()
+    for (button in this.agoraSettings.enabledButtons) {
+        rtnButtons += when (button) {
+            AgoraSettings.BuiltinButton.MIC -> this.getMicButton()
+            AgoraSettings.BuiltinButton.CAMERA -> this.getCameraButton()
+            AgoraSettings.BuiltinButton.FLIP -> this.getFlipButton()
+            AgoraSettings.BuiltinButton.END -> this.getEndCallButton()
+        }
+    }
+    return rtnButtons
+}
+
 @ExperimentalUnsignedTypes
 internal fun AgoraVideoViewer.addVideoButtons() {
     var container = this.getControlContainer()
-    val buttons = listOfNotNull(
-        this.getMicButton(), this.getCameraButton(), this.getFlipButton()
-    ) + this.agoraSettings.extraButtons
+    val buttons = this.builtinButtons() + this.agoraSettings.extraButtons
     container.visibility = if (buttons.isEmpty()) View.INVISIBLE else View.VISIBLE
 
     val buttonSize = 100
