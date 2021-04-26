@@ -81,7 +81,7 @@ internal fun AgoraVideoViewer.getEndCallButton(): AgoraButton {
     this.endCallButton?.let {
         return it
     }
-    val hangupButton = AgoraButton(this)
+    val hangupButton = AgoraButton(this.context)
     hangupButton.clickAction = {
         this.leaveChannel()
     }
