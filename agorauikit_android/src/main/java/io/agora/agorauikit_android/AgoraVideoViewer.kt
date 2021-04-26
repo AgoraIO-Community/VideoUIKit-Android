@@ -276,11 +276,11 @@ open class AgoraVideoViewer: FrameLayout {
     /**
      * Join the Agora channel with optional token request
      * @param channel: Channel name to join
-     * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as. Default: `.broadcaster`
      * @param fetchToken: Whether the token should be fetched before joining the channel. A token will only be fetched if a token URL is provided in AgoraSettings.
+     * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as. Default: `.broadcaster`
      * @param uid: UID to be set when user joins the channel, default will be 0.
      */
-    fun join(channel: String, role: Int = Constants.CLIENT_ROLE_BROADCASTER, fetchToken: Boolean = false, uid: Int? = null) {
+    fun join(channel: String, fetchToken: Boolean, role: Int? = null, uid: Int? = null) {
         if (fetchToken) {
             this.agoraSettings.tokenURL?.let { tokenURL ->
                 AgoraVideoViewer.Companion.fetchToken(
