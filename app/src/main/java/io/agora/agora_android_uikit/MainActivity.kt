@@ -46,14 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
         agBeautyButton.setImageResource(android.R.drawable.star_off)
 
-        val hangupButton = AgoraButton(this)
-        hangupButton.clickAction = {
-            this.agView?.leaveChannel()
-        }
-        hangupButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
-        hangupButton.background.setTint(Color.RED)
-
-        agoraSettings.extraButtons = mutableListOf(agBeautyButton, hangupButton)
+        agoraSettings.extraButtons = mutableListOf(agBeautyButton)
 
         return agoraSettings
     }
