@@ -21,6 +21,7 @@ internal fun AgoraVideoViewer.getControlContainer(): ButtonContainer {
     }
     val container = ButtonContainer(context)
     container.visibility = View.VISIBLE
+    container.gravity = Gravity.CENTER
     val containerLayout = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 200, Gravity.BOTTOM)
 
     this.addView(container, containerLayout)
