@@ -104,7 +104,7 @@ open class AgoraVideoViewer: FrameLayout {
         this.userVideoLookup[userId]?.let { remoteView ->
             return remoteView
         }
-        val remoteVideoView = AgoraSingleVideoView(this.context, userId, this.agoraSettings.colors.micFlag, this.agkit)
+        val remoteVideoView = AgoraSingleVideoView(this.context, userId, this.agoraSettings.colors.micFlag)
         remoteVideoView.canvas.renderMode = this.agoraSettings.videoRenderMode
         this.agkit.setupRemoteVideo(remoteVideoView.canvas)
 //        this.agkit.setRemoteVideoRenderer(remoteVideoView.uid, remoteVideoView.textureView)
@@ -151,7 +151,7 @@ open class AgoraVideoViewer: FrameLayout {
         if (this.userID == 0 || this.userVideoLookup.containsKey(this.userID)) {
             return this.userVideoLookup[this.userID]
         }
-        val vidView = AgoraSingleVideoView(this.context, 0, this.agoraSettings.colors.micFlag, this.agkit)
+        val vidView = AgoraSingleVideoView(this.context, 0, this.agoraSettings.colors.micFlag)
         vidView.canvas.renderMode = this.agoraSettings.videoRenderMode
          this.agkit.setupLocalVideo(vidView.canvas)
         this.userVideoLookup[this.userID] = vidView

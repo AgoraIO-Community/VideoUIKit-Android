@@ -19,7 +19,7 @@ import io.agora.rtc.video.VideoCanvas
  * View for the individual Agora Camera Feed.
  */
 @ExperimentalUnsignedTypes
-class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int, engine: RtcEngine) : FrameLayout(context) {
+class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLayout(context) {
 
     /**
      * Canvas used to render the Agora RTC Video.
@@ -28,7 +28,6 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int, engine: Rt
         internal set
     internal var uid: Int
 //    internal var textureView: AgoraTextureView = AgoraTextureView(context)
-    internal var engine: RtcEngine
 
     /**
      * Is the microphone muted for this user.
@@ -72,7 +71,6 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int, engine: Rt
      */
     init {
         this.uid = uid
-        this.engine = engine
 
         val canvasView = RtcEngine.CreateRendererView(context);
         canvasView.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
