@@ -16,7 +16,7 @@ import java.util.logging.Logger
 
 
 interface AgoraVideoViewerDelegate {
-    
+
 }
 
 @ExperimentalUnsignedTypes
@@ -35,7 +35,7 @@ open class AgoraVideoViewer: FrameLayout {
     /**
      * Gets and sets the role for the user. Either `.audience` or `.broadcaster`.
      */
-     var userRole: Int = Constants.CLIENT_ROLE_BROADCASTER
+    var userRole: Int = Constants.CLIENT_ROLE_BROADCASTER
         set(value: Int) {
             field = value
             this.agkit.setClientRole(value)
@@ -77,13 +77,13 @@ open class AgoraVideoViewer: FrameLayout {
      * Video views to be displayed in the floating collection view.
      */
     val collectionViewVideos: Map<Int, AgoraSingleVideoView>
-    get() {
-        return if (this.style == Style.FLOATING) {
-            return this.userVideoLookup
-        } else {
-            emptyMap()
+        get() {
+            return if (this.style == Style.FLOATING) {
+                return this.userVideoLookup
+            } else {
+                emptyMap()
+            }
         }
-    }
 
     /**
      * ID of the local user.
@@ -153,7 +153,7 @@ open class AgoraVideoViewer: FrameLayout {
         }
         val vidView = AgoraSingleVideoView(this.context, 0, this.agoraSettings.colors.micFlag)
         vidView.canvas.renderMode = this.agoraSettings.videoRenderMode
-         this.agkit.setupLocalVideo(vidView.canvas)
+        this.agkit.setupLocalVideo(vidView.canvas)
         this.userVideoLookup[this.userID] = vidView
         this.reorganiseVideos()
         return vidView

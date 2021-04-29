@@ -1,6 +1,7 @@
 package io.agora.agorauikit_android
 
 import android.graphics.Color
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -147,14 +148,21 @@ class FloatingViewAdapter(public var uidList: List<Int>, private val agoraVC: Ag
     val mRtcEngine: RtcEngine
         get() = this.agoraVC.agkit
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteViewHolder {
-        val remoteFrame = FrameLayout(parent.context)
+        val linearLayout = LinearLayout(parent.context)
+        val pinIcon = ImageView(parent.context)
+        pinIcon.setImageResource(R.drawable.baseline_push_pin_20)
+        pinIcon.setLayoutParams(ViewGroup.LayoutParams(100,100))
+        linearLayout.addView(pinIcon)
+        linearLayout.gravity = Gravity.CENTER
 
+        val remoteFrame = FrameLayout(parent.context)
         // The width of the FrameLayout is set to half the parent's width.
         // This is to make sure that the Grid has 2 columns
         val recycleParams = RecyclerView.LayoutParams(190, 190)
         recycleParams.setMargins(5, 5, 5, 5)
         remoteFrame.layoutParams = recycleParams
         remoteFrame.setBackgroundColor(Color.BLUE)
+        remoteFrame.addView(linearLayout)
         return RemoteViewHolder(remoteFrame)
     }
 
