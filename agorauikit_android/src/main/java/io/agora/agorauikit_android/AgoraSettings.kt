@@ -4,6 +4,9 @@ import android.graphics.Color
 import io.agora.rtc.Constants
 import io.agora.rtc.video.VideoEncoderConfiguration
 
+/**
+ * Settings used for the display and behaviour of AgoraVideoViewer
+ */
 class AgoraSettings {
     /** URL to fetch tokens from. If supplied, this package will automatically fetch tokens
      * when the Agora Engine indicates it will be needed.
@@ -90,6 +93,9 @@ class AgoraSettings {
     }
 }
 
+/**
+ * Colors for various views inside AgoraVideoViewer
+ */
 class AgoraViewerColors {
     /**
      * Color of the view that signals a user has their mic muted. Default `Color.BLUE`
