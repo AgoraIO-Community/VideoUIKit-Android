@@ -198,6 +198,7 @@ open class AgoraVideoViewer: FrameLayout {
      * @param agoraSettings: Settings for this viewer. This can include style customisations and information of where to get new tokens from.
      * @param delegate: Delegate for the AgoraVideoViewer, used for some important callback methods.
      */
+    @Throws(Exception::class)
     public constructor(
         context: Context, connectionData: AgoraConnectionData,
         style: Style = Style.FLOATING,
@@ -216,7 +217,12 @@ open class AgoraVideoViewer: FrameLayout {
         this.floatingVideoHolder.background.alpha = this.agoraSettings.colors.floatingBackgroundAlpha
     }
 
+    @Throws(Exception::class)
     private fun initAgoraEngine() {
+        if (connectionData.appId == "my-app-id") {
+            Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "Change the App ID!")
+            throw IllegalArgumentException("Change the App ID!")
+        }
         this.agkit = RtcEngine.create(context, connectionData.appId, this.newHandler)
         agkit.enableAudioVolumeIndication(1000, 3, true)
         agkit.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
