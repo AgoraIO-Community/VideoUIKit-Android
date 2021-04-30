@@ -30,6 +30,9 @@ fun AgoraVideoViewer.reorganiseVideos() {
     this.organiseRecycleGrid()
 }
 
+/**
+ * Update the contents of the floating view
+ */
 @ExperimentalUnsignedTypes
 fun AgoraVideoViewer.organiseRecycleFloating() {
     val gridList = this.collectionViewVideos.keys.toList()
@@ -49,6 +52,9 @@ fun AgoraVideoViewer.organiseRecycleFloating() {
     }
 }
 
+/**
+ * Update the contents of the main grid view
+ */
 @ExperimentalUnsignedTypes
 fun AgoraVideoViewer.organiseRecycleGrid() {
     val gridList = this.userVideosForGrid.keys.toList()
@@ -76,7 +82,7 @@ fun AgoraVideoViewer.organiseRecycleGrid() {
 }
 
 @ExperimentalUnsignedTypes
-class GridViewAdapter(public var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<GridViewAdapter.RemoteViewHolder>() {
+internal class GridViewAdapter(public var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<GridViewAdapter.RemoteViewHolder>() {
     class RemoteViewHolder(val frame: FrameLayout): RecyclerView.ViewHolder(frame)
     val maxSqrt: Float
         get() = max(1f, ceil(sqrt(uidList.count().toFloat())))
@@ -141,7 +147,7 @@ class GridViewAdapter(public var uidList: List<Int>, private val agoraVC: AgoraV
 }
 
 @ExperimentalUnsignedTypes
-class FloatingViewAdapter(public var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<FloatingViewAdapter.RemoteViewHolder>() {
+internal class FloatingViewAdapter(public var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<FloatingViewAdapter.RemoteViewHolder>() {
     class RemoteViewHolder(val frame: FrameLayout): RecyclerView.ViewHolder(frame)
     val maxSqrt: Float
         get() = max(1f, ceil(sqrt(uidList.count().toFloat())))

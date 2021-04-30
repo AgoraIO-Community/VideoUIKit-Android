@@ -119,15 +119,24 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
                 this.hostView.addLocalVideo()
             })
         }
+        channel?.let {
+            this.hostView.delegate?.joinedChannel(it)
+        }
     }
 
     override fun onTokenPrivilegeWillExpire(token: String?) {
         super.onTokenPrivilegeWillExpire(token)
+        if (this.hostView.delegate?.tokenWillExpire(token) == true) {
+            return
+        }
         this.hostView.fetchRenewToken()
     }
 
     override fun onRequestToken() {
         super.onRequestToken()
+        if (this.hostView.delegate?.tokenDidExpire() == true) {
+            return
+        }
         this.hostView.fetchRenewToken()
     }
 }

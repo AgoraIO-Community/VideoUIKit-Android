@@ -9,6 +9,15 @@ import androidx.annotation.DimenRes
 import androidx.core.view.setPadding
 import io.agora.agorauikit_android.R
 
+/**
+ * A button to fit the style of builtin Agora UIKit Buttons
+ *
+ * @param context the context for the application.
+ * @param attrs the attribute set for the button.
+ * @param defStyleAttr An attribute in the current theme that contains a reference to a style resource that supplies defaults values for the StyledAttributes. Can be 0 to not look for defaults.
+ * @property clickAction The action to be conducted when the button is tapped.
+ * @constructor Creates a new button.
+ */
 public class AgoraButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null, defStyleAttr: Int = 0

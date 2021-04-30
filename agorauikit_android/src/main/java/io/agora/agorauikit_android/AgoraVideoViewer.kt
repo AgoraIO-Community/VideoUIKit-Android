@@ -14,9 +14,37 @@ import io.agora.rtc.video.VideoEncoderConfiguration
 import java.util.logging.Level
 import java.util.logging.Logger
 
-
+/**
+ * An interface for getting some common delegate callbacks without needing to subclass.
+ */
 interface AgoraVideoViewerDelegate {
+    /**
+     * Local user has joined a channel
+     * @param channel Channel that the local user has joined.
+     */
+    fun joinedChannel(channel: String) {}
+    /**
+     * Local user has left a channel
+     * @param channel Channel that the local user has left.
+     */
+    fun leftChannel(channel: String) {}
 
+    /**
+     * The token used to connect to the current active channel will expire in 30 seconds.
+     * @param token Token that is currently used to connect to the channel.
+     * @return Return true if the token fetch is being handled by this method.
+     */
+    fun tokenWillExpire(token: String?): Boolean {
+        return false
+    }
+
+    /**
+     * The token used to connect to the current active channel has expired.
+     * @return Return true if the token fetch is being handled by this method.
+     */
+    fun tokenDidExpire(): Boolean {
+        return false
+    }
 }
 
 @ExperimentalUnsignedTypes
@@ -269,6 +297,7 @@ open class AgoraVideoViewer: FrameLayout {
         val leaveChannelRtn = this.agkit.leaveChannel()
         if (leaveChannelRtn >= 0) {
             this.connectionData.channel = null
+            this.delegate?.leftChannel(channelName)
         }
         return leaveChannelRtn
     }

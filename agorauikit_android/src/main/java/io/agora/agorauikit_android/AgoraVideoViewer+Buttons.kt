@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import java.util.logging.Level
 import java.util.logging.Logger
 
-class ButtonContainer(context: Context): LinearLayout(context) {
+internal class ButtonContainer(context: Context): LinearLayout(context) {
 }
 
 @ExperimentalUnsignedTypes
