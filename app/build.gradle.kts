@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+//    id("com.github.hierynomus.license-report")
+    id("com.jaredsburrows.license")
 }
 
 android {
@@ -45,6 +47,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+//    implementation("com.github.hierynomus:license-gradle-plugin:master-SNAPSHOT")
 
 //    implementation 'io.agora.uikit:agorauikit:2.0.1'
 }
