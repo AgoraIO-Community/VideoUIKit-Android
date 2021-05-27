@@ -1,8 +1,6 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-//    id("com.github.hierynomus.license-report")
-    id("com.jaredsburrows.license")
 }
 
 android {
