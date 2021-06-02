@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
+    id("maven-publish")
     id("org.jetbrains.dokka") version "1.4.32"
 }
 
@@ -32,6 +33,7 @@ android {
         jvmTarget = "1.8"
     }
 }
+
 
 dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")
