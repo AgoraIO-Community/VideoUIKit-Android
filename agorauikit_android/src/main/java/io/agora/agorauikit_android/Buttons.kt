@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.core.view.setPadding
-import io.agora.agorauikit_android.R
 
 /**
  * A button to fit the style of builtin Agora UIKit Buttons

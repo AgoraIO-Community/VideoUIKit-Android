@@ -34,11 +34,12 @@ android {
 }
 
 dependencies {
+    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    implementation("androidx.recyclerview:recyclerview:1.2.0")
     val kotlinVersion = "1.5.0"
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("androidx.core:core-ktx:1.5.0")
     implementation("androidx.appcompat:appcompat:1.3.0")
-    implementation("com.google.android.material:material:1.3.0")
     api("com.github.agorabuilder:native-full-sdk:3.4.2")
     implementation("com.squareup.okhttp3:okhttp:3.14.6")
     testImplementation("junit:junit:4.13.2")

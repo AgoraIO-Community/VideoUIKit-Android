@@ -7,12 +7,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.internal.FlowLayout
-import io.agora.agorauikit_android.R
 import io.agora.rtc.RtcEngine
-import io.agora.rtc.mediaio.AgoraTextureView
 import io.agora.rtc.video.VideoCanvas
 
 /**

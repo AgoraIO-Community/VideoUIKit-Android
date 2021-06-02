@@ -2,8 +2,6 @@ package io.agora.agorauikit_android
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
-import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
