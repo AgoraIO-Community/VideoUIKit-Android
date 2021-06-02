@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import java.util.logging.Level
-import java.util.logging.Logger
 
 internal class ButtonContainer(context: Context): LinearLayout(context) {
 }

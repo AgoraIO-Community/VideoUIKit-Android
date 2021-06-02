@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.agora.rtc.Constants
 import io.agora.rtc.RtcEngine
-import java.util.logging.Level
-import java.util.logging.Logger
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.sqrt
@@ -82,7 +80,7 @@ fun AgoraVideoViewer.organiseRecycleGrid() {
 }
 
 @ExperimentalUnsignedTypes
-internal class GridViewAdapter(public var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<GridViewAdapter.RemoteViewHolder>() {
+internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<GridViewAdapter.RemoteViewHolder>() {
     class RemoteViewHolder(val frame: FrameLayout): RecyclerView.ViewHolder(frame)
     val maxSqrt: Float
         get() = max(1f, ceil(sqrt(uidList.count().toFloat())))
@@ -147,7 +145,7 @@ internal class GridViewAdapter(public var uidList: List<Int>, private val agoraV
 }
 
 @ExperimentalUnsignedTypes
-internal class FloatingViewAdapter(public var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<FloatingViewAdapter.RemoteViewHolder>() {
+internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<FloatingViewAdapter.RemoteViewHolder>() {
     class RemoteViewHolder(val frame: FrameLayout): RecyclerView.ViewHolder(frame)
     val maxSqrt: Float
         get() = max(1f, ceil(sqrt(uidList.count().toFloat())))
@@ -157,7 +155,7 @@ internal class FloatingViewAdapter(public var uidList: List<Int>, private val ag
         val linearLayout = LinearLayout(parent.context)
         val pinIcon = ImageView(parent.context)
         pinIcon.setImageResource(R.drawable.baseline_push_pin_20)
-        pinIcon.setLayoutParams(ViewGroup.LayoutParams(100,100))
+        pinIcon.layoutParams = ViewGroup.LayoutParams(100,100)
         linearLayout.addView(pinIcon)
         linearLayout.gravity = Gravity.CENTER
 
