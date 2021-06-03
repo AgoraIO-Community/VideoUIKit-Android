@@ -1,5 +1,6 @@
 plugins {
-    id("com.github.dcendents.android-maven")
+    id("maven-publish")
+    id("maven")
     id("com.android.library")
     id("kotlin-android")
     id("org.jetbrains.dokka") version "1.4.32"
@@ -32,6 +33,30 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+}
+
+// Because the components are created only during the afterEvaluate phase, you must
+// configure your publications using the afterEvaluate() lifecycle method.
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                // Applies the component for the release build variant.
+                from(components["release"])
+                groupId = "com.github.agoraio-community"
+                artifactId = "final"
+                version = "2.0.5.1"
+            }
+            // Creates a Maven publication called “debug”.
+            create<MavenPublication>("debug") {
+                // Applies the component for the debug build variant.
+                from(components["debug"])
+                groupId = "com.github.agoraio-community"
+                artifactId = "final-debug"
+                version = "2.0.5.1"
+            }
+        }
     }
 }
 
