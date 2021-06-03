@@ -1,9 +1,10 @@
 plugins {
+    id("com.github.dcendents.android-maven")
     id("com.android.library")
     id("kotlin-android")
-    id("maven-publish")
     id("org.jetbrains.dokka") version "1.4.32"
 }
+//group = "com.github.agoraio-community"
 
 android {
     compileSdkVersion(30)
@@ -33,7 +34,6 @@ android {
         jvmTarget = "1.8"
     }
 }
-
 
 dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")
