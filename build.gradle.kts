@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.1")
+        classpath("com.android.tools.build:gradle:4.2.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
 //        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.15.0")
 //        classpath("com.novoda:bintray-release:0.9")
