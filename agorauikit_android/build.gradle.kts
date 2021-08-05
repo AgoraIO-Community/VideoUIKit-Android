@@ -67,7 +67,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
-    api("io.agora.rtc:full-sdk:3.5.0")
+    api("io.agora.rtc:full-sdk:3.5.0.1")
     implementation("com.squareup.okhttp3:okhttp:3.14.6")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
