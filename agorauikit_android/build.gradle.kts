@@ -46,7 +46,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.agoraio-community"
                 artifactId = "final"
-                version = "2.0.5.1"
+                version = "2.0.6"
             }
             // Creates a Maven publication called “debug”.
             create<MavenPublication>("debug") {
@@ -54,7 +54,7 @@ afterEvaluate {
                 from(components["debug"])
                 groupId = "com.github.agoraio-community"
                 artifactId = "final-debug"
-                version = "2.0.5.1"
+                version = "2.0.6"
             }
         }
     }
@@ -63,7 +63,7 @@ afterEvaluate {
 dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
-    val kotlinVersion = "1.5.0"
+    val kotlinVersion = "1.5.21"
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
