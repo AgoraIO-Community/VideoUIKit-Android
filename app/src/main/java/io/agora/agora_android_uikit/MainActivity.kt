@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
+
 import io.agora.agorauikit_android.*
-import io.agora.rtc.Constants
-import io.agora.rtc.video.BeautyOptions
+import io.agora.rtc2.Constants
 
 // Ask for Android device permissions at runtime.
 private const val PERMISSION_REQ_ID = 22

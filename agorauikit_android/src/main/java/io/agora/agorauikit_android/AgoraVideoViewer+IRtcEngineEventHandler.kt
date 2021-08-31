@@ -1,7 +1,7 @@
 package io.agora.agorauikit_android
 import android.app.Activity
-import io.agora.rtc.Constants
-import io.agora.rtc.IRtcEngineEventHandler
+import io.agora.rtc2.Constants
+import io.agora.rtc2.IRtcEngineEventHandler
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -25,16 +25,21 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         this.hostView.remoteUserIDs.add(uid)
     }
 
-    override fun onRemoteAudioStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
+    override fun onRemoteAudioStateChanged(
+        uid: Int,
+        state: REMOTE_AUDIO_STATE?,
+        reason: REMOTE_AUDIO_STATE_REASON?,
+        elapsed: Int
+    ) {
         super.onRemoteAudioStateChanged(uid, state, reason, elapsed)
-        Logger.getLogger("AgoraUIKit").log(Level.WARNING, "setting muted state: " + state)
+        Logger.getLogger("AgoraUIKit").log(Level.WARNING, "setting muted state: " + state.toString())
         (this.hostView.context as Activity).runOnUiThread {
-            if (state == Constants.REMOTE_AUDIO_STATE_STOPPED || state == Constants.REMOTE_AUDIO_STATE_STARTING || state == Constants.REMOTE_VIDEO_STATE_DECODING) {
-                if (state == Constants.REMOTE_AUDIO_STATE_STARTING && !this.hostView.userVideoLookup.containsKey(uid)) {
+            if (state == REMOTE_AUDIO_STATE.REMOTE_AUDIO_STATE_STOPPED || state == REMOTE_AUDIO_STATE.REMOTE_AUDIO_STATE_STARTING) {
+                if (state == REMOTE_AUDIO_STATE.REMOTE_AUDIO_STATE_STARTING && !this.hostView.userVideoLookup.containsKey(uid)) {
                     this.hostView.addUserVideo(uid)
                 }
                 if (this.hostView.userVideoLookup.containsKey(uid)) {
-                    this.hostView.userVideoLookup[uid]?.audioMuted = state == Constants.REMOTE_AUDIO_STATE_STOPPED
+                    this.hostView.userVideoLookup[uid]?.audioMuted = state == REMOTE_AUDIO_STATE.REMOTE_AUDIO_STATE_STOPPED
                 }
             }
         }
@@ -62,7 +67,7 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         super.onRemoteVideoStateChanged(uid, state, reason, elapsed)
         (this.hostView.context as Activity).runOnUiThread {
             when (state) {
-                Constants.REMOTE_VIDEO_STATE_DECODING -> {
+                Constants.REMOTE_VIDEO_STATE_PLAYING -> {
                     if (!this.hostView.userVideoLookup.containsKey(uid)) {
                         this.hostView.addUserVideo(uid)
                     }
@@ -91,14 +96,17 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         }
     }
 
-    override fun onLocalAudioStateChanged(state: Int, error: Int) {
+    override fun onLocalAudioStateChanged(
+        state: LOCAL_AUDIO_STREAM_STATE?,
+        error: LOCAL_AUDIO_STREAM_ERROR?
+    ) {
         super.onLocalAudioStateChanged(state, error)
         (this.hostView.context as Activity).runOnUiThread {
             when (state) {
-                Constants.LOCAL_AUDIO_STREAM_STATE_CAPTURING, Constants.LOCAL_AUDIO_STREAM_STATE_STOPPED -> {
+                LOCAL_AUDIO_STREAM_STATE.LOCAL_AUDIO_STREAM_STATE_RECORDING, LOCAL_AUDIO_STREAM_STATE.LOCAL_AUDIO_STREAM_STATE_STOPPED -> {
                     this.hostView.userVideoLookup[
                             this.hostView.userID
-                    ]?.audioMuted = state == Constants.LOCAL_AUDIO_STREAM_STATE_STOPPED
+                    ]?.audioMuted = state == LOCAL_AUDIO_STREAM_STATE.LOCAL_AUDIO_STREAM_STATE_STOPPED
                 }
             }
         }

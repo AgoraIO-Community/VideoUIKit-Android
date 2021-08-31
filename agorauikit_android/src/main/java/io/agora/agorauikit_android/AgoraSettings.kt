@@ -1,8 +1,8 @@
 package io.agora.agorauikit_android
 
 import android.graphics.Color
-import io.agora.rtc.Constants
-import io.agora.rtc.video.VideoEncoderConfiguration
+import io.agora.rtc2.Constants
+import io.agora.rtc2.video.VideoEncoderConfiguration
 
 /**
  * Settings used for the display and behaviour of AgoraVideoViewer

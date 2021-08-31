@@ -5,12 +5,17 @@ import android.content.Context
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import io.agora.rtc.Constants
-import io.agora.rtc.RtcEngine
-import io.agora.rtc.video.BeautyOptions
-import io.agora.rtc.video.VideoEncoderConfiguration
+import io.agora.rtc2.Constants
+import io.agora.rtc2.RtcEngine
+import io.agora.rtc2.RtcEngineConfig
+import io.agora.rtc2.video.BeautyOptions
+import io.agora.rtc2.video.VideoEncoderConfiguration
 import java.util.logging.Level
 import java.util.logging.Logger
+import io.agora.rtc2.IRtcEngineEventHandler
+
+
+
 
 /**
  * An interface for getting some common delegate callbacks without needing to subclass.
@@ -180,6 +185,7 @@ open class AgoraVideoViewer: FrameLayout {
         val vidView = AgoraSingleVideoView(this.context, 0, this.agoraSettings.colors.micFlag)
         vidView.canvas.renderMode = this.agoraSettings.videoRenderMode
         this.agkit.setupLocalVideo(vidView.canvas)
+        this.agkit.startPreview()
         this.userVideoLookup[this.userID] = vidView
         this.reorganiseVideos()
         return vidView
@@ -221,13 +227,23 @@ open class AgoraVideoViewer: FrameLayout {
             Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "Change the App ID!")
             throw IllegalArgumentException("Change the App ID!")
         }
-        this.agkit = RtcEngine.create(context, connectionData.appId, this.newHandler)
-        agkit.enableAudioVolumeIndication(1000, 3, true)
-        agkit.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
+        val rtcEngineConfig = RtcEngineConfig()
+        rtcEngineConfig.mAppId = connectionData.appId
+        rtcEngineConfig.mContext = context.applicationContext
+        rtcEngineConfig.mEventHandler = this.newHandler
+
+        try{
+            this.agkit = RtcEngine.create(rtcEngineConfig)
+        }catch (e: Exception){
+            println("Exception while initializing the SDK : ${e.message}")
+        }
+
+        agkit.enableAudioVolumeIndication(1000, 3)
         agkit.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
         agkit.enableVideo()
         agkit.setVideoEncoderConfiguration(VideoEncoderConfiguration())
     }
+
 //    constructor(context: Context) : super(context)
     /**
      * Delegate for the AgoraVideoViewer, used for some important callback methods.

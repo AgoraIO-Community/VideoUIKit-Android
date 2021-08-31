@@ -82,6 +82,7 @@ internal fun AgoraVideoViewer.getEndCallButton(): AgoraButton {
     }
     val hangupButton = AgoraButton(this.context)
     hangupButton.clickAction = {
+        this.agkit.stopPreview()
         this.leaveChannel()
     }
     hangupButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
