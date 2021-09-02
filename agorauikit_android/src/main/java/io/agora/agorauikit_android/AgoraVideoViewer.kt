@@ -66,7 +66,7 @@ open class AgoraVideoViewer: FrameLayout {
     /**
      * Gets and sets the role for the user. Either `.audience` or `.broadcaster`.
      */
-    var userRole: Int = Constants.CLIENT_ROLE_BROADCASTER
+    var userRole: Int = Constants.CLIENT_ROLE_AUDIENCE
         set(value: Int) {
             field = value
             this.agkit.setClientRole(value)
@@ -184,6 +184,7 @@ open class AgoraVideoViewer: FrameLayout {
         }
         val vidView = AgoraSingleVideoView(this.context, 0, this.agoraSettings.colors.micFlag)
         vidView.canvas.renderMode = this.agoraSettings.videoRenderMode
+        this.agkit.enableVideo()
         this.agkit.setupLocalVideo(vidView.canvas)
         this.agkit.startPreview()
         this.userVideoLookup[this.userID] = vidView
@@ -239,9 +240,10 @@ open class AgoraVideoViewer: FrameLayout {
         }
 
         agkit.enableAudioVolumeIndication(1000, 3)
-        agkit.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
+        agkit.setClientRole(this.userRole)
         agkit.enableVideo()
         agkit.setVideoEncoderConfiguration(VideoEncoderConfiguration())
+        agkit.startPreview()
     }
 
 //    constructor(context: Context) : super(context)

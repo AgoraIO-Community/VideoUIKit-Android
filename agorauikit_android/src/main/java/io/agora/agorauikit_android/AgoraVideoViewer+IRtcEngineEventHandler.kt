@@ -100,6 +100,7 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         state: LOCAL_AUDIO_STREAM_STATE?,
         error: LOCAL_AUDIO_STREAM_ERROR?
     ) {
+        this.hostView.agkit.enableAudio()
         super.onLocalAudioStateChanged(state, error)
         (this.hostView.context as Activity).runOnUiThread {
             when (state) {
@@ -124,7 +125,8 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         this.hostView.userID = uid
         if (this.hostView.userRole == Constants.CLIENT_ROLE_BROADCASTER) {
             (this.hostView.context as Activity).runOnUiThread(Runnable {
-                this.hostView.addLocalVideo()
+                this.hostView.addLocalVideo()?.videoMuted = false
+                this.hostView.addLocalVideo()?.audioMuted = false
             })
         }
         channel?.let {

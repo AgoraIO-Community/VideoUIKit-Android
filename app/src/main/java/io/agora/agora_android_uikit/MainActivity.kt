@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
             })
             joinButton.setBackgroundColor(Color.GREEN)
             joinButton.setTextColor(Color.RED)
-
             this.addContentView(joinButton, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 300))
         }
     }
