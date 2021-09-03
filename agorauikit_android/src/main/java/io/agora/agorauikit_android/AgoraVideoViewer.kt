@@ -386,7 +386,7 @@ open class AgoraVideoViewer: FrameLayout {
             this.userID = it
         }
         this.setupAgoraVideo()
-        this.agkit.joinChannel(token, channel, null, this.userID)
+        this.agkit.joinChannel(token ?: this.agoraSettings.tokenURL, channel, null, this.userID)
     }
 
 }
