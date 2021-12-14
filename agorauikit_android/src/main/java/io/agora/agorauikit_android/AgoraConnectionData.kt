@@ -5,7 +5,7 @@ package io.agora.agorauikit_android
  * @param appId: Agora App ID from https://agora.io
  * @param appToken: Token to be used to connect to a channel, can be nil.
  */
-public class AgoraConnectionData(var appId: String, var appToken: String? = null) {
+public class AgoraConnectionData(var appId: String, var appToken: String? = null, var extensionName: List<String>? = null) {
     /// Channel the object is connected to. This cannot be set with the initialiser
     var channel: String? = null
 }

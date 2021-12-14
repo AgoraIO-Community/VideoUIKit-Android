@@ -232,6 +232,11 @@ open class AgoraVideoViewer: FrameLayout {
         rtcEngineConfig.mAppId = connectionData.appId
         rtcEngineConfig.mContext = context.applicationContext
         rtcEngineConfig.mEventHandler = this.newHandler
+        if (connectionData.extensionName?.isNotEmpty() == true){
+            for (extension in connectionData.extensionName!!) {
+                rtcEngineConfig.addExtension(extension)
+            }
+        }
 
         try{
             this.agkit = RtcEngine.create(rtcEngineConfig)
