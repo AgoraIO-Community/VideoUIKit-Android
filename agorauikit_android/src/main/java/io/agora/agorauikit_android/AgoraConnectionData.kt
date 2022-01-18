@@ -1,11 +1,13 @@
 package io.agora.agorauikit_android
 
+import io.agora.rtc2.IMediaExtensionObserver
+
 /** Storing struct for holding data about the connection to Agora service
  * Create AgoraConnectionData object
  * @param appId: Agora App ID from https://agora.io
  * @param appToken: Token to be used to connect to a channel, can be nil.
  */
-public class AgoraConnectionData(var appId: String, var appToken: String? = null, var extensionName: List<String>? = null) {
+public class AgoraConnectionData(var appId: String, var appToken: String? = null, var extensionName: List<String>? = null, var iMediaExtensionObserver: IMediaExtensionObserver? = null) {
     /// Channel the object is connected to. This cannot be set with the initialiser
     var channel: String? = null
 }

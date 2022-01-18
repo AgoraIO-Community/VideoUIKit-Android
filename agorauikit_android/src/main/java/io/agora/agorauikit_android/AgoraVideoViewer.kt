@@ -237,6 +237,9 @@ open class AgoraVideoViewer: FrameLayout {
                 rtcEngineConfig.addExtension(extension)
             }
         }
+        if(connectionData.iMediaExtensionObserver != null) {
+            rtcEngineConfig.mExtensionObserver = connectionData.iMediaExtensionObserver
+        }
 
         try{
             this.agkit = RtcEngine.create(rtcEngineConfig)
