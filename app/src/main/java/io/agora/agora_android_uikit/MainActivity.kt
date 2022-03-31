@@ -20,6 +20,7 @@ private val REQUESTED_PERMISSIONS = arrayOf<String>(
     Manifest.permission.CAMERA,
     Manifest.permission.WRITE_EXTERNAL_STORAGE
 )
+
 @ExperimentalUnsignedTypes
 class MainActivity : AppCompatActivity() {
     var agView: AgoraVideoViewer? = null
@@ -28,15 +29,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         try {
             agView = AgoraVideoViewer(
-                this, AgoraConnectionData("my-app-id"),
-                agoraSettings = this.settingsWithExtraButtons()
+                this, AgoraConnectionData("my-app-id", username = "user"),
+                agoraSettings = this.settingsWithExtraButtons(),
             )
         } catch (e: Exception) {
             print("Could not initialise AgoraVideoViewer. Check your App ID is valid.")
             print(e.message)
             return
         }
-        val set = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        val set = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
 
         this.addContentView(agView, set)
 
@@ -51,13 +55,16 @@ class MainActivity : AppCompatActivity() {
                 // if permissions are granted.
                 if (AgoraVideoViewer.requestPermissions(this)) {
                     (joinButton.parent as ViewGroup).removeView(joinButton)
-                    agView!!.join("test", role=Constants.CLIENT_ROLE_BROADCASTER)
+                    agView!!.join("test", role = Constants.CLIENT_ROLE_BROADCASTER)
                 }
             })
             joinButton.setBackgroundColor(Color.GREEN)
             joinButton.setTextColor(Color.RED)
 
-            this.addContentView(joinButton, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 300))
+            this.addContentView(
+                joinButton,
+                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 300)
+            )
         }
     }
 

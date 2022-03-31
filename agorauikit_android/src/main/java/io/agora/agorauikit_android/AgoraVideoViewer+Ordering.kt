@@ -1,10 +1,12 @@
 package io.agora.agorauikit_android
 
+import android.content.res.Resources
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.agora.rtc.Constants
@@ -20,7 +22,8 @@ import kotlin.math.sqrt
 fun AgoraVideoViewer.reorganiseVideos() {
     this.organiseRecycleFloating()
     (this.backgroundVideoHolder.layoutParams as? ViewGroup.MarginLayoutParams)
-        ?.topMargin = if (this.floatingVideoHolder.visibility == View.VISIBLE) this.floatingVideoHolder.measuredHeight else 0
+        ?.topMargin =
+        if (this.floatingVideoHolder.visibility == View.VISIBLE) this.floatingVideoHolder.measuredHeight else 0
     this.controlContainer?.let {
         (this.backgroundVideoHolder.layoutParams as? ViewGroup.MarginLayoutParams)
             ?.bottomMargin = if (it.visibility == View.VISIBLE) it.measuredHeight else 0
@@ -74,18 +77,22 @@ fun AgoraVideoViewer.organiseRecycleGrid() {
         }
     } else {
         (this.backgroundVideoHolder.adapter as GridViewAdapter).uidList = gridList
-        (this.backgroundVideoHolder.layoutManager as? GridLayoutManager)?.spanCount = if (gridList.count() == 2) 1 else maxSqrt.toInt()
+        (this.backgroundVideoHolder.layoutManager as? GridLayoutManager)?.spanCount =
+            if (gridList.count() == 2) 1 else maxSqrt.toInt()
         this.backgroundVideoHolder.adapter?.notifyDataSetChanged()
     }
 }
 
 @ExperimentalUnsignedTypes
-internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<GridViewAdapter.RemoteViewHolder>() {
-    class RemoteViewHolder(val frame: FrameLayout): RecyclerView.ViewHolder(frame)
+internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: AgoraVideoViewer) :
+    RecyclerView.Adapter<GridViewAdapter.RemoteViewHolder>() {
+    class RemoteViewHolder(val frame: FrameLayout) : RecyclerView.ViewHolder(frame)
+
     val maxSqrt: Float
         get() = max(1f, ceil(sqrt(uidList.count().toFloat())))
     val mRtcEngine: RtcEngine
         get() = this.agoraVC.agkit
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteViewHolder {
         val remoteFrame = FrameLayout(parent.context)
 
@@ -103,6 +110,7 @@ internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: Agor
         // We have to do this since we mute the remote video in the onUserJoined callback to save on bandwidth
         val uid = uidList[position]
         val videoView = agoraVC.userVideoLookup[uidList[position]]
+
 
         // We are tagging the SurfaceView object with the UID.
         // This keeps us from manually maintaining a mapping between the SurfaceView and UID
@@ -123,12 +131,12 @@ internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: Agor
 //        videoView.visibility = View.INVISIBLE
 
 
-
 //        videoView.parent
         // We'll add the SurfaceView as a child to the FrameLayout which is actually the ViewHolder in our RecyclerView
         (videoView?.parent as? FrameLayout)?.removeView(videoView)
         holder.frame.addView(videoView)
-        (holder.frame.layoutParams as? RecyclerView.LayoutParams)?.height = agoraVC.backgroundVideoHolder.measuredHeight / maxSqrt.toInt()
+        (holder.frame.layoutParams as? RecyclerView.LayoutParams)?.height =
+            agoraVC.backgroundVideoHolder.measuredHeight / maxSqrt.toInt()
     }
 
     override fun onViewRecycled(holder: RemoteViewHolder) {
@@ -145,17 +153,20 @@ internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: Agor
 }
 
 @ExperimentalUnsignedTypes
-internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: AgoraVideoViewer): RecyclerView.Adapter<FloatingViewAdapter.RemoteViewHolder>() {
-    class RemoteViewHolder(val frame: FrameLayout): RecyclerView.ViewHolder(frame)
+internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: AgoraVideoViewer) :
+    RecyclerView.Adapter<FloatingViewAdapter.RemoteViewHolder>() {
+    class RemoteViewHolder(val frame: FrameLayout) : RecyclerView.ViewHolder(frame)
+
     val maxSqrt: Float
         get() = max(1f, ceil(sqrt(uidList.count().toFloat())))
     val mRtcEngine: RtcEngine
         get() = this.agoraVC.agkit
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteViewHolder {
         val linearLayout = LinearLayout(parent.context)
         val pinIcon = ImageView(parent.context)
         pinIcon.setImageResource(R.drawable.baseline_push_pin_20)
-        pinIcon.layoutParams = ViewGroup.LayoutParams(100,100)
+        pinIcon.layoutParams = ViewGroup.LayoutParams(100, 100)
         linearLayout.addView(pinIcon)
         linearLayout.gravity = Gravity.CENTER
 
@@ -174,9 +185,13 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
 
         // First we unmute the remote video stream so that Agora can start fetching the remote video feed
         // We have to do this since we mute the remote video in the onUserJoined callback to save on bandwidth
+        lateinit var hostControl: ImageView
         val uid = uidList[position]
         val videoView = agoraVC.userVideoLookup[uidList[position]]
-        val activeSpeaker = this.agoraVC.overrideActiveSpeaker ?: this.agoraVC.activeSpeaker ?: this.agoraVC.userID
+        val audioMuted = agoraVC.userVideoLookup[uidList[position]]?.audioMuted
+        val videoMuted = agoraVC.userVideoLookup[uidList[position]]?.videoMuted
+        val activeSpeaker =
+            this.agoraVC.overrideActiveSpeaker ?: this.agoraVC.activeSpeaker ?: this.agoraVC.userID
         if (activeSpeaker == uid) {
             return
         }
@@ -187,7 +202,6 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
         // This keeps us from manually maintaining a mapping between the SurfaceView and UID
         // We'll see it used in the onViewRecycled method
 //        videoView.tag = uidList[position]
-
 
 
 //        videoView.parent
@@ -205,6 +219,41 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
             mRtcEngine.setupLocalVideo(videoView!!.canvas)
         }
 
+        val density = Resources.getSystem().displayMetrics.density
+        val hostControlLayout = FrameLayout.LayoutParams(40 * density.toInt(), 40 * density.toInt())
+        hostControlLayout.gravity = Gravity.END
+
+        hostControl = ImageView(videoView.context)
+        hostControl.setImageResource(R.drawable.ic_round_pending_24)
+        hostControl.setColorFilter(Color.WHITE)
+        hostControl.setOnClickListener {
+            println("Position of the user: $position")
+            println("UID of the user: ${uidList[position]}")
+            val menu = PopupMenu(videoView.context, videoView)
+
+            menu.menu.apply {
+                add("Request user to " + if (agoraVC.userVideoLookup[uidList[position]]!!.audioMuted) "unmute" else "mute" + " the mic").setOnMenuItemClickListener {
+                    println("Microphone status: $audioMuted")
+                    agoraVC.askForUserMic(
+                        uidList[position],
+                        agoraVC.userVideoLookup[uidList[position]]!!.audioMuted
+                    )
+                    true
+                }
+                add("Request user to " + if (agoraVC.userVideoLookup[uidList[position]]!!.videoMuted) "enable" else "disable" + " the camera").setOnMenuItemClickListener {
+                    println("Camera status: $videoMuted")
+                    agoraVC.askForUserCamera(
+                        uidList[position],
+                        agoraVC.userVideoLookup[uidList[position]]!!.videoMuted
+                    )
+                    true
+                }
+            }
+            menu.show()
+        }
+
+        holder.frame.addView(hostControl, hostControlLayout)
+
         holder.itemView.setOnClickListener {
             val newID = if (videoView.uid == 0) this.agoraVC.userID else videoView.uid
             if (this.agoraVC.overrideActiveSpeaker == newID) {
@@ -213,6 +262,7 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
                 this.agoraVC.overrideActiveSpeaker = newID
             }
         }
+
 //        (holder.frame.layoutParams as RecyclerView.LayoutParams).height = agoraVC.measuredHeight / maxSqrt.toInt()
     }
 
@@ -229,4 +279,5 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
     }
 
     override fun getItemCount() = uidList.size
+
 }

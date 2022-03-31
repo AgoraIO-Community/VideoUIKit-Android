@@ -21,6 +21,7 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
 //            this.getControlContainer().isHidden = !isHost
     }
     override fun onUserJoined(uid: Int, elapsed: Int) {
+        println("onYourJoined: $uid")
         super.onUserJoined(uid, elapsed)
         this.hostView.remoteUserIDs.add(uid)
     }
@@ -42,7 +43,7 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
 
     override fun onUserOffline(uid: Int, reason: Int) {
         super.onUserOffline(uid, reason)
-        Logger.getLogger("AgoraUIKit").log(Level.WARNING, "User offlined: $reason")
+        Logger.getLogger("AgoraUIKit").log(Level.WARNING, "User offline: $reason")
         if (reason == Constants.USER_OFFLINE_QUIT || reason == Constants.USER_OFFLINE_DROPPED) {
             this.hostView.remoteUserIDs.remove(uid)
         }
@@ -121,6 +122,9 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         }
         channel?.let {
             this.hostView.delegate?.joinedChannel(it)
+        }
+        if (!this.hostView.connectionData.username.isNullOrEmpty()) {
+            this.hostView.createRtmChannel()
         }
     }
 

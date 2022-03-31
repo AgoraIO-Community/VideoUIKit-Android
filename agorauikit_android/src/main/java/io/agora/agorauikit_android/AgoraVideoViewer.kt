@@ -2,15 +2,33 @@ package io.agora.agorauikit_android
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import io.agora.rtc.Constants
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.BeautyOptions
 import io.agora.rtc.video.VideoEncoderConfiguration
+import io.agora.rtm.*
 import java.util.logging.Level
 import java.util.logging.Logger
+import io.agora.rtm.SendMessageOptions
+
+import io.agora.rtm.RtmChannelMember
+
+import io.agora.rtm.RtmFileMessage
+
+import io.agora.rtm.RtmImageMessage
+
+import io.agora.rtm.RtmMessage
+
+import io.agora.rtm.RtmChannelAttribute
+
+import io.agora.rtm.RtmChannelListener
+import org.json.JSONObject
+
 
 /**
  * An interface for getting some common delegate callbacks without needing to subclass.
@@ -21,6 +39,7 @@ interface AgoraVideoViewerDelegate {
      * @param channel Channel that the local user has joined.
      */
     fun joinedChannel(channel: String) {}
+
     /**
      * Local user has left a channel
      * @param channel Channel that the local user has left.
@@ -49,7 +68,7 @@ interface AgoraVideoViewerDelegate {
 /**
  * View to contain all the video session objects, including camera feeds and buttons for settings
  */
-open class AgoraVideoViewer: FrameLayout {
+open class AgoraVideoViewer : FrameLayout {
 
     /**
      * Style and organisation to be applied to all the videos in this view.
@@ -75,6 +94,7 @@ open class AgoraVideoViewer: FrameLayout {
     internal var screenShareButton: AgoraButton? = null
 
     companion object {}
+
     internal var remoteUserIDs: MutableSet<Int> = mutableSetOf()
     internal var userVideoLookup: MutableMap<Int, AgoraSingleVideoView> = mutableMapOf()
     internal val userVideosForGrid: Map<Int, AgoraSingleVideoView>
@@ -117,6 +137,10 @@ open class AgoraVideoViewer: FrameLayout {
      */
     public var userID: Int = 0
         internal set
+    private var generatedRtmId: String? = null
+    private var isLoggedIn: Boolean? = false
+    private var isInRtmChannel: Boolean? = false
+    private var isInRtcChannel: Boolean? = false
 
     /**
      * The most recently active speaker in the session.
@@ -130,7 +154,8 @@ open class AgoraVideoViewer: FrameLayout {
         this.userVideoLookup[userId]?.let { remoteView ->
             return remoteView
         }
-        val remoteVideoView = AgoraSingleVideoView(this.context, userId, this.agoraSettings.colors.micFlag)
+        val remoteVideoView =
+            AgoraSingleVideoView(this.context, userId, this.agoraSettings.colors.micFlag)
         remoteVideoView.canvas.renderMode = this.agoraSettings.videoRenderMode
         this.agkit.setupRemoteVideo(remoteVideoView.canvas)
 //        this.agkit.setRemoteVideoRenderer(remoteVideoView.uid, remoteVideoView.textureView)
@@ -198,21 +223,35 @@ open class AgoraVideoViewer: FrameLayout {
      */
     @Throws(Exception::class)
     public constructor(
-        context: Context, connectionData: AgoraConnectionData,
+        context: Context,
+        connectionData: AgoraConnectionData,
         style: Style = Style.FLOATING,
         agoraSettings: AgoraSettings = AgoraSettings(),
         delegate: AgoraVideoViewerDelegate? = null,
-    ): super(context) {
+    ) : super(context) {
         this.connectionData = connectionData
         this.style = style
         this.agoraSettings = agoraSettings
         this.delegate = delegate
 //        this.setBackgroundColor(Color.BLUE)
         initAgoraEngine()
-        this.addView(this.backgroundVideoHolder, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT))
-        this.addView(this.floatingVideoHolder, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, 200))
+        if (connectionData.username != null) {
+            initAgoraRtm(context)
+        }
+        this.addView(
+            this.backgroundVideoHolder,
+            ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+        this.addView(
+            this.floatingVideoHolder,
+            ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, 200)
+        )
         this.floatingVideoHolder.setBackgroundColor(this.agoraSettings.colors.floatingBackgroundColor)
-        this.floatingVideoHolder.background.alpha = this.agoraSettings.colors.floatingBackgroundAlpha
+        this.floatingVideoHolder.background.alpha =
+            this.agoraSettings.colors.floatingBackgroundAlpha
     }
 
     @Throws(Exception::class)
@@ -227,6 +266,345 @@ open class AgoraVideoViewer: FrameLayout {
         agkit.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
         agkit.enableVideo()
         agkit.setVideoEncoderConfiguration(VideoEncoderConfiguration())
+    }
+
+    private fun initAgoraRtm(context: Context) {
+        try {
+            this.agRtmClient = RtmClient.createInstance(context, connectionData.appId,
+                object : RtmClientListener {
+                    override fun onConnectionStateChanged(state: Int, reason: Int) {
+                        println("RTM Connection State Changed. state: $state, reason: $reason")
+                    }
+
+                    override fun onMessageReceived(rtmMessage: RtmMessage, peerId: String?) {
+                        println("Peer message received from ${peerId.toString()}, " + rtmMessage.text.toString())
+                        messageReceived(rtmMessage.text)
+                    }
+
+                    override fun onImageMessageReceivedFromPeer(p0: RtmImageMessage?, p1: String?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onFileMessageReceivedFromPeer(p0: RtmFileMessage?, p1: String?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onMediaUploadingProgress(
+                        p0: RtmMediaOperationProgress?,
+                        p1: Long
+                    ) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onMediaDownloadingProgress(
+                        p0: RtmMediaOperationProgress?,
+                        p1: Long
+                    ) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onTokenExpired() {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onPeersOnlineStatusChanged(peerStatus: MutableMap<String, Int>?) {
+                        println("onPeerOnlineStatusChanged: $peerStatus")
+                    }
+                })
+        } catch (e: Exception) {
+            Logger.getLogger("AgoraUIKit")
+                .log(Level.SEVERE, "Failed to initialize Agora RTM SDK. Error: $e")
+        }
+        if (isLoggedIn == false) {
+            loginToRtm()
+        }
+    }
+
+    private fun loginToRtm() {
+        if (connectionData.rtmId == null) {
+            generateRtmId()
+        }
+        this.agRtmClient.login(
+            connectionData.rtmToken,
+            connectionData.rtmId?.let { connectionData.rtmId } ?: let { generatedRtmId },
+            object : ResultCallback<Void?> {
+                override fun onSuccess(responseInfo: Void?) {
+                    isLoggedIn = true
+                    Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "User logged in successfully")
+                }
+
+                override fun onFailure(errorInfo: ErrorInfo) {
+                    Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "User login failed")
+                }
+            })
+    }
+
+    fun createRtmChannel() {
+        try {
+
+            var channelName: String =
+                connectionData.rtmChannelName?.let { connectionData.rtmChannelName.toString() }
+                    ?: let { connectionData.channel.toString() }
+            this.agRtmChannel =
+                agRtmClient.createChannel(channelName, object : RtmChannelListener {
+                    override fun onMemberCountUpdated(memberCount: Int) {
+                        println("Member count updated. Count: $memberCount")
+                    }
+
+                    override fun onAttributesUpdated(attributeList: MutableList<RtmChannelAttribute>?) {
+                        println("onAttributesUpdated: $attributeList")
+                    }
+
+                    override fun onMessageReceived(
+                        rtmMessage: RtmMessage,
+                        rtmChannelMember: RtmChannelMember
+                    ) {
+                        println("Message: ${rtmMessage.text} from ${rtmChannelMember.channelId}")
+                        messageReceived(rtmMessage.text)
+                    }
+
+                    override fun onImageMessageReceived(
+                        p0: RtmImageMessage?,
+                        p1: RtmChannelMember?
+                    ) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onFileMessageReceived(p0: RtmFileMessage?, p1: RtmChannelMember?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onMemberJoined(rtmChannelMember: RtmChannelMember) {
+                        println("RTM Member joined: ${rtmChannelMember.userId}")
+                        sendUserData(toChannel = false, peerRtmId = rtmChannelMember.userId)
+                    }
+
+                    override fun onMemberLeft(rtmChannelMember: RtmChannelMember) {
+                        println("Member left: ${rtmChannelMember.userId}")
+                    }
+                })
+        } catch (e: RuntimeException) {
+            println("Failed to create RTM channel. Error: $e")
+        }
+        if (this@AgoraVideoViewer::agRtmChannel.isInitialized) {
+            joinRtmChannel()
+        }
+    }
+
+    private fun joinRtmChannel() {
+        this.agRtmChannel.join(object : ResultCallback<Void> {
+            override fun onSuccess(responseInfo: Void?) {
+                isInRtmChannel = true
+                Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "RTM Channel Joined Successfully")
+                if (isInRtmChannel == true) {
+                    sendUserData(toChannel = true)
+                }
+            }
+
+            override fun onFailure(errorInfo: ErrorInfo) {
+                isInRtmChannel = false
+                Logger.getLogger("AgoraUIKit")
+                    .log(Level.SEVERE, "Failed to join RTM Channel. Error: $errorInfo")
+            }
+        })
+    }
+
+    private fun generateRtmId() {
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+
+        generatedRtmId = (1..10)
+            .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("");
+    }
+
+    private fun sendUserData(toChannel: Boolean, peerRtmId: String? = null) {
+
+        val rtmId: String =
+            (connectionData.rtmId?.let { connectionData.rtmId } ?: let { generatedRtmId }) as String
+
+        var userData = """{
+      "messageType": "UserData",
+      "rtmId": "$rtmId",
+      "rtcId": $userID,
+      "username": "${connectionData.username}",
+      "role": "$userRole",
+      "agora": {
+        "rtm": ${RtmClient.getSdkVersion()},
+        "rtc": ${RtcEngine.getSdkVersion()}
+      },
+      "uikit": {
+        "platform": "Android",
+        "framework": "Kotlin",
+        "version": "1.0.0"
+      }
+    }"""
+        var message: RtmMessage = agRtmClient.createMessage()
+        message.text = userData
+
+
+        val option = SendMessageOptions()
+        option.enableOfflineMessaging = true
+
+        if (!toChannel) {
+            agRtmClient.sendMessageToPeer(
+                peerRtmId,
+                message,
+                option,
+                object : ResultCallback<Void> {
+                    override fun onSuccess(p0: Void?) {
+                        println("UserData message sent to $peerRtmId")
+                    }
+
+                    override fun onFailure(p0: ErrorInfo?) {
+                        println("Failed to send UserData to peer: $peerRtmId")
+                    }
+                })
+        } else {
+            agRtmChannel.sendMessage(message, option, object : ResultCallback<Void> {
+                override fun onSuccess(p0: Void?) {
+                    println("USerData message sent to channel")
+                }
+
+                override fun onFailure(p0: ErrorInfo?) {
+                    println("Failed to send UserData to channel")
+                }
+            })
+        }
+
+    }
+
+    internal fun askForUserMic(peerRtcId: Int, isMicEnabled: Boolean) {
+        var peerRtmId: String? = null
+        var json: String = """{
+        "messageType": "MuteRequest",
+        "rtcId": $peerRtcId,
+        "mute": $isMicEnabled,
+        "device": "0",
+        "isForceFul": "false"
+    }"""
+
+        var message: RtmMessage = agRtmClient.createMessage()
+        message.text = json
+
+        val option = SendMessageOptions()
+        option.enableOfflineMessaging = true
+
+        if (peerRtcId == userID) {
+            println("Can't send message to the local user")
+        } else {
+            if (this.agoraSettings.uidToUserIdMap.containsKey(peerRtcId)) {
+                peerRtmId = this.agoraSettings.uidToUserIdMap.getValue(peerRtcId)
+
+                agRtmClient.sendMessageToPeer(
+                    peerRtmId,
+                    message,
+                    option,
+                    object : ResultCallback<Void> {
+                        override fun onSuccess(p0: Void?) {
+                            println("Mic Request message sent to $peerRtmId")
+                        }
+                        override fun onFailure(p0: ErrorInfo?) {
+                            println("Failed to send mic request message to $peerRtmId. Error : $p0")
+                        }
+                    })
+            }
+        }
+    }
+
+    internal fun askForUserCamera(peerRtcId: Int, isCameraEnabled: Boolean) {
+        var peerRtmId: String? = null
+        var json: String = """{
+        "messageType": "CameraRequest",
+        "rtcId": $peerRtcId,
+        "mute": $isCameraEnabled,
+        "device": "1",
+        "isForceFul": "false"
+    }"""
+
+        var message: RtmMessage = agRtmClient.createMessage()
+        message.text = json
+
+        val option = SendMessageOptions()
+        option.enableOfflineMessaging = true
+
+        if (peerRtcId == userID) {
+            println("Can't send message to the local user")
+        } else {
+            if (this.agoraSettings.uidToUserIdMap.containsKey(peerRtcId)) {
+                peerRtmId = this.agoraSettings.uidToUserIdMap.getValue(peerRtcId)
+
+                agRtmClient.sendMessageToPeer(
+                    peerRtmId,
+                    message,
+                    option,
+                    object : ResultCallback<Void> {
+                        override fun onSuccess(p0: Void?) {
+                            println("Camera Request message sent to $peerRtmId")
+                        }
+
+                        override fun onFailure(p0: ErrorInfo?) {
+                            println("Failed to send cmessage $peerRtmId. Error : $p0")
+                        }
+                    })
+            }
+        }
+    }
+
+    private fun addToUidToUserIdMap(rtcId: Int, rtmId: String) {
+        this.agoraSettings.uidToUserIdMap.putIfAbsent(rtcId, rtmId)
+    }
+
+    private fun addToUserRtmMap(rtmId: String, message: String) {
+        this.agoraSettings.userRtmMap.putIfAbsent(rtmId, message)
+    }
+
+    private fun messageReceived(message: String) {
+        val messageMap = JSONObject(message)
+        when (messageMap.getString("messageType")) {
+            "UserData" -> {
+                val rtcId = messageMap.getInt("rtcId")
+                val rtmId = messageMap.getString("rtmId")
+                addToUidToUserIdMap(rtcId = rtcId.toInt(), rtmId = rtmId)
+                addToUserRtmMap(rtmId = rtmId, message = message)
+            }
+            "MuteRequest" -> {
+                var micStatus = messageMap.getBoolean("mute")
+                val snackbar = Snackbar.make(
+                    this,
+                    "Please " + if (micStatus) "unmute" else "mute" + " your mic",
+                    Snackbar.LENGTH_LONG
+                )
+                snackbar.setAction(if (micStatus) "unmute" else "mute") {
+                    agkit.muteLocalAudioStream(!micStatus);
+                    micStatus = !micStatus
+                    micButton?.background?.setTint(if (micStatus) Color.RED else Color.GRAY)
+                    micButton?.isSelected = micStatus
+                    this.userVideoLookup[this.userID]?.mutedFlag?.visibility =
+                        if (micStatus) VISIBLE else INVISIBLE
+                    this.userVideoLookup[this.userID]?.audioMuted = micStatus
+                }
+                snackbar.show()
+            }
+            "CameraRequest" -> {
+                var camStatus = messageMap.getBoolean("mute")
+                val snackbar = Snackbar.make(
+                    this,
+                    "Please " + if (camStatus) "enable" else "disable" + " your camera",
+                    Snackbar.LENGTH_LONG
+                )
+                snackbar.setAction(if (camStatus) "enable" else "disable") {
+                    agkit.enableLocalVideo(camStatus)
+                    camStatus = !camStatus
+                    camButton?.background?.setTint(if (camStatus) Color.RED else Color.GRAY)
+                    camButton?.isSelected = camStatus
+                    this.userVideoLookup[this.userID]?.backgroundView?.visibility =
+                        if (camStatus) VISIBLE else INVISIBLE
+                    this.userVideoLookup[this.userID]?.videoMuted = !camStatus
+                }
+                snackbar.show()
+            }
+        }
     }
 //    constructor(context: Context) : super(context)
     /**
@@ -262,7 +640,10 @@ open class AgoraVideoViewer: FrameLayout {
      */
     public lateinit var agkit: RtcEngine
         internal set
-
+    public lateinit var agRtmClient: RtmClient
+        internal set
+    public lateinit var agRtmChannel: RtmChannel
+        internal set
     /// VideoControl
 
     internal fun setupAgoraVideo() {
@@ -323,6 +704,7 @@ open class AgoraVideoViewer: FrameLayout {
                             this@AgoraVideoViewer.connectionData.appToken = token
                             this@AgoraVideoViewer.join(channel, token, role, uid)
                         }
+
                         override fun onError(error: TokenError) {
                             Logger.getLogger("AgoraUIKit", "Could not get token: ${error.name}")
                         }
@@ -332,6 +714,7 @@ open class AgoraVideoViewer: FrameLayout {
             return
         }
         this.join(channel, this.connectionData.appToken, role, uid)
+        isInRtcChannel = true
     }
 
     /**
@@ -353,7 +736,8 @@ open class AgoraVideoViewer: FrameLayout {
             val leaveChannelRtn = this.leaveChannel()
             if (leaveChannelRtn < 0) {
                 // could not leave channel
-                Logger.getLogger("AgoraUIKit").log(Level.WARNING, "Could not leave channel: $leaveChannelRtn")
+                Logger.getLogger("AgoraUIKit")
+                    .log(Level.WARNING, "Could not leave channel: $leaveChannelRtn")
             } else {
                 this.join(channel, token, role, uid)
             }

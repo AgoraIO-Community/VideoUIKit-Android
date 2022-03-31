@@ -2,12 +2,17 @@ package io.agora.agorauikit_android
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.view.Gravity
+import android.view.MenuInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.VideoCanvas
 
@@ -75,9 +80,9 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
         addView(canvasView)
         this.backgroundView = FrameLayout(context)
         this.setBackground()
-
         this.mutedFlag = ImageView(context)
         this.setupMutedFlag()
+
         this.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
     }
     
@@ -85,12 +90,14 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
 
         val mutedLayout = FrameLayout.LayoutParams(DPToPx(context, 40), DPToPx(context, 40))
 //        mutedLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-        mutedLayout.gravity = Gravity.END
+//        mutedLayout.gravity = Gravity.RIGHT
+        mutedLayout.gravity = Gravity.BOTTOM
 //        mutedLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
         mutedLayout.bottomMargin = DPToPx(context, 5)
-        mutedLayout.rightMargin = DPToPx(context, 5)
+        mutedLayout.leftMargin = DPToPx(context, 5)
 
         mutedFlag.setImageResource(android.R.drawable.stat_notify_call_mute)
+
         mutedFlag.setColorFilter(this.micFlagColor)
         addView(mutedFlag, mutedLayout)
         this.audioMuted = true
