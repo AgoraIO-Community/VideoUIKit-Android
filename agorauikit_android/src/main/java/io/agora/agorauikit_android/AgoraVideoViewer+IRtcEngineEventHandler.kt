@@ -1,4 +1,5 @@
 package io.agora.agorauikit_android
+
 import android.app.Activity
 import io.agora.rtc.Constants
 import io.agora.rtc.IRtcEngineEventHandler
@@ -6,7 +7,8 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 @ExperimentalUnsignedTypes
-open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRtcEngineEventHandler() {
+open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
+    IRtcEngineEventHandler() {
     override fun onClientRoleChanged(oldRole: Int, newRole: Int) {
         super.onClientRoleChanged(oldRole, newRole)
         val isHost = newRole == Constants.CLIENT_ROLE_BROADCASTER
@@ -20,8 +22,9 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         // Only show the camera options when we are a broadcaster
 //            this.getControlContainer().isHidden = !isHost
     }
+
     override fun onUserJoined(uid: Int, elapsed: Int) {
-        println("onYourJoined: $uid")
+        println("onUserJoined: $uid")
         super.onUserJoined(uid, elapsed)
         this.hostView.remoteUserIDs.add(uid)
     }
@@ -31,11 +34,15 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         Logger.getLogger("AgoraUIKit").log(Level.WARNING, "setting muted state: " + state)
         (this.hostView.context as Activity).runOnUiThread {
             if (state == Constants.REMOTE_AUDIO_STATE_STOPPED || state == Constants.REMOTE_AUDIO_STATE_STARTING || state == Constants.REMOTE_VIDEO_STATE_DECODING) {
-                if (state == Constants.REMOTE_AUDIO_STATE_STARTING && !this.hostView.userVideoLookup.containsKey(uid)) {
+                if (state == Constants.REMOTE_AUDIO_STATE_STARTING && !this.hostView.userVideoLookup.containsKey(
+                        uid
+                    )
+                ) {
                     this.hostView.addUserVideo(uid)
                 }
                 if (this.hostView.userVideoLookup.containsKey(uid)) {
-                    this.hostView.userVideoLookup[uid]?.audioMuted = state == Constants.REMOTE_AUDIO_STATE_STOPPED
+                    this.hostView.userVideoLookup[uid]?.audioMuted =
+                        state == Constants.REMOTE_AUDIO_STATE_STOPPED
                 }
             }
         }
@@ -123,8 +130,9 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) : IRt
         channel?.let {
             this.hostView.delegate?.joinedChannel(it)
         }
-        if (!this.hostView.connectionData.username.isNullOrEmpty()) {
-            this.hostView.createRtmChannel()
+        this.hostView.isInRtcChannel = true
+        if (!this.hostView.agoraRtmController.isLoggedIn) {
+            this.hostView.triggerLoginToRtm()
         }
     }
 

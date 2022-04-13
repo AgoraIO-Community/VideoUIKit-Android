@@ -29,12 +29,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         try {
             agView = AgoraVideoViewer(
-                this, AgoraConnectionData("my-app-id", username = "user"),
+                this, AgoraConnectionData("my-app-id"),
                 agoraSettings = this.settingsWithExtraButtons(),
             )
         } catch (e: Exception) {
-            print("Could not initialise AgoraVideoViewer. Check your App ID is valid.")
-            print(e.message)
+            println("Could not initialise AgoraVideoViewer. Check your App ID is valid. ${e.message}")
             return
         }
         val set = FrameLayout.LayoutParams(

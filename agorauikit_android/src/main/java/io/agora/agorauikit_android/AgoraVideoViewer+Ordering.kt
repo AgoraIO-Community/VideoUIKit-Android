@@ -227,24 +227,24 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
         hostControl.setImageResource(R.drawable.ic_round_pending_24)
         hostControl.setColorFilter(Color.WHITE)
         hostControl.setOnClickListener {
-            println("Position of the user: $position")
-            println("UID of the user: ${uidList[position]}")
             val menu = PopupMenu(videoView.context, videoView)
 
             menu.menu.apply {
                 add("Request user to " + if (agoraVC.userVideoLookup[uidList[position]]!!.audioMuted) "unmute" else "mute" + " the mic").setOnMenuItemClickListener {
-                    println("Microphone status: $audioMuted")
-                    agoraVC.askForUserMic(
-                        uidList[position],
-                        agoraVC.userVideoLookup[uidList[position]]!!.audioMuted
+                    AgoraRtmController.Companion.sendMuteRequest(
+                        peerRtcId = uidList[position],
+                        isMicEnabled = agoraVC.userVideoLookup[uidList[position]]!!.audioMuted,
+                        hostView = agoraVC,
+                        deviceType = DeviceType.MIC
                     )
                     true
                 }
                 add("Request user to " + if (agoraVC.userVideoLookup[uidList[position]]!!.videoMuted) "enable" else "disable" + " the camera").setOnMenuItemClickListener {
-                    println("Camera status: $videoMuted")
-                    agoraVC.askForUserCamera(
-                        uidList[position],
-                        agoraVC.userVideoLookup[uidList[position]]!!.videoMuted
+                    AgoraRtmController.Companion.sendMuteRequest(
+                        peerRtcId = uidList[position],
+                        isMicEnabled = agoraVC.userVideoLookup[uidList[position]]!!.videoMuted,
+                        hostView = agoraVC,
+                        deviceType = DeviceType.CAMERA
                     )
                     true
                 }

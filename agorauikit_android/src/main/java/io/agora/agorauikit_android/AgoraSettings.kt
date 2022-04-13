@@ -10,6 +10,9 @@ import io.agora.rtc.video.VideoEncoderConfiguration
 class AgoraSettings {
     public var userRtmMap = mutableMapOf<String, String>()
     public var uidToUserIdMap = mutableMapOf<Int, String>()
+
+    /// Whether RTM should be initialised and used
+    public var enableRtm: Boolean = false
     /** URL to fetch tokens from. If supplied, this package will automatically fetch tokens
      * when the Agora Engine indicates it will be needed.
      * It will follow the URL pattern found in

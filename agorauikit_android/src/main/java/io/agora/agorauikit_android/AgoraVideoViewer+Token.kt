@@ -1,7 +1,6 @@
 package io.agora.agorauikit_android
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -33,27 +32,46 @@ fun AgoraVideoViewer.Companion.fetchToken(urlBase: String, channelName: String, 
     val client = OkHttpClient()
     val url = "$urlBase/rtc/$channelName/publisher/uid/$userId/"
     val request: okhttp3.Request = Request.Builder()
-            .url(url)
-            .method("GET", null)
-            .build()
+        .url(url)
+        .method("GET", null)
+        .build()
     try {
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful()) {
-                log.log(Level.WARNING, "Unexpected code $response")
+//        client.newCall(request).execute().use { response ->
+//            if (!response.isSuccessful()) {
+//                log.log(Level.WARNING, "Unexpected code $response")
+//                completion.onError(TokenError.INVALIDDATA)
+//            } else {
+//                response.body()?.string()?.let {
+//                    val jObject = JSONObject(it)
+//                    val token = jObject.getString("rtcToken")
+//                    if (!token.isEmpty()) {
+//                        completion.onSuccess(token)
+//                        return
+//                    }
+//                }
+//                completion.onError(TokenError.NODATA)
+//            }
+//            return
+//        }
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                log.log(Level.WARNING, "Unexpected code ${e.localizedMessage}")
                 completion.onError(TokenError.INVALIDDATA)
-            } else {
+            }
+
+            override fun onResponse(call: Call, response: Response) {
                 response.body()?.string()?.let {
                     val jObject = JSONObject(it)
                     val token = jObject.getString("rtcToken")
-                    if (!token.isEmpty()) {
+                    if (token.isNotEmpty()) {
                         completion.onSuccess(token)
                         return
                     }
                 }
                 completion.onError(TokenError.NODATA)
             }
-            return
         }
+        )
     } catch (e: IOException) {
         log.log(Level.WARNING, e.localizedMessage)
         completion.onError(TokenError.INVALIDURL)
