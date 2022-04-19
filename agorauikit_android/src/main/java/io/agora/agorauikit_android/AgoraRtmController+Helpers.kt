@@ -15,16 +15,8 @@ fun AgoraRtmController.Companion.messageReceived(message: String, hostView: Agor
         "UserData" -> {
             val rtcId = messageMap.getInt("rtcId")
             val rtmId = messageMap.getString("rtmId")
-            addToUidToUserIdMap(
-                rtcId = rtcId,
-                rtmId = rtmId,
-                uidToUserIdMap = hostView.agoraSettings.uidToUserIdMap
-            )
-            addToUserRtmMap(
-                rtmId = rtmId,
-                message = message,
-                userRtmMap = hostView.agoraSettings.userRtmMap
-            )
+            hostView.agoraSettings.uidToUserIdMap.putIfAbsent(rtcId, rtmId)
+            hostView.agoraSettings.userRtmMap.putIfAbsent(rtmId, message)
         }
         "MuteRequest" -> {
             var deviceStatus = messageMap.getBoolean("mute")
@@ -63,39 +55,5 @@ fun AgoraRtmController.Companion.messageReceived(message: String, hostView: Agor
             }
             snackbar.show()
         }
-//        "CameraRequest" -> {
-//            var camStatus = messageMap.getBoolean("mute")
-//            val snackbar = Snackbar.make(
-//                hostView,
-//                "Please " + if (camStatus) "enable" else "disable" + " your camera",
-//                Snackbar.LENGTH_LONG
-//            )
-//            snackbar.setAction(if (camStatus) "enable" else "disable") {
-//                hostView.agkit.enableLocalVideo(camStatus)
-//                camStatus = !camStatus
-//                hostView.camButton?.background?.setTint(if (camStatus) Color.RED else Color.GRAY)
-//                hostView.camButton?.isSelected = camStatus
-//                hostView.userVideoLookup[hostView.userID]?.backgroundView?.visibility =
-//                    if (camStatus) FrameLayout.VISIBLE else FrameLayout.INVISIBLE
-//                hostView.userVideoLookup[hostView.userID]?.videoMuted = !camStatus
-//            }
-//            snackbar.show()
-//        }
     }
-}
-
-private fun addToUidToUserIdMap(
-    rtcId: Int,
-    rtmId: String,
-    uidToUserIdMap: MutableMap<Int, String>
-) {
-    uidToUserIdMap.putIfAbsent(rtcId, rtmId)
-}
-
-private fun addToUserRtmMap(
-    rtmId: String,
-    message: String,
-    userRtmMap: MutableMap<String, String>
-) {
-    userRtmMap.putIfAbsent(rtmId, message)
 }

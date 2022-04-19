@@ -7,12 +7,17 @@ import java.util.logging.Logger
 
 @ExperimentalUnsignedTypes
 class AgoraRtmController(
-    context: Context,
     private val hostView: AgoraVideoViewer
 ) {
     private var generatedRtmId: String? = null
-    var isLoggedIn: Boolean = false
     private var isInRtmChannel: Boolean = false
+
+    public enum class LoginStatus {
+        OFFLINE, LOGGING_IN, LOGGED_IN, LOGIN_FAILED
+    }
+
+    public var loginStatus: LoginStatus = LoginStatus.OFFLINE
+
 
     companion object {}
 
@@ -34,15 +39,16 @@ class AgoraRtmController(
         if (this.hostView.connectionData.rtmId.isNullOrEmpty()) {
             generateRtmId()
         }
-        if (!isLoggedIn && hostView.isAgRrtmClientInitialized()) {
+        if (loginStatus != LoginStatus.LOGGED_IN && hostView.isAgRrtmClientInitialized()) {
+            loginStatus = LoginStatus.LOGGING_IN
             Logger.getLogger("AgoraUIKit")
-                .log(Level.SEVERE, "Trying to do RTM login")
+                .log(Level.INFO, "Trying to do RTM login")
             this.hostView.agRtmClient.login(
                 this.hostView.connectionData.rtmToken,
                 this.hostView.connectionData.rtmId,
                 object : ResultCallback<Void?> {
                     override fun onSuccess(responseInfo: Void?) {
-                        isLoggedIn = true
+                        loginStatus = LoginStatus.LOGGED_IN
                         Logger.getLogger("AgoraUIKit")
                             .log(Level.INFO, "RTM user logged in successfully")
                         if (!isInRtmChannel) {
@@ -51,6 +57,7 @@ class AgoraRtmController(
                     }
 
                     override fun onFailure(errorInfo: ErrorInfo) {
+                        loginStatus = LoginStatus.LOGIN_FAILED
                         Logger.getLogger("AgoraUIKit")
                             .log(Level.SEVERE, "RTM user login failed. Error: $errorInfo")
                     }
@@ -107,7 +114,7 @@ class AgoraRtmController(
             .map(charPool::get)
             .joinToString("");
 
-        Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "Generated RTM ID: $generatedRtmId")
+        Logger.getLogger("AgoraUIKit").log(Level.INFO, "Generated RTM ID: $generatedRtmId")
 
         this.hostView.connectionData.rtmId = generatedRtmId
     }

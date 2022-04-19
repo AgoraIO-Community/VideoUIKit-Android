@@ -62,6 +62,7 @@ open class AgoraVideoViewer : FrameLayout {
         GRID, FLOATING, COLLECTION
     }
 
+
     /**
      * Gets and sets the role for the user. Either `.audience` or `.broadcaster`.
      */
@@ -133,8 +134,8 @@ open class AgoraVideoViewer : FrameLayout {
     public var activeSpeaker: Int? = null
         internal set
     private val newHandler = AgoraVideoViewerHandler(this)
-    val agoraRtmClientHandler = AgoraRtmClientHandler(this)
-    val agoraRtmChannelHandler = AgoraRtmChannelHandler(this)
+    internal val agoraRtmClientHandler = AgoraRtmClientHandler(this)
+    internal val agoraRtmChannelHandler = AgoraRtmChannelHandler(this)
 
     internal fun addUserVideo(userId: Int): AgoraSingleVideoView {
         this.userVideoLookup[userId]?.let { remoteView ->
@@ -237,7 +238,7 @@ open class AgoraVideoViewer : FrameLayout {
             this.agoraSettings.colors.floatingBackgroundAlpha
     }
 
-    val agoraRtmController = AgoraRtmController(context, this)
+    val agoraRtmController = AgoraRtmController(this)
 
     @Throws(Exception::class)
     private fun initAgoraEngine() {
@@ -251,7 +252,7 @@ open class AgoraVideoViewer : FrameLayout {
         agkit.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
         agkit.enableVideo()
         agkit.setVideoEncoderConfiguration(VideoEncoderConfiguration())
-        if (agoraSettings.enableRtm) {
+        if (agoraSettings.rtmEnabled) {
             agoraRtmController.initAgoraRtm(context)
         }
     }
@@ -352,7 +353,7 @@ open class AgoraVideoViewer : FrameLayout {
         this.setupAgoraVideo()
         getRtcToken(channel, role, uid, fetchToken)
 
-        if (agoraSettings.enableRtm){
+        if (agoraSettings.rtmEnabled){
             getRtmToken(fetchToken)
         }
     }
@@ -404,7 +405,7 @@ open class AgoraVideoViewer : FrameLayout {
     }
 
     fun triggerLoginToRtm() {
-        if (agoraSettings.enableRtm && isAgRrtmClientInitialized()) {
+        if (agoraSettings.rtmEnabled && isAgRrtmClientInitialized()) {
             agoraRtmController.loginToRtm()
         } else {
             Logger.getLogger("AgoraUIKit")

@@ -230,19 +230,20 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
             val menu = PopupMenu(videoView.context, videoView)
 
             menu.menu.apply {
-                add("Request user to " + if (agoraVC.userVideoLookup[uidList[position]]!!.audioMuted) "unmute" else "mute" + " the mic").setOnMenuItemClickListener {
+                val userVideo = agoraVC.userVideoLookup[uidList[position]]
+                add("Request user to " + if (userVideo!!.audioMuted) "unmute" else "mute" + " the mic").setOnMenuItemClickListener {
                     AgoraRtmController.Companion.sendMuteRequest(
                         peerRtcId = uidList[position],
-                        isMicEnabled = agoraVC.userVideoLookup[uidList[position]]!!.audioMuted,
+                        isMicEnabled = userVideo.audioMuted,
                         hostView = agoraVC,
                         deviceType = DeviceType.MIC
                     )
                     true
                 }
-                add("Request user to " + if (agoraVC.userVideoLookup[uidList[position]]!!.videoMuted) "enable" else "disable" + " the camera").setOnMenuItemClickListener {
+                add("Request user to " + if (userVideo.videoMuted) "enable" else "disable" + " the camera").setOnMenuItemClickListener {
                     AgoraRtmController.Companion.sendMuteRequest(
                         peerRtcId = uidList[position],
-                        isMicEnabled = agoraVC.userVideoLookup[uidList[position]]!!.videoMuted,
+                        isMicEnabled = userVideo.videoMuted,
                         hostView = agoraVC,
                         deviceType = DeviceType.CAMERA
                     )
@@ -252,7 +253,11 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
             menu.show()
         }
 
-        holder.frame.addView(hostControl, hostControlLayout)
+        if (agoraVC.agoraSettings.rtmEnabled) {
+            if (videoView.uid != 0) {
+                holder.frame.addView(hostControl, hostControlLayout)
+            }
+        }
 
         holder.itemView.setOnClickListener {
             val newID = if (videoView.uid == 0) this.agoraVC.userID else videoView.uid

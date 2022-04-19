@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
                 this, AgoraConnectionData("my-app-id"),
                 agoraSettings = this.settingsWithExtraButtons(),
             )
+
         } catch (e: Exception) {
             println("Could not initialise AgoraVideoViewer. Check your App ID is valid. ${e.message}")
             return

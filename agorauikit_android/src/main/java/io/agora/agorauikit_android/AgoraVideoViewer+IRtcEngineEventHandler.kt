@@ -24,7 +24,7 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     }
 
     override fun onUserJoined(uid: Int, elapsed: Int) {
-        println("onUserJoined: $uid")
+        Logger.getLogger("AgoraUIKit").log(Level.INFO, "onUserJoined: $uid")
         super.onUserJoined(uid, elapsed)
         this.hostView.remoteUserIDs.add(uid)
     }
@@ -131,7 +131,7 @@ open class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             this.hostView.delegate?.joinedChannel(it)
         }
         this.hostView.isInRtcChannel = true
-        if (!this.hostView.agoraRtmController.isLoggedIn) {
+        if (this.hostView.agoraRtmController.loginStatus != AgoraRtmController.LoginStatus.LOGGED_IN) {
             this.hostView.triggerLoginToRtm()
         }
     }

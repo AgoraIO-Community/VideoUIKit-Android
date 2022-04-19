@@ -16,9 +16,10 @@ public interface RtmTokenCallback {
  * Error types to expect from fetchToken on failing ot retrieve valid token.
  */
 enum class RtmTokenError {
-    NO_DATA, INVALID_DATA, INVALID_URL
+    NO_DATA, INVALID_DATA, INVALID_URL, UNKNOWN
 }
 
+@ExperimentalUnsignedTypes
 fun AgoraRtmController.Companion.fetchToken(urlBase: String, rtmId: String, completion: RtmTokenCallback) {
     val log: Logger = Logger.getLogger("AgoraUIKit")
     val client = OkHttpClient()
@@ -47,23 +48,6 @@ fun AgoraRtmController.Companion.fetchToken(urlBase: String, rtmId: String, comp
                 completion.onError(RtmTokenError.NO_DATA)
             }
         })
-//        client.newCall(request).execute().use { response ->
-//            if (!response.isSuccessful()) {
-//                log.log(Level.WARNING, "Unexpected code $response")
-//                completion.onError(RtmTokenError.INVALID_DATA)
-//            } else {
-//                response.body()?.string()?.let {
-//                    val jObject = JSONObject(it)
-//                    val token = jObject.getString("rtmToken")
-//                    if (!token.isEmpty()) {
-//                        completion.onSuccess(token)
-//                        return
-//                    }
-//                }
-//                completion.onError(RtmTokenError.NO_DATA)
-//            }
-//            return
-//        }
     } catch (e: IOException ) {
         log.log(Level.WARNING, e.localizedMessage)
         completion.onError(RtmTokenError.INVALID_URL)
@@ -72,5 +56,6 @@ fun AgoraRtmController.Companion.fetchToken(urlBase: String, rtmId: String, comp
         completion.onError(RtmTokenError.NO_DATA)
     } catch (e : Exception) {
         log.log(Level.WARNING, e.message)
+        completion.onError(RtmTokenError.UNKNOWN)
     }
 }
