@@ -26,9 +26,9 @@ fun AgoraRtmController.Companion.messageReceived(message: String, hostView: Agor
             val snackbar = Snackbar.make(
                 hostView,
                 if (deviceType == DeviceType.MIC)
-                    "Please " + ((if (muteRequest.mute) "" else "un") + "mute your mic")
+                    "Please " + (if (muteRequest.mute) "" else "un") + "mute your mic"
                 else
-                    "Please " + ((if (muteRequest.mute) "dis" else "en") + "able your camera"),
+                    "Please " + (if (muteRequest.mute) "dis" else "en") + "able your camera",
                 Snackbar.LENGTH_LONG
             )
             snackbar.setAction(
