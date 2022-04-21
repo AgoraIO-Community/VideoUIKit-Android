@@ -230,7 +230,7 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
             val menu = PopupMenu(videoView.context, videoView)
 
             menu.menu.apply {
-                add("Request user to " + if (videoView.audioMuted) "un" else "" + "mute the mic").setOnMenuItemClickListener {
+                add("Request user to " + (if (videoView.audioMuted) "un" else "") + "mute the mic").setOnMenuItemClickListener {
                     AgoraRtmController.Companion.sendMuteRequest(
                         peerRtcId = uidList[position],
                         mute = !videoView.audioMuted,
@@ -239,7 +239,7 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
                     )
                     true
                 }
-                add("Request user to " + if (videoView.videoMuted) "en" else "dis" + "able the camera").setOnMenuItemClickListener {
+                add("Request user to " + (if (videoView.videoMuted) "en" else "dis") + "able the camera").setOnMenuItemClickListener {
                     AgoraRtmController.Companion.sendMuteRequest(
                         peerRtcId = uidList[position],
                         mute = !videoView.videoMuted,
