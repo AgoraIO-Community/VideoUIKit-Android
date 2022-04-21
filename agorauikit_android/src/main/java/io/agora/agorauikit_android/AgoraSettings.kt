@@ -8,11 +8,11 @@ import io.agora.rtc.video.VideoEncoderConfiguration
  * Settings used for the display and behaviour of AgoraVideoViewer
  */
 class AgoraSettings {
-    internal var userRtmMap = mutableMapOf<String, String>()
+    internal var userRtmMap = mutableMapOf<String, UserData>()
     internal var uidToUserIdMap = mutableMapOf<Int, String>()
 
     /// Whether RTM should be initialised and used
-    public var rtmEnabled: Boolean = false
+    public var rtmEnabled: Boolean = true
     /** URL to fetch tokens from. If supplied, this package will automatically fetch tokens
      * when the Agora Engine indicates it will be needed.
      * It will follow the URL pattern found in
