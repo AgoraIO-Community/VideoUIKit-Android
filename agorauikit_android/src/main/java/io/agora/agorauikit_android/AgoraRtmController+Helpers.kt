@@ -13,45 +13,43 @@ fun AgoraRtmController.Companion.messageReceived(message: String, hostView: Agor
     val messageMap = JSONObject(message)
     when (messageMap.getString("messageType")) {
         "UserData" -> {
-            val rtcId = messageMap.getInt("rtcId")
-            val rtmId = messageMap.getString("rtmId")
-            hostView.agoraSettings.uidToUserIdMap.putIfAbsent(rtcId, rtmId)
-            hostView.agoraSettings.userRtmMap.putIfAbsent(rtmId, message)
+            val userData = Json.decodeFromString<UserData>(message)
+            val rtmId = userData.rtmId
+            userData.rtcId?.let { rtcId ->
+                hostView.agoraSettings.uidToUserIdMap.putIfAbsent(rtcId, rtmId)
+            }
+            hostView.agoraSettings.userRtmMap.putIfAbsent(rtmId, userData)
         }
         "MuteRequest" -> {
-            var deviceStatus = messageMap.getBoolean("mute")
-            val deviceType = messageMap.getInt("device")
+            val muteRequest = Json.decodeFromString<MuteRequest>(message)
+            val deviceType = DeviceType.fromInt(muteRequest.device)
             val snackbar = Snackbar.make(
                 hostView,
-                if (deviceType == 0)
-                    "Please " + if (deviceStatus) "unmute" else "mute" + " your mic"
+                if (deviceType == DeviceType.MIC)
+                    "Please " + ((if (muteRequest.mute) "" else "un") + "mute your mic")
                 else
-                    "Please " + if (deviceStatus) "enable" else "disable" + " your camera",
+                    "Please " + ((if (muteRequest.mute) "dis" else "en") + "able your camera"),
                 Snackbar.LENGTH_LONG
             )
             snackbar.setAction(
-                if (deviceType == 0)
-                    if (deviceStatus) "unmute" else "mute"
+                if (deviceType == DeviceType.MIC)
+                    if (muteRequest.mute) "mute" else "unmute"
                 else
-                    if (deviceStatus) "enable" else "disable"
+                    if (muteRequest.mute) "disable" else "enable"
             ){
-                if (deviceType == 0) {
-                    hostView.agkit.muteLocalAudioStream(!deviceStatus);
-                    deviceStatus = !deviceStatus
-                    hostView.micButton?.background?.setTint(if (deviceStatus) Color.RED else Color.GRAY)
-                    hostView.micButton?.isSelected = deviceStatus
-                    hostView.userVideoLookup[hostView.userID]?.mutedFlag?.visibility =
-                        if (deviceStatus) FrameLayout.VISIBLE else FrameLayout.INVISIBLE
-                    hostView.userVideoLookup[hostView.userID]?.audioMuted = deviceStatus
+                var changingButton: AgoraButton?
+                var isMuted = muteRequest.mute
+                if (deviceType == DeviceType.MIC) {
+                    hostView.agkit.muteLocalAudioStream(isMuted);
+                    changingButton = hostView.micButton
+                    hostView.userVideoLookup[hostView.userID]?.audioMuted = isMuted
                 } else {
-                    hostView.agkit.enableLocalVideo(deviceStatus)
-                    deviceStatus = !deviceStatus
-                    hostView.camButton?.background?.setTint(if (deviceStatus) Color.RED else Color.GRAY)
-                    hostView.camButton?.isSelected = deviceStatus
-                    hostView.userVideoLookup[hostView.userID]?.backgroundView?.visibility =
-                        if (deviceStatus) FrameLayout.VISIBLE else FrameLayout.INVISIBLE
-                    hostView.userVideoLookup[hostView.userID]?.videoMuted = !deviceStatus
+                    hostView.agkit.enableLocalVideo(!isMuted)
+                    changingButton = hostView.camButton
+                    hostView.userVideoLookup[hostView.userID]?.videoMuted = isMuted
                 }
+                changingButton?.isSelected = isMuted
+                changingButton?.background?.setTint(if (isMuted) Color.RED else Color.GRAY)
             }
             snackbar.show()
         }

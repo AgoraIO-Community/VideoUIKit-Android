@@ -10,17 +10,21 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 
+@Serializable
 enum class DeviceType(val raw: Int) {
-    CAMERA(1), MIC(0)
+    CAMERA(0), MIC(1);
+    companion object {
+        fun fromInt(value: Int) = DeviceType.values().first { it.raw == value }
+    }
 }
 
 
 @Serializable
 data class UserData(
-    @SerialName("messageType") var messageType: String,
+    @SerialName("messageType") var messageType: String = "UserData",
     @SerialName("rtmId") var rtmId: String,
-    @SerialName("rtcId") var rtcId: Int,
-    @SerialName("username") var username: String,
+    @SerialName("rtcId") var rtcId: Int?,
+    @SerialName("username") var username: String? = null,
     @SerialName("role") var role: Int,
     @SerialName("agora") var agoraVersion: AgoraVersion,
     @SerialName("uikit") var uiKitData: UIKitData,
@@ -30,18 +34,28 @@ data class UserData(
 data class AgoraVersion(
     @SerialName("rtm") var rtmVersion: String,
     @SerialName("rtc") var rtcVersion: String,
-) : java.io.Serializable
+) : java.io.Serializable {
+    companion object {
+        val current: AgoraVersion = AgoraVersion(RtmClient.getSdkVersion(), RtcEngine.getSdkVersion())
+    }
+}
 
 @Serializable
 data class UIKitData(
     @SerialName("platform") var platform: String,
     @SerialName("framework") var framework: String,
     @SerialName("version") var version: String,
-) : java.io.Serializable
+) : java.io.Serializable {
+    companion object {
+        val current: UIKitData = UIKitData("android", "native", "2.1.0")
+    }
+}
+
+
 
 @Serializable
 data class MuteRequest(
-    @SerialName("messageType") var messageType: String,
+    @SerialName("messageType") var messageType: String = "MuteRequest",
     @SerialName("rtcId") var rtcId: Int,
     @SerialName("mute") var mute: Boolean,
     @SerialName("device") var device: Int,
@@ -57,30 +71,20 @@ fun AgoraRtmController.Companion.sendUserData(
 ) {
     val rtmId = hostView.connectionData.rtmId as String
 
-    val agoraVersion = AgoraVersion(
-        rtmVersion = RtmClient.getSdkVersion(),
-        rtcVersion = RtcEngine.getSdkVersion(),
-    )
-
-    val uikitData = UIKitData(
-        platform = "android",
-        framework = "native",
-        version = "2.0.7",
-    )
-
     val userData = UserData(
-        messageType = "UserData",
         rtmId = rtmId,
         rtcId = hostView.userID,
-        username = hostView.connectionData.username?.let { hostView.connectionData.username } ?: let { "" },
+        username = hostView.connectionData.username,
         role = hostView.userRole,
-        agoraVersion = agoraVersion,
-        uiKitData = uikitData
+        agoraVersion = AgoraVersion.current,
+        uiKitData = UIKitData.current
     )
 
-    val data = Json.encodeToString(userData)
-    val message: RtmMessage = hostView.agRtmClient.createMessage()
-    message.text = data
+    val json = Json { encodeDefaults = true }
+    val data = json.encodeToString(userData)
+    val message: RtmMessage = hostView.agRtmClient.createMessage(data)
+
+    Logger.getLogger("AgoraUIKit").log(Level.INFO, message.text)
 
     val option = SendMessageOptions()
     option.enableOfflineMessaging = true
@@ -115,23 +119,23 @@ fun AgoraRtmController.Companion.sendUserData(
 @ExperimentalUnsignedTypes
 fun AgoraRtmController.Companion.sendMuteRequest(
     peerRtcId: Int,
-    isMicEnabled: Boolean,
+    mute: Boolean,
     hostView: AgoraVideoViewer,
-    deviceType: DeviceType
+    deviceType: DeviceType,
+    isForceful: Boolean = false
 ) {
     var peerRtmId: String? = null
 
     val muteRequest = MuteRequest(
-        messageType = "MuteRequest",
         rtcId = peerRtcId,
-        mute = isMicEnabled,
+        mute = mute,
         device = deviceType.raw,
-        isForceful = false
+        isForceful = isForceful
     )
 
-    val data = Json.encodeToString(muteRequest)
-    val message: RtmMessage = hostView.agRtmClient.createMessage()
-    message.text = data
+    val json = Json { encodeDefaults = true }
+    val data = json.encodeToString(muteRequest)
+    val message: RtmMessage = hostView.agRtmClient.createMessage(data)
 
     val option = SendMessageOptions()
     option.enableOfflineMessaging = true
