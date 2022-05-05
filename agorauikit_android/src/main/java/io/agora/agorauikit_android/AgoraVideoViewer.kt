@@ -200,6 +200,12 @@ open class AgoraVideoViewer : FrameLayout {
 
     internal var connectionData: AgoraConnectionData
 
+    internal var agoraRtcEventHandlerDelegate: AgoraRtcEventHandlerDelegate? = null
+
+    internal var agoraRtmClientDelegate: AgoraRtmClientDelegate? = null
+
+    internal var agoraRtmChannelDelegate: AgoraRtmChannelDelegate? = null
+
     /**
      * Creates an AgoraVideoViewer object, to be placed anywhere in your application.
      * @param context: Application context
@@ -215,11 +221,17 @@ open class AgoraVideoViewer : FrameLayout {
         style: Style = Style.FLOATING,
         agoraSettings: AgoraSettings = AgoraSettings(),
         delegate: AgoraVideoViewerDelegate? = null,
+        agoraRtcEventHandlerDelegate: AgoraRtcEventHandlerDelegate? = null,
+        agoraRtmChannelDelegate: AgoraRtmChannelDelegate? = null,
+        agoraRtmClientDelegate: AgoraRtmClientDelegate? = null,
     ) : super(context) {
         this.connectionData = connectionData
         this.style = style
         this.agoraSettings = agoraSettings
         this.delegate = delegate
+        this.agoraRtcEventHandlerDelegate = agoraRtcEventHandlerDelegate
+        this.agoraRtmChannelDelegate = agoraRtmChannelDelegate
+        this.agoraRtmClientDelegate = agoraRtmClientDelegate
 //        this.setBackgroundColor(Color.BLUE)
         initAgoraEngine()
         this.addView(
@@ -297,7 +309,7 @@ open class AgoraVideoViewer : FrameLayout {
 
     fun isAgRtmChannelInitialized() = ::agRtmChannel.isInitialized
 
-    fun isAgRrtmClientInitialized() = ::agRtmClient.isInitialized
+    fun isAgRtmClientInitialized() = ::agRtmClient.isInitialized
 
     /// VideoControl
 
@@ -405,7 +417,7 @@ open class AgoraVideoViewer : FrameLayout {
     }
 
     fun triggerLoginToRtm() {
-        if (agoraSettings.rtmEnabled && isAgRrtmClientInitialized()) {
+        if (agoraSettings.rtmEnabled && isAgRtmClientInitialized()) {
             agoraRtmController.loginToRtm()
         } else {
             Logger.getLogger("AgoraUIKit")

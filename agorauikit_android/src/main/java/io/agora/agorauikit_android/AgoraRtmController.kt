@@ -39,7 +39,7 @@ class AgoraRtmController(
         if (this.hostView.connectionData.rtmId.isNullOrEmpty()) {
             generateRtmId()
         }
-        if (loginStatus != LoginStatus.LOGGED_IN && hostView.isAgRrtmClientInitialized()) {
+        if (loginStatus != LoginStatus.LOGGED_IN && hostView.isAgRtmClientInitialized()) {
             loginStatus = LoginStatus.LOGGING_IN
             Logger.getLogger("AgoraUIKit")
                 .log(Level.INFO, "Trying to do RTM login")
