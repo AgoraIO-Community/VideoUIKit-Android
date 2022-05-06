@@ -2,7 +2,9 @@ package io.agora.agorauikit_android
 
 import android.graphics.Color
 import io.agora.rtc.Constants
+import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.video.VideoEncoderConfiguration
+import io.agora.rtm.RtmClientListener
 
 /**
  * Settings used for the display and behaviour of AgoraVideoViewer
@@ -10,6 +12,13 @@ import io.agora.rtc.video.VideoEncoderConfiguration
 class AgoraSettings {
     internal var userRtmMap = mutableMapOf<String, UserData>()
     internal var uidToUserIdMap = mutableMapOf<Int, String>()
+
+
+    internal var agoraRtcEventHandler: IRtcEngineEventHandler? = null
+
+    internal var agoraRtmClientHandler: RtmClientListener? = null
+
+    internal var agoraRtmChannelHandler: AgoraRtmChannelHandler? = null
 
     /// Whether RTM should be initialised and used
     public var rtmEnabled: Boolean = true

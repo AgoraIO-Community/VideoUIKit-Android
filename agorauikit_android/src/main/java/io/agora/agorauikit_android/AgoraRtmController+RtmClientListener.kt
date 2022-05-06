@@ -10,44 +10,44 @@ class AgoraRtmClientHandler(private val hostView: AgoraVideoViewer) : RtmClientL
         Logger.getLogger("AgoraUIKit")
             .log(Level.INFO, "RTM Connection State Changed. state: $state, reason: $reason")
 
-        this.hostView.agoraRtmClientDelegate?.onConnectionStateChanged?.invoke(state, reason)
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onConnectionStateChanged(state, reason)
     }
 
     override fun onMessageReceived(rtmMessage: RtmMessage, peerId: String?) {
         AgoraRtmController.Companion.messageReceived(message = rtmMessage.text, hostView = hostView)
 
-        this.hostView.agoraRtmClientDelegate?.onMessageReceived?.invoke(rtmMessage, peerId)
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onMessageReceived(rtmMessage, peerId)
     }
 
     override fun onImageMessageReceivedFromPeer(p0: RtmImageMessage?, p1: String?) {
-        this.hostView.agoraRtmClientDelegate?.onImageMessageReceivedFromPeer?.invoke(p0, p1)
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onImageMessageReceivedFromPeer(p0, p1)
     }
 
     override fun onFileMessageReceivedFromPeer(p0: RtmFileMessage?, p1: String?) {
-        this.hostView.agoraRtmClientDelegate?.onFileMessageReceivedFromPeer?.invoke(p0, p1)
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onFileMessageReceivedFromPeer(p0, p1)
     }
 
     override fun onMediaUploadingProgress(
         p0: RtmMediaOperationProgress?,
         p1: Long
     ) {
-        this.hostView.agoraRtmClientDelegate?.onMediaUploadingProgress?.invoke(p0, p1)
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onMediaUploadingProgress(p0, p1)
     }
 
     override fun onMediaDownloadingProgress(
         p0: RtmMediaOperationProgress?,
         p1: Long
     ) {
-        this.hostView.agoraRtmClientDelegate?.onMediaDownloadingProgress?.invoke(p0, p1)
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onMediaDownloadingProgress(p0, p1)
     }
 
     override fun onTokenExpired() {
-        this.hostView.agoraRtmClientDelegate?.onTokenExpired?.invoke()
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onTokenExpired()
     }
 
     override fun onPeersOnlineStatusChanged(peerStatus: MutableMap<String, Int>?) {
         Logger.getLogger("AgoraUIKit").log(Level.INFO, "onPeerOnlineStatusChanged: $peerStatus")
 
-        this.hostView.agoraRtmClientDelegate?.onPeersOnlineStatusChanged?.invoke(peerStatus)
+        this.hostView.agoraSettings.agoraRtmClientHandler?.onPeersOnlineStatusChanged(peerStatus)
     }
 }
