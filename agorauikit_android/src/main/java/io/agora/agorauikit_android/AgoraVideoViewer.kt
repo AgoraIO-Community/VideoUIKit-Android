@@ -138,6 +138,10 @@ open class AgoraVideoViewer : FrameLayout {
     internal val agoraRtmClientHandler = AgoraRtmClientHandler(this)
     internal val agoraRtmChannelHandler = AgoraRtmChannelHandler(this)
 
+    var rtcOverrideHandler: IRtcEngineEventHandler? = null
+    var rtmClientOverrideHandler: AgoraRtmClientHandler? = null
+    var rtmChannelOverrideHandler: AgoraRtmChannelHandler? = null
+
     internal fun addUserVideo(userId: Int): AgoraSingleVideoView {
         this.userVideoLookup[userId]?.let { remoteView ->
             return remoteView
@@ -197,7 +201,6 @@ open class AgoraVideoViewer : FrameLayout {
         this.reorganiseVideos()
         return vidView
     }
-
 
     internal var connectionData: AgoraConnectionData
 

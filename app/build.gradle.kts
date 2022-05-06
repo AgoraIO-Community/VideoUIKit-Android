@@ -38,7 +38,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 
     implementation(project(":agorauikit_android"))
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")

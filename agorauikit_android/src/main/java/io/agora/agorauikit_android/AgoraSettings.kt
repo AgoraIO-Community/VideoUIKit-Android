@@ -13,13 +13,6 @@ class AgoraSettings {
     internal var userRtmMap = mutableMapOf<String, UserData>()
     internal var uidToUserIdMap = mutableMapOf<Int, String>()
 
-
-    internal var agoraRtcEventHandler: IRtcEngineEventHandler? = null
-
-    internal var agoraRtmClientHandler: RtmClientListener? = null
-
-    internal var agoraRtmChannelHandler: AgoraRtmChannelHandler? = null
-
     /// Whether RTM should be initialised and used
     public var rtmEnabled: Boolean = true
     /** URL to fetch tokens from. If supplied, this package will automatically fetch tokens
