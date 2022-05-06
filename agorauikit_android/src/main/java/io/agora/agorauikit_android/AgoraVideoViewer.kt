@@ -6,6 +6,7 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import io.agora.rtc.Constants
+import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.BeautyOptions
 import io.agora.rtc.video.VideoEncoderConfiguration
@@ -137,6 +138,10 @@ open class AgoraVideoViewer : FrameLayout {
     internal val agoraRtmClientHandler = AgoraRtmClientHandler(this)
     internal val agoraRtmChannelHandler = AgoraRtmChannelHandler(this)
 
+    var rtcOverrideHandler: IRtcEngineEventHandler? = null
+    var rtmClientOverrideHandler: AgoraRtmClientHandler? = null
+    var rtmChannelOverrideHandler: AgoraRtmChannelHandler? = null
+
     internal fun addUserVideo(userId: Int): AgoraSingleVideoView {
         this.userVideoLookup[userId]?.let { remoteView ->
             return remoteView
@@ -197,14 +202,7 @@ open class AgoraVideoViewer : FrameLayout {
         return vidView
     }
 
-
     internal var connectionData: AgoraConnectionData
-
-    internal var agoraRtcEventHandlerDelegate: AgoraRtcEventHandlerDelegate? = null
-
-    internal var agoraRtmClientDelegate: AgoraRtmClientDelegate? = null
-
-    internal var agoraRtmChannelDelegate: AgoraRtmChannelDelegate? = null
 
     /**
      * Creates an AgoraVideoViewer object, to be placed anywhere in your application.
@@ -220,18 +218,12 @@ open class AgoraVideoViewer : FrameLayout {
         connectionData: AgoraConnectionData,
         style: Style = Style.FLOATING,
         agoraSettings: AgoraSettings = AgoraSettings(),
-        delegate: AgoraVideoViewerDelegate? = null,
-        agoraRtcEventHandlerDelegate: AgoraRtcEventHandlerDelegate? = null,
-        agoraRtmChannelDelegate: AgoraRtmChannelDelegate? = null,
-        agoraRtmClientDelegate: AgoraRtmClientDelegate? = null,
+        delegate: AgoraVideoViewerDelegate? = null
     ) : super(context) {
         this.connectionData = connectionData
         this.style = style
         this.agoraSettings = agoraSettings
         this.delegate = delegate
-        this.agoraRtcEventHandlerDelegate = agoraRtcEventHandlerDelegate
-        this.agoraRtmChannelDelegate = agoraRtmChannelDelegate
-        this.agoraRtmClientDelegate = agoraRtmClientDelegate
 //        this.setBackgroundColor(Color.BLUE)
         initAgoraEngine()
         this.addView(
@@ -329,10 +321,7 @@ open class AgoraVideoViewer : FrameLayout {
      * @return Same return as RtcEngine.leaveChannel, 0 means no problem, less than 0 means there was an issue leaving
      */
     fun leaveChannel(): Int {
-        val channelName = this.connectionData.channel
-        if (channelName == null) {
-            return 0
-        }
+        val channelName = this.connectionData.channel ?: return 0
         this.agkit.setupLocalVideo(null)
         if (this.userRole == Constants.CLIENT_ROLE_BROADCASTER) {
             this.agkit.stopPreview()

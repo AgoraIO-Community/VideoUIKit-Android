@@ -26,7 +26,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         // Only show the camera options when we are a broadcaster
 //            this.getControlContainer().isHidden = !isHost
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onClientRoleChanged?.invoke(oldRole, newRole)
+        this.hostView.rtcOverrideHandler?.onClientRoleChanged(oldRole, newRole)
     }
 
     override fun onUserJoined(uid: Int, elapsed: Int) {
@@ -34,7 +34,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         super.onUserJoined(uid, elapsed)
         this.hostView.remoteUserIDs.add(uid)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserJoined?.invoke(uid, elapsed)
+        this.hostView.rtcOverrideHandler?.onUserJoined(uid, elapsed)
     }
 
     override fun onRemoteAudioStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
@@ -55,7 +55,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             }
         }
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRemoteAudioStateChanged?.invoke(uid, state, reason, elapsed)
+        this.hostView.rtcOverrideHandler?.onRemoteAudioStateChanged(uid, state, reason, elapsed)
     }
 
     override fun onUserOffline(uid: Int, reason: Int) {
@@ -69,15 +69,15 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
                 this.hostView.removeUserVideo(uid)
             }
         }
-        
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserOffline?.invoke(uid, reason)
+
+        this.hostView.rtcOverrideHandler?.onUserOffline(uid, reason)
     }
 
     override fun onActiveSpeaker(uid: Int) {
         super.onActiveSpeaker(uid)
         this.hostView.activeSpeaker = uid
-        
-        this.hostView.agoraRtcEventHandlerDelegate?.onActiveSpeaker?.invoke(uid)
+
+        this.hostView.rtcOverrideHandler?.onActiveSpeaker(uid)
     }
 
     override fun onRemoteVideoStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
@@ -98,8 +98,8 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
                 }
             }
         }
-        
-        this.hostView.agoraRtcEventHandlerDelegate?.onRemoteVideoStateChanged?.invoke(uid, state, reason, elapsed)
+
+        this.hostView.rtcOverrideHandler?.onRemoteVideoStateChanged(uid, state, reason, elapsed)
     }
 
     override fun onLocalVideoStateChanged(localVideoState: Int, error: Int) {
@@ -114,7 +114,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             }
         }
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLocalVideoStateChanged?.invoke(localVideoState, error)
+        this.hostView.rtcOverrideHandler?.onLocalVideoStateChanged(localVideoState, error)
     }
 
     override fun onLocalAudioStateChanged(state: Int, error: Int) {
@@ -129,14 +129,14 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             }
         }
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLocalAudioStateChanged?.invoke(state, error)
+        this.hostView.rtcOverrideHandler?.onLocalAudioStateChanged(state, error)
     }
 
     override fun onFirstLocalAudioFramePublished(elapsed: Int) {
         super.onFirstLocalAudioFramePublished(elapsed)
 //        this.hostView.addLocalVideo()?.audioMuted = false
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onFirstLocalAudioFramePublished?.invoke(elapsed)
+        this.hostView.rtcOverrideHandler?.onFirstLocalAudioFramePublished(elapsed)
     }
 
     override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
@@ -158,7 +158,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             this.hostView.triggerLoginToRtm()
         }
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onJoinChannelSuccess?.invoke(channel,uid, elapsed)
+        this.hostView.rtcOverrideHandler?.onJoinChannelSuccess(channel,uid, elapsed)
     }
 
     override fun onTokenPrivilegeWillExpire(token: String?) {
@@ -168,7 +168,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         }
         this.hostView.fetchRenewToken()
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onTokenPrivilegeWillExpire?.invoke(token)
+        this.hostView.rtcOverrideHandler?.onTokenPrivilegeWillExpire(token)
     }
 
     override fun onRequestToken() {
@@ -178,25 +178,25 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         }
         this.hostView.fetchRenewToken()
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRequestToken?.invoke()
+        this.hostView.rtcOverrideHandler?.onRequestToken()
     }
 
     override fun onApiCallExecuted(error: Int, api: String?, result: String?) {
         super.onApiCallExecuted(error, api, result)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onApiCallExecuted?.invoke(error, api, result)
+        this.hostView.rtcOverrideHandler?.onApiCallExecuted(error, api, result)
     }
 
     override fun onAudioEffectFinished(soundId: Int) {
         super.onAudioEffectFinished(soundId)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onAudioEffectFinished?.invoke(soundId)
+        this.hostView.rtcOverrideHandler?.onAudioEffectFinished(soundId)
     }
 
     override fun onAudioMixingStateChanged(state: Int, reason: Int) {
         super.onAudioMixingStateChanged(state, reason)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onAudioMixingStateChanged?.invoke(state, reason)
+        this.hostView.rtcOverrideHandler?.onAudioMixingStateChanged(state, reason)
     }
 
     override fun onAudioPublishStateChanged(
@@ -207,13 +207,13 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onAudioPublishStateChanged(channel, oldState, newState, elapseSinceLastState)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onAudioPublishStateChanged?.invoke(channel, oldState, newState, elapseSinceLastState)
+        this.hostView.rtcOverrideHandler?.onAudioPublishStateChanged(channel, oldState, newState, elapseSinceLastState)
     }
 
     override fun onAudioRouteChanged(routing: Int) {
         super.onAudioRouteChanged(routing)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onAudioRouteChanged?.invoke(routing)
+        this.hostView.rtcOverrideHandler?.onAudioRouteChanged(routing)
     }
 
     override fun onAudioSubscribeStateChanged(
@@ -225,67 +225,67 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onAudioSubscribeStateChanged(channel, uid, oldState, newState, elapseSinceLastState)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onAudioSubscribeStateChanged?.invoke(channel, uid, oldState, newState, elapseSinceLastState)
+        this.hostView.rtcOverrideHandler?.onAudioSubscribeStateChanged(channel, uid, oldState, newState, elapseSinceLastState)
     }
 
     override fun onAudioVolumeIndication(speakers: Array<out AudioVolumeInfo>?, totalVolume: Int) {
         super.onAudioVolumeIndication(speakers, totalVolume)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onAudioVolumeIndication?.invoke(speakers, totalVolume)
+        this.hostView.rtcOverrideHandler?.onAudioVolumeIndication(speakers, totalVolume)
     }
 
     override fun onCameraExposureAreaChanged(rect: Rect?) {
         super.onCameraExposureAreaChanged(rect)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onCameraExposureAreaChanged?.invoke(rect)
+        this.hostView.rtcOverrideHandler?.onCameraExposureAreaChanged(rect)
     }
 
     override fun onCameraFocusAreaChanged(rect: Rect?) {
         super.onCameraFocusAreaChanged(rect)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onCameraExposureAreaChanged?.invoke(rect)
+        this.hostView.rtcOverrideHandler?.onCameraExposureAreaChanged(rect)
     }
 
     override fun onChannelMediaRelayEvent(code: Int) {
         super.onChannelMediaRelayEvent(code)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onChannelMediaRelayEvent?.invoke(code)
+        this.hostView.rtcOverrideHandler?.onChannelMediaRelayEvent(code)
     }
 
     override fun onChannelMediaRelayStateChanged(state: Int, code: Int) {
         super.onChannelMediaRelayStateChanged(state, code)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onChannelMediaRelayStateChanged?.invoke(state, code)
+        this.hostView.rtcOverrideHandler?.onChannelMediaRelayStateChanged(state, code)
     }
 
     override fun onClientRoleChangeFailed(reason: Int, currentRole: Int) {
         super.onClientRoleChangeFailed(reason, currentRole)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onClientRoleChangeFailed?.invoke(reason, currentRole)
+        this.hostView.rtcOverrideHandler?.onClientRoleChangeFailed(reason, currentRole)
     }
 
     override fun onConnectionLost() {
         super.onConnectionLost()
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onConnectionLost?.invoke()
+        this.hostView.rtcOverrideHandler?.onConnectionLost()
     }
 
     override fun onConnectionStateChanged(state: Int, reason: Int) {
         super.onConnectionStateChanged(state, reason)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onConnectionStateChanged?.invoke(state, reason)
+        this.hostView.rtcOverrideHandler?.onConnectionStateChanged(state, reason)
     }
 
     override fun onContentInspectResult(result: Int) {
         super.onContentInspectResult(result)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onContentInspectResult?.invoke(result)
+        this.hostView.rtcOverrideHandler?.onContentInspectResult(result)
     }
 
     override fun onError(err: Int) {
         super.onError(err)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onError?.invoke(err)
+        this.hostView.rtcOverrideHandler?.onError(err)
     }
 
     override fun onFacePositionChanged(
@@ -295,103 +295,103 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onFacePositionChanged(imageWidth, imageHeight, faces)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onFacePositionChanged?.invoke(imageHeight, imageHeight, faces)
+        this.hostView.rtcOverrideHandler?.onFacePositionChanged(imageHeight, imageHeight, faces)
     }
 
     override fun onFirstLocalVideoFrame(width: Int, height: Int, elapsed: Int) {
         super.onFirstLocalVideoFrame(width, height, elapsed)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onFirstLocalVideoFrame?.invoke(width, height, elapsed)
+        this.hostView.rtcOverrideHandler?.onFirstLocalVideoFrame(width, height, elapsed)
     }
 
     override fun onFirstLocalVideoFramePublished(elapsed: Int) {
         super.onFirstLocalVideoFramePublished(elapsed)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onFirstLocalAudioFramePublished?.invoke(elapsed)
+        this.hostView.rtcOverrideHandler?.onFirstLocalAudioFramePublished(elapsed)
     }
 
     override fun onFirstRemoteVideoDecoded(uid: Int, width: Int, height: Int, elapsed: Int) {
         super.onFirstRemoteVideoDecoded(uid, width, height, elapsed)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onFirstRemoteVideoDecoded?.invoke(uid, width, height, elapsed)
+        this.hostView.rtcOverrideHandler?.onFirstRemoteVideoDecoded(uid, width, height, elapsed)
     }
 
     override fun onFirstRemoteVideoFrame(uid: Int, width: Int, height: Int, elapsed: Int) {
         super.onFirstRemoteVideoFrame(uid, width, height, elapsed)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onFirstRemoteVideoFrame?.invoke(uid, width, height, elapsed)
+        this.hostView.rtcOverrideHandler?.onFirstRemoteVideoFrame(uid, width, height, elapsed)
     }
 
     override fun onLastmileProbeResult(result: LastmileProbeResult?) {
         super.onLastmileProbeResult(result)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLastmileProbeResult?.invoke(result)
+        this.hostView.rtcOverrideHandler?.onLastmileProbeResult(result)
     }
 
     override fun onLastmileQuality(quality: Int) {
         super.onLastmileQuality(quality)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLastmileQuality?.invoke(quality)
+        this.hostView.rtcOverrideHandler?.onLastmileQuality(quality)
     }
 
     override fun onLeaveChannel(stats: RtcStats?) {
         super.onLeaveChannel(stats)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLeaveChannel?.invoke(stats)
+        this.hostView.rtcOverrideHandler?.onLeaveChannel(stats)
     }
 
     override fun onLocalAudioStats(stats: LocalAudioStats?) {
         super.onLocalAudioStats(stats)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLocalAudioStats?.invoke(stats)
+        this.hostView.rtcOverrideHandler?.onLocalAudioStats(stats)
     }
 
     override fun onLocalPublishFallbackToAudioOnly(isFallbackOrRecover: Boolean) {
         super.onLocalPublishFallbackToAudioOnly(isFallbackOrRecover)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLocalPublishFallbackToAudioOnly?.invoke(isFallbackOrRecover)
+        this.hostView.rtcOverrideHandler?.onLocalPublishFallbackToAudioOnly(isFallbackOrRecover)
     }
 
     override fun onLocalUserRegistered(uid: Int, userAccount: String?) {
         super.onLocalUserRegistered(uid, userAccount)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLocalUserRegistered?.invoke(uid, userAccount)
+        this.hostView.rtcOverrideHandler?.onLocalUserRegistered(uid, userAccount)
     }
 
     override fun onLocalVideoStats(stats: LocalVideoStats?) {
         super.onLocalVideoStats(stats)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLocalVideoStats?.invoke(stats)
+        this.hostView.rtcOverrideHandler?.onLocalVideoStats(stats)
     }
 
     override fun onLocalVoicePitchInHz(pitchInHz: Int) {
         super.onLocalVoicePitchInHz(pitchInHz)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onLocalVoicePitchInHz?.invoke(pitchInHz)
+        this.hostView.rtcOverrideHandler?.onLocalVoicePitchInHz(pitchInHz)
     }
 
     override fun onMediaEngineLoadSuccess() {
         super.onMediaEngineLoadSuccess()
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onMediaEngineLoadSuccess?.invoke()
+        this.hostView.rtcOverrideHandler?.onMediaEngineLoadSuccess()
     }
 
     override fun onMediaEngineStartCallSuccess() {
         super.onMediaEngineStartCallSuccess()
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onMediaEngineStartCallSuccess?.invoke()
+        this.hostView.rtcOverrideHandler?.onMediaEngineStartCallSuccess()
     }
 
     override fun onNetworkQuality(uid: Int, txQuality: Int, rxQuality: Int) {
         super.onNetworkQuality(uid, txQuality, rxQuality)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onNetworkQuality?.invoke(uid, txQuality, rxQuality)
+        this.hostView.rtcOverrideHandler?.onNetworkQuality(uid, txQuality, rxQuality)
     }
 
     override fun onNetworkTypeChanged(type: Int) {
         super.onNetworkTypeChanged(type)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onNetworkTypeChanged?.invoke(type)
+        this.hostView.rtcOverrideHandler?.onNetworkTypeChanged(type)
     }
 
     override fun onProxyConnected(
@@ -403,55 +403,55 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onProxyConnected(channel, uid, proxyType, localProxyIp, elapsed)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onProxyConnected?.invoke(channel, uid, proxyType, localProxyIp, elapsed)
+        this.hostView.rtcOverrideHandler?.onProxyConnected(channel, uid, proxyType, localProxyIp, elapsed)
     }
 
     override fun onRejoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
         super.onRejoinChannelSuccess(channel, uid, elapsed)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRejoinChannelSuccess?.invoke(channel, uid, elapsed)
+        this.hostView.rtcOverrideHandler?.onRejoinChannelSuccess(channel, uid, elapsed)
     }
 
     override fun onRemoteAudioStats(stats: RemoteAudioStats?) {
         super.onRemoteAudioStats(stats)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRemoteAudioStats?.invoke(stats)
+        this.hostView.rtcOverrideHandler?.onRemoteAudioStats(stats)
     }
 
     override fun onRemoteSubscribeFallbackToAudioOnly(uid: Int, isFallbackOrRecover: Boolean) {
         super.onRemoteSubscribeFallbackToAudioOnly(uid, isFallbackOrRecover)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRemoteSubscribeFallbackToAudioOnly?.invoke(uid, isFallbackOrRecover)
+        this.hostView.rtcOverrideHandler?.onRemoteSubscribeFallbackToAudioOnly(uid, isFallbackOrRecover)
     }
 
     override fun onRemoteVideoStats(stats: RemoteVideoStats?) {
         super.onRemoteVideoStats(stats)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRemoteVideoStats?.invoke(stats)
+        this.hostView.rtcOverrideHandler?.onRemoteVideoStats(stats)
     }
 
     override fun onRequestAudioFileInfo(info: AudioFileInfo?, error: Int) {
         super.onRequestAudioFileInfo(info, error)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRequestAudioFileInfo?.invoke(info, error)
+        this.hostView.rtcOverrideHandler?.onRequestAudioFileInfo(info, error)
     }
 
     override fun onRtcStats(stats: RtcStats?) {
         super.onRtcStats(stats)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRtcStats?.invoke(stats)
+        this.hostView.rtcOverrideHandler?.onRtcStats(stats)
     }
 
     override fun onRtmpStreamingEvent(url: String?, error: Int) {
         super.onRtmpStreamingEvent(url, error)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRtmpStreamingEvent?.invoke(url, error)
+        this.hostView.rtcOverrideHandler?.onRtmpStreamingEvent(url, error)
     }
 
     override fun onRtmpStreamingStateChanged(url: String?, state: Int, errCode: Int) {
         super.onRtmpStreamingStateChanged(url, state, errCode)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onRtmpStreamingStateChanged?.invoke(url, state, errCode)
+        this.hostView.rtcOverrideHandler?.onRtmpStreamingStateChanged(url, state, errCode)
     }
 
     override fun onSnapshotTaken(
@@ -464,19 +464,19 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onSnapshotTaken(channel, uid, filePath, width, height, errCode)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onSnapshotTaken?.invoke(channel, uid, filePath, width, height, errCode)
+        this.hostView.rtcOverrideHandler?.onSnapshotTaken(channel, uid, filePath, width, height, errCode)
     }
 
     override fun onStreamInjectedStatus(url: String?, uid: Int, status: Int) {
         super.onStreamInjectedStatus(url, uid, status)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onStreamInjectedStatus?.invoke(url, uid, status)
+        this.hostView.rtcOverrideHandler?.onStreamInjectedStatus(url, uid, status)
     }
 
     override fun onStreamMessage(uid: Int, streamId: Int, data: ByteArray?) {
         super.onStreamMessage(uid, streamId, data)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onStreamMessage?.invoke(uid, streamId, data)
+        this.hostView.rtcOverrideHandler?.onStreamMessage(uid, streamId, data)
     }
 
     override fun onStreamMessageError(
@@ -488,55 +488,55 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onStreamMessageError(uid, streamId, error, missed, cached)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onStreamMessageError?.invoke(uid, streamId, error, missed, cached)
+        this.hostView.rtcOverrideHandler?.onStreamMessageError(uid, streamId, error, missed, cached)
     }
 
     override fun onTranscodingUpdated() {
         super.onTranscodingUpdated()
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onTranscodingUpdated?.invoke()
+        this.hostView.rtcOverrideHandler?.onTranscodingUpdated()
     }
 
     override fun onUploadLogResult(requestId: String?, success: Boolean, reason: Int) {
         super.onUploadLogResult(requestId, success, reason)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUploadLogResult?.invoke(requestId, success, reason)
+        this.hostView.rtcOverrideHandler?.onUploadLogResult(requestId, success, reason)
     }
 
     override fun onUserEnableLocalVideo(uid: Int, enabled: Boolean) {
         super.onUserEnableLocalVideo(uid, enabled)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserEnableLocalVideo?.invoke(uid, enabled)
+        this.hostView.rtcOverrideHandler?.onUserEnableLocalVideo(uid, enabled)
     }
 
     override fun onUserEnableVideo(uid: Int, enabled: Boolean) {
         super.onUserEnableVideo(uid, enabled)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserEnableVideo?.invoke(uid, enabled)
+        this.hostView.rtcOverrideHandler?.onUserEnableVideo(uid, enabled)
     }
 
     override fun onUserInfoUpdated(uid: Int, userInfo: UserInfo?) {
         super.onUserInfoUpdated(uid, userInfo)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserInfoUpdated?.invoke(uid, userInfo)
+        this.hostView.rtcOverrideHandler?.onUserInfoUpdated(uid, userInfo)
     }
 
     override fun onUserMuteAudio(uid: Int, muted: Boolean) {
         super.onUserMuteAudio(uid, muted)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserMuteAudio?.invoke(uid, muted)
+        this.hostView.rtcOverrideHandler?.onUserMuteAudio(uid, muted)
     }
 
     override fun onUserMuteVideo(uid: Int, muted: Boolean) {
         super.onUserMuteVideo(uid, muted)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserMuteVideo?.invoke(uid, muted)
+        this.hostView.rtcOverrideHandler?.onUserMuteVideo(uid, muted)
     }
 
     override fun onUserSuperResolutionEnabled(uid: Int, enabled: Boolean, reason: Int) {
         super.onUserSuperResolutionEnabled(uid, enabled, reason)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onUserSuperResolutionEnabled?.invoke(uid, enabled, reason)
+        this.hostView.rtcOverrideHandler?.onUserSuperResolutionEnabled(uid, enabled, reason)
     }
 
     override fun onVideoPublishStateChanged(
@@ -547,13 +547,13 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onVideoPublishStateChanged(channel, oldState, newState, elapseSinceLastState)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onVideoPublishStateChanged?.invoke(channel, oldState, newState, elapseSinceLastState)
+        this.hostView.rtcOverrideHandler?.onVideoPublishStateChanged(channel, oldState, newState, elapseSinceLastState)
     }
 
     override fun onVideoSizeChanged(uid: Int, width: Int, height: Int, rotation: Int) {
         super.onVideoSizeChanged(uid, width, height, rotation)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onVideoSizeChanged?.invoke(uid, width, height, rotation)
+        this.hostView.rtcOverrideHandler?.onVideoSizeChanged(uid, width, height, rotation)
     }
 
     override fun onVideoSubscribeStateChanged(
@@ -565,30 +565,30 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     ) {
         super.onVideoSubscribeStateChanged(channel, uid, oldState, newState, elapseSinceLastState)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onVideoSubscribeStateChanged?.invoke(channel, uid, oldState, newState, elapseSinceLastState)
+        this.hostView.rtcOverrideHandler?.onVideoSubscribeStateChanged(channel, uid, oldState, newState, elapseSinceLastState)
     }
 
     override fun onVirtualBackgroundSourceEnabled(enabled: Boolean, reason: Int) {
         super.onVirtualBackgroundSourceEnabled(enabled, reason)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onVirtualBackgroundSourceEnabled?.invoke(enabled, reason)
+        this.hostView.rtcOverrideHandler?.onVirtualBackgroundSourceEnabled(enabled, reason)
     }
 
     override fun onWarning(warn: Int) {
         super.onWarning(warn)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onWarning?.invoke(warn)
+        this.hostView.rtcOverrideHandler?.onWarning(warn)
     }
 
     override fun onWlAccMessage(reason: Int, action: Int, wlAccMsg: String?) {
         super.onWlAccMessage(reason, action, wlAccMsg)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onWlAccMessage?.invoke(reason, action, wlAccMsg)
+        this.hostView.rtcOverrideHandler?.onWlAccMessage(reason, action, wlAccMsg)
     }
 
     override fun onWlAccStats(currentStats: WlAccStats?, averageStats: WlAccStats?) {
         super.onWlAccStats(currentStats, averageStats)
 
-        this.hostView.agoraRtcEventHandlerDelegate?.onWlAccStats?.invoke(currentStats, averageStats)
+        this.hostView.rtcOverrideHandler?.onWlAccStats(currentStats, averageStats)
     }
 }

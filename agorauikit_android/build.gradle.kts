@@ -1,6 +1,6 @@
 plugins {
     id("maven-publish")
-    id("maven")
+//    id("maven")
     id("com.android.library")
     id("kotlin-android")
     id("org.jetbrains.dokka") version "1.4.32"
@@ -9,14 +9,12 @@ plugins {
 //group = "com.github.agoraio-community"
 
 android {
-    compileSdkVersion(30)
+    compileSdkVersion(31)
     buildToolsVersion("30.0.2")
 
     defaultConfig {
-        minSdkVersion(24)
-        targetSdkVersion(30)
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = 24
+        targetSdk = 31
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -27,10 +25,6 @@ android {
             isMinifyEnabled = false
             proguardFiles("proguard-rules.pro")
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility =  JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -62,13 +56,12 @@ afterEvaluate {
 }
 
 dependencies {
-    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("com.google.android.material:material:1.4.0")
-    val kotlinVersion = "1.5.21"
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-    implementation("androidx.core:core-ktx:1.6.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("com.google.android.material:material:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.21")
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
     api("io.agora.rtc:full-sdk:3.7.0")
     api("io.agora.rtm:rtm-sdk:1.4.10")
     implementation("com.squareup.okhttp3:okhttp:3.14.6")
