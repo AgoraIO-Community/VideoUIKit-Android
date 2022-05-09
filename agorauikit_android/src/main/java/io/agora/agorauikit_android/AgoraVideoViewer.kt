@@ -2,6 +2,9 @@ package io.agora.agorauikit_android
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Color
+import android.view.Gravity
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -152,6 +155,44 @@ open class AgoraVideoViewer : FrameLayout {
         this.agkit.setupRemoteVideo(remoteVideoView.canvas)
 //        this.agkit.setRemoteVideoRenderer(remoteVideoView.uid, remoteVideoView.textureView)
         this.userVideoLookup[userId] = remoteVideoView
+
+        var hostControl: ImageView = ImageView(this.context)
+        val density = Resources.getSystem().displayMetrics.density
+        val hostControlLayout = FrameLayout.LayoutParams(40 * density.toInt(), 40 * density.toInt())
+        hostControlLayout.gravity = Gravity.END
+
+        hostControl = ImageView(this.context)
+        hostControl.setImageResource(R.drawable.ic_round_pending_24)
+        hostControl.setColorFilter(Color.WHITE)
+        hostControl.setOnClickListener {
+            val menu = PopupMenu(this.context, remoteVideoView)
+
+            menu.menu.apply {
+                add("Request user to " + (if (remoteVideoView.audioMuted) "un" else "") + "mute the mic").setOnMenuItemClickListener {
+                    AgoraRtmController.Companion.sendMuteRequest(
+                        peerRtcId = userId,
+                        mute = !remoteVideoView.audioMuted,
+                        hostView = this@AgoraVideoViewer,
+                        deviceType = DeviceType.MIC
+                    )
+                    true
+                }
+                add("Request user to " + (if (remoteVideoView.videoMuted) "en" else "dis") + "able the camera").setOnMenuItemClickListener {
+                    AgoraRtmController.Companion.sendMuteRequest(
+                        peerRtcId = userId,
+                        mute = !remoteVideoView.videoMuted,
+                        hostView = this@AgoraVideoViewer,
+                        deviceType = DeviceType.CAMERA
+                    )
+                    true
+                }
+            }
+            menu.show()
+        }
+        if (agoraSettings.rtmEnabled) {
+            remoteVideoView.addView(hostControl, hostControlLayout)
+        }
+
         if (this.activeSpeaker == null) {
             this.activeSpeaker = userId
         }

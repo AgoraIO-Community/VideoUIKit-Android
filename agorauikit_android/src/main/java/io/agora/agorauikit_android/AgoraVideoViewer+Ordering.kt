@@ -1,12 +1,10 @@
 package io.agora.agorauikit_android
 
-import android.content.res.Resources
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.agora.rtc.Constants
@@ -185,7 +183,6 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
 
         // First we unmute the remote video stream so that Agora can start fetching the remote video feed
         // We have to do this since we mute the remote video in the onUserJoined callback to save on bandwidth
-        lateinit var hostControl: ImageView
         val uid = uidList[position]
         val videoView = agoraVC.userVideoLookup[uidList[position]]
         val audioMuted = agoraVC.userVideoLookup[uidList[position]]?.audioMuted
@@ -217,45 +214,6 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
             mRtcEngine.setupRemoteVideo(videoView!!.canvas)
         } else {
             mRtcEngine.setupLocalVideo(videoView!!.canvas)
-        }
-
-        val density = Resources.getSystem().displayMetrics.density
-        val hostControlLayout = FrameLayout.LayoutParams(40 * density.toInt(), 40 * density.toInt())
-        hostControlLayout.gravity = Gravity.END
-
-        hostControl = ImageView(videoView.context)
-        hostControl.setImageResource(R.drawable.ic_round_pending_24)
-        hostControl.setColorFilter(Color.WHITE)
-        hostControl.setOnClickListener {
-            val menu = PopupMenu(videoView.context, videoView)
-
-            menu.menu.apply {
-                add("Request user to " + (if (videoView.audioMuted) "un" else "") + "mute the mic").setOnMenuItemClickListener {
-                    AgoraRtmController.Companion.sendMuteRequest(
-                        peerRtcId = uidList[position],
-                        mute = !videoView.audioMuted,
-                        hostView = agoraVC,
-                        deviceType = DeviceType.MIC
-                    )
-                    true
-                }
-                add("Request user to " + (if (videoView.videoMuted) "en" else "dis") + "able the camera").setOnMenuItemClickListener {
-                    AgoraRtmController.Companion.sendMuteRequest(
-                        peerRtcId = uidList[position],
-                        mute = !videoView.videoMuted,
-                        hostView = agoraVC,
-                        deviceType = DeviceType.CAMERA
-                    )
-                    true
-                }
-            }
-            menu.show()
-        }
-
-        if (agoraVC.agoraSettings.rtmEnabled) {
-            if (videoView.uid != 0) {
-                holder.frame.addView(hostControl, hostControlLayout)
-            }
         }
 
         holder.itemView.setOnClickListener {
