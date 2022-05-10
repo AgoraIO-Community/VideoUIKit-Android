@@ -1,6 +1,10 @@
-package io.agora.agorauikit_android
+package io.agora.agorauikit_android.AgoraRtmController
 
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -48,13 +52,13 @@ fun AgoraRtmController.Companion.fetchToken(urlBase: String, rtmId: String, comp
                 completion.onError(RtmTokenError.NO_DATA)
             }
         })
-    } catch (e: IOException ) {
+    } catch (e: IOException) {
         log.log(Level.WARNING, e.localizedMessage)
         completion.onError(RtmTokenError.INVALID_URL)
     } catch (e: JSONException) {
         log.log(Level.WARNING, e.localizedMessage)
         completion.onError(RtmTokenError.NO_DATA)
-    } catch (e : Exception) {
+    } catch (e: Exception) {
         log.log(Level.WARNING, e.message)
         completion.onError(RtmTokenError.UNKNOWN)
     }

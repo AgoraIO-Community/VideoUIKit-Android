@@ -19,7 +19,8 @@ import androidx.core.view.setPadding
  */
 public class AgoraButton @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : androidx.appcompat.widget.AppCompatImageView(context, attrs, defStyleAttr) {
 
     public var clickAction: ((button: AgoraButton) -> Any?)? = null

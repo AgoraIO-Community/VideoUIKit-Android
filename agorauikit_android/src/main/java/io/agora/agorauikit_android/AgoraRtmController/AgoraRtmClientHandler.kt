@@ -1,6 +1,11 @@
-package io.agora.agorauikit_android
+package io.agora.agorauikit_android.AgoraRtmController
 
-import io.agora.rtm.*
+import io.agora.agorauikit_android.AgoraVideoViewer
+import io.agora.rtm.RtmClientListener
+import io.agora.rtm.RtmFileMessage
+import io.agora.rtm.RtmImageMessage
+import io.agora.rtm.RtmMediaOperationProgress
+import io.agora.rtm.RtmMessage
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -14,7 +19,7 @@ class AgoraRtmClientHandler(private val hostView: AgoraVideoViewer) : RtmClientL
     }
 
     override fun onMessageReceived(rtmMessage: RtmMessage, peerId: String?) {
-        AgoraRtmController.Companion.messageReceived(message = rtmMessage.text, hostView = hostView)
+        AgoraRtmController.messageReceived(message = rtmMessage.text, hostView = hostView)
 
         this.hostView.rtmClientOverrideHandler?.onMessageReceived(rtmMessage, peerId)
     }

@@ -4,7 +4,9 @@ import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.agora.rtc.Constants
@@ -109,7 +111,6 @@ internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: Agor
         val uid = uidList[position]
         val videoView = agoraVC.userVideoLookup[uidList[position]]
 
-
         // We are tagging the SurfaceView object with the UID.
         // This keeps us from manually maintaining a mapping between the SurfaceView and UID
         // We'll see it used in the onViewRecycled method
@@ -127,7 +128,6 @@ internal class GridViewAdapter(var uidList: List<Int>, private val agoraVC: Agor
 //            mRtcEngine.setupLocalVideo(videoView!!.canvas)
         }
 //        videoView.visibility = View.INVISIBLE
-
 
 //        videoView.parent
         // We'll add the SurfaceView as a child to the FrameLayout which is actually the ViewHolder in our RecyclerView
@@ -200,7 +200,6 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
         // We'll see it used in the onViewRecycled method
 //        videoView.tag = uidList[position]
 
-
 //        videoView.parent
         // We'll add the SurfaceView as a child to the FrameLayout which is actually the ViewHolder in our RecyclerView
         (videoView?.parent as? FrameLayout)?.removeView(videoView)
@@ -241,5 +240,4 @@ internal class FloatingViewAdapter(var uidList: List<Int>, private val agoraVC: 
     }
 
     override fun getItemCount() = uidList.size
-
 }

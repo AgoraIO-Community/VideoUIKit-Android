@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.32"
     kotlin("plugin.serialization") version "1.4.10"
 }
-//group = "com.github.agoraio-community"
+// group = "com.github.agoraio-community"
 
 android {
     compileSdkVersion(31)

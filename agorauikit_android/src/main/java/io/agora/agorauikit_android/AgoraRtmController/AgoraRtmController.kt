@@ -1,7 +1,10 @@
-package io.agora.agorauikit_android
+package io.agora.agorauikit_android.AgoraRtmController
 
 import android.content.Context
-import io.agora.rtm.*
+import io.agora.agorauikit_android.AgoraVideoViewer
+import io.agora.rtm.ErrorInfo
+import io.agora.rtm.ResultCallback
+import io.agora.rtm.RtmClient
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -17,7 +20,6 @@ class AgoraRtmController(
     }
 
     public var loginStatus: LoginStatus = LoginStatus.OFFLINE
-
 
     companion object {}
 
@@ -61,7 +63,8 @@ class AgoraRtmController(
                         Logger.getLogger("AgoraUIKit")
                             .log(Level.SEVERE, "RTM user login failed. Error: $errorInfo")
                     }
-                })
+                }
+            )
         } else {
             Logger.getLogger("AgoraUIKit")
                 .log(Level.INFO, "RTM user already logged in")
@@ -112,11 +115,10 @@ class AgoraRtmController(
         generatedRtmId = (1..10)
             .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
             .map(charPool::get)
-            .joinToString("");
+            .joinToString("")
 
         Logger.getLogger("AgoraUIKit").log(Level.INFO, "Generated RTM ID: $generatedRtmId")
 
         this.hostView.connectionData.rtmId = generatedRtmId
     }
-
 }

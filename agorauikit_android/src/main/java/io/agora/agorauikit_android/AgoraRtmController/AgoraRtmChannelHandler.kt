@@ -1,6 +1,12 @@
-package io.agora.agorauikit_android
+package io.agora.agorauikit_android.AgoraRtmController
 
-import io.agora.rtm.*
+import io.agora.agorauikit_android.AgoraVideoViewer
+import io.agora.rtm.RtmChannelAttribute
+import io.agora.rtm.RtmChannelListener
+import io.agora.rtm.RtmChannelMember
+import io.agora.rtm.RtmFileMessage
+import io.agora.rtm.RtmImageMessage
+import io.agora.rtm.RtmMessage
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -21,7 +27,7 @@ open class AgoraRtmChannelHandler(private val hostView: AgoraVideoViewer) : RtmC
         rtmChannelMember: RtmChannelMember
     ) {
         Logger.getLogger("AgoraUIKit").log(Level.INFO, "RTM Channel Message Received")
-        AgoraRtmController.Companion.messageReceived(rtmMessage.text, hostView)
+        AgoraRtmController.messageReceived(rtmMessage.text, hostView)
         this.hostView.rtmChannelOverrideHandler?.onMessageReceived(rtmMessage, rtmChannelMember)
     }
 
@@ -38,7 +44,7 @@ open class AgoraRtmChannelHandler(private val hostView: AgoraVideoViewer) : RtmC
 
     override fun onMemberJoined(rtmChannelMember: RtmChannelMember) {
         Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "RTM member : ${rtmChannelMember.userId}  joined channel : ${rtmChannelMember.channelId}")
-        AgoraRtmController.Companion.sendUserData(toChannel = false, peerRtmId = rtmChannelMember.userId, hostView = this.hostView)
+        AgoraRtmController.sendUserData(toChannel = false, peerRtmId = rtmChannelMember.userId, hostView = this.hostView)
 
         this.hostView.rtmChannelOverrideHandler?.onMemberJoined(rtmChannelMember)
     }
