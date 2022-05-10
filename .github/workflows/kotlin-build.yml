@@ -19,7 +19,7 @@ jobs:
           java-version: 11
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-       - name: ktlint
-         uses: vroy/gha-kotlin-linter@v3
+      - name: ktlint
+        uses: vroy/gha-kotlin-linter@v3
       - name: Build with Gradle
         run: ./gradlew build publishToMavenLocal

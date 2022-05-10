@@ -73,9 +73,9 @@ class AgoraRtmController(
 
     fun createRtmChannel() {
         try {
-            this.hostView.connectionData.rtmChannelName =
-                this.hostView.connectionData.rtmChannelName?.let { this.hostView.connectionData.rtmChannelName }
-                    ?: let { this.hostView.connectionData.channel }
+            this.hostView.connectionData.rtmChannelName = this.hostView.connectionData.rtmChannelName
+                ?.let { this.hostView.connectionData.rtmChannelName }
+                ?: let { this.hostView.connectionData.channel }
 
             this.hostView.agRtmChannel =
                 this.hostView.agRtmClient.createChannel(
