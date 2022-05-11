@@ -2,12 +2,12 @@ package io.agora.agorauikit_android
 
 import android.app.Activity
 import android.graphics.Rect
+import io.agora.agorauikit_android.AgoraRtmController.AgoraRtmController
 import io.agora.rtc.Constants
 import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.models.UserInfo
 import java.util.logging.Level
 import java.util.logging.Logger
-
 
 @ExperimentalUnsignedTypes
 class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
@@ -19,9 +19,11 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         if (!isHost) {
             this.hostView.userVideoLookup.remove(this.hostView.userID)
         } else if (!this.hostView.userVideoLookup.contains(this.hostView.userID)) {
-            (this.hostView.context as Activity).runOnUiThread(Runnable {
-                this.hostView.addLocalVideo()
-            })
+            (this.hostView.context as Activity).runOnUiThread(
+                Runnable {
+                    this.hostView.addLocalVideo()
+                }
+            )
         }
         // Only show the camera options when we are a broadcaster
 //            this.getControlContainer().isHidden = !isHost
@@ -108,7 +110,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             when (localVideoState) {
                 Constants.LOCAL_VIDEO_STREAM_STATE_CAPTURING, Constants.LOCAL_VIDEO_STREAM_STATE_STOPPED -> {
                     this.hostView.userVideoLookup[
-                            this.hostView.userID
+                        this.hostView.userID
                     ]?.videoMuted = localVideoState == Constants.LOCAL_VIDEO_STREAM_STATE_STOPPED
                 }
             }
@@ -123,7 +125,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             when (state) {
                 Constants.LOCAL_AUDIO_STREAM_STATE_CAPTURING, Constants.LOCAL_AUDIO_STREAM_STATE_STOPPED -> {
                     this.hostView.userVideoLookup[
-                            this.hostView.userID
+                        this.hostView.userID
                     ]?.audioMuted = state == Constants.LOCAL_AUDIO_STREAM_STATE_STOPPED
                 }
             }
@@ -146,9 +148,11 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "join channel success")
         this.hostView.userID = uid
         if (this.hostView.userRole == Constants.CLIENT_ROLE_BROADCASTER) {
-            (this.hostView.context as Activity).runOnUiThread(Runnable {
-                this.hostView.addLocalVideo()
-            })
+            (this.hostView.context as Activity).runOnUiThread(
+                Runnable {
+                    this.hostView.addLocalVideo()
+                }
+            )
         }
         channel?.let {
             this.hostView.delegate?.joinedChannel(it)
@@ -158,7 +162,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
             this.hostView.triggerLoginToRtm()
         }
 
-        this.hostView.rtcOverrideHandler?.onJoinChannelSuccess(channel,uid, elapsed)
+        this.hostView.rtcOverrideHandler?.onJoinChannelSuccess(channel, uid, elapsed)
     }
 
     override fun onTokenPrivilegeWillExpire(token: String?) {

@@ -13,6 +13,8 @@ public class AgoraConnectionData(
     var rtmId: String? = null,
     var rtmChannelName: String? = null
 ) {
-    /// Channel the object is connected to. This cannot be set with the initialiser
+    /**
+     * Channel the object is connected to. This cannot be set with the initialiser
+     */
     var channel: String? = null
 }

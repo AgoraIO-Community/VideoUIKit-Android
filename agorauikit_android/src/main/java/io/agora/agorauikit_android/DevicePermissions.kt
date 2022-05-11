@@ -25,7 +25,7 @@ private val REQUESTED_PERMISSIONS = arrayOf<String>(
 @ExperimentalUnsignedTypes
 public fun AgoraVideoViewer.Companion.requestPermissions(context: Context): Boolean {
     return checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) &&
-            checkSelfPermission(context, Manifest.permission.CAMERA)
+        checkSelfPermission(context, Manifest.permission.CAMERA)
 }
 
 @ExperimentalUnsignedTypes

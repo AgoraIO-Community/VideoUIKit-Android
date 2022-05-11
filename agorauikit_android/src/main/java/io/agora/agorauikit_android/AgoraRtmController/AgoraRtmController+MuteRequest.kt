@@ -1,14 +1,18 @@
-package io.agora.agorauikit_android
+package io.agora.agorauikit_android.AgoraRtmController
 
+import io.agora.agorauikit_android.AgoraVideoViewer
 import io.agora.rtc.RtcEngine
-import io.agora.rtm.*
+import io.agora.rtm.ErrorInfo
+import io.agora.rtm.ResultCallback
+import io.agora.rtm.RtmClient
+import io.agora.rtm.RtmMessage
+import io.agora.rtm.SendMessageOptions
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.logging.Level
 import java.util.logging.Logger
-
 
 @Serializable
 enum class DeviceType(val raw: Int) {
@@ -17,7 +21,6 @@ enum class DeviceType(val raw: Int) {
         fun fromInt(value: Int) = DeviceType.values().first { it.raw == value }
     }
 }
-
 
 @Serializable
 data class UserData(
@@ -51,8 +54,6 @@ data class UIKitData(
     }
 }
 
-
-
 @Serializable
 data class MuteRequest(
     @SerialName("messageType") var messageType: String = "MuteRequest",
@@ -61,7 +62,6 @@ data class MuteRequest(
     @SerialName("device") var device: Int,
     @SerialName("isForceful") var isForceful: Boolean,
 ) : java.io.Serializable
-
 
 @ExperimentalUnsignedTypes
 fun AgoraRtmController.Companion.sendUserData(
@@ -102,17 +102,21 @@ fun AgoraRtmController.Companion.sendUserData(
                 override fun onFailure(p0: ErrorInfo?) {
                     Logger.getLogger("AgoraUIKit").log(Level.INFO, "Failed to send UserData message to $peerRtmId")
                 }
-            })
+            }
+        )
     } else {
-        hostView.agRtmChannel.sendMessage(message, option, object : ResultCallback<Void> {
-            override fun onSuccess(p0: Void?) {
-                Logger.getLogger("AgoraUIKit").log(Level.INFO, "UserData message sent to channel")
-            }
+        hostView.agRtmChannel.sendMessage(
+            message, option,
+            object : ResultCallback<Void> {
+                override fun onSuccess(p0: Void?) {
+                    Logger.getLogger("AgoraUIKit").log(Level.INFO, "UserData message sent to channel")
+                }
 
-            override fun onFailure(p0: ErrorInfo?) {
-                Logger.getLogger("AgoraUIKit").log(Level.INFO, "Failed to send UserData message to channel")
+                override fun onFailure(p0: ErrorInfo?) {
+                    Logger.getLogger("AgoraUIKit").log(Level.INFO, "Failed to send UserData message to channel")
+                }
             }
-        })
+        )
     }
 }
 
@@ -158,8 +162,8 @@ fun AgoraRtmController.Companion.sendMuteRequest(
                     override fun onFailure(p0: ErrorInfo?) {
                         Logger.getLogger("AgoraUIKit").log(Level.INFO, "Failed to send Mute Request to $peerRtmId. Error $p0")
                     }
-                })
+                }
+            )
         }
     }
 }
-

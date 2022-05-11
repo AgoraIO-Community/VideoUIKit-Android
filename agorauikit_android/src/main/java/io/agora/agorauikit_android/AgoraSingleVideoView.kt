@@ -2,17 +2,12 @@ package io.agora.agorauikit_android
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
 import android.view.Gravity
-import android.view.MenuInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginBottom
-import androidx.core.view.marginTop
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.VideoCanvas
 
@@ -73,7 +68,7 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
     init {
         this.uid = uid
 
-        val canvasView = RtcEngine.CreateRendererView(context);
+        val canvasView = RtcEngine.CreateRendererView(context)
         canvasView.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
         this.canvas = VideoCanvas(canvasView)
         this.canvas.uid = uid
@@ -85,7 +80,7 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
 
         this.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
     }
-    
+
     private fun setupMutedFlag() {
 
         val mutedLayout = FrameLayout.LayoutParams(DPToPx(context, 40), DPToPx(context, 40))
@@ -105,8 +100,8 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
 
     fun setBackground() {
         backgroundView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
         )
         backgroundView.setBackgroundColor(Color.LTGRAY)
         addView(backgroundView)

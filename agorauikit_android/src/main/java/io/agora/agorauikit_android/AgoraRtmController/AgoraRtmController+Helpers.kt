@@ -1,12 +1,12 @@
-package io.agora.agorauikit_android
+package io.agora.agorauikit_android.AgoraRtmController
 
 import android.graphics.Color
-import android.widget.FrameLayout
 import com.google.android.material.snackbar.Snackbar
+import io.agora.agorauikit_android.AgoraButton
+import io.agora.agorauikit_android.AgoraVideoViewer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
-
 
 @ExperimentalUnsignedTypes
 fun AgoraRtmController.Companion.messageReceived(message: String, hostView: AgoraVideoViewer) {
@@ -34,13 +34,12 @@ fun AgoraRtmController.Companion.messageReceived(message: String, hostView: Agor
             snackbar.setAction(
                 if (deviceType == DeviceType.MIC)
                     if (muteRequest.mute) "mute" else "unmute"
-                else
-                    if (muteRequest.mute) "disable" else "enable"
-            ){
+                else if (muteRequest.mute) "disable" else "enable"
+            ) {
                 var changingButton: AgoraButton?
                 var isMuted = muteRequest.mute
                 if (deviceType == DeviceType.MIC) {
-                    hostView.agkit.muteLocalAudioStream(isMuted);
+                    hostView.agkit.muteLocalAudioStream(isMuted)
                     changingButton = hostView.micButton
                     hostView.userVideoLookup[hostView.userID]?.audioMuted = isMuted
                 } else {

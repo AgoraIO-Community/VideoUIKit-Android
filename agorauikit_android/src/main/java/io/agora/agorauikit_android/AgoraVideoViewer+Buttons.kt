@@ -9,8 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 
-internal class ButtonContainer(context: Context): LinearLayout(context) {
-}
+internal class ButtonContainer(context: Context) : LinearLayout(context)
 
 @ExperimentalUnsignedTypes
 internal fun AgoraVideoViewer.getControlContainer(): ButtonContainer {

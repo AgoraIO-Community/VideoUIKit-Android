@@ -5,19 +5,28 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.view.Gravity
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import io.agora.agorauikit_android.AgoraRtmController.AgoraRtmChannelHandler
+import io.agora.agorauikit_android.AgoraRtmController.AgoraRtmClientHandler
+import io.agora.agorauikit_android.AgoraRtmController.AgoraRtmController
+import io.agora.agorauikit_android.AgoraRtmController.DeviceType
+import io.agora.agorauikit_android.AgoraRtmController.RtmTokenCallback
+import io.agora.agorauikit_android.AgoraRtmController.RtmTokenError
+import io.agora.agorauikit_android.AgoraRtmController.fetchToken
+import io.agora.agorauikit_android.AgoraRtmController.sendMuteRequest
 import io.agora.rtc.Constants
 import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.BeautyOptions
 import io.agora.rtc.video.VideoEncoderConfiguration
-import io.agora.rtm.*
+import io.agora.rtm.RtmChannel
+import io.agora.rtm.RtmClient
 import java.util.logging.Level
 import java.util.logging.Logger
-
-
 
 /**
  * An interface for getting some common delegate callbacks without needing to subclass.
@@ -66,7 +75,6 @@ open class AgoraVideoViewer : FrameLayout {
         GRID, FLOATING, COLLECTION
     }
 
-
     /**
      * Gets and sets the role for the user. Either `.audience` or `.broadcaster`.
      */
@@ -84,7 +92,6 @@ open class AgoraVideoViewer : FrameLayout {
     internal var screenShareButton: AgoraButton? = null
 
     companion object {}
-
 
     internal var remoteUserIDs: MutableSet<Int> = mutableSetOf()
     internal var userVideoLookup: MutableMap<Int, AgoraSingleVideoView> = mutableMapOf()
@@ -344,7 +351,7 @@ open class AgoraVideoViewer : FrameLayout {
 
     fun isAgRtmClientInitialized() = ::agRtmClient.isInitialized
 
-    /// VideoControl
+    // VideoControl
 
     internal fun setupAgoraVideo() {
         if (this.agkit.enableVideo() < 0) {
@@ -395,7 +402,7 @@ open class AgoraVideoViewer : FrameLayout {
         this.setupAgoraVideo()
         getRtcToken(channel, role, uid, fetchToken)
 
-        if (agoraSettings.rtmEnabled){
+        if (agoraSettings.rtmEnabled) {
             getRtmToken(fetchToken)
         }
     }
@@ -427,7 +434,7 @@ open class AgoraVideoViewer : FrameLayout {
             agoraRtmController.generateRtmId()
         }
 
-        if (fetchToken){
+        if (fetchToken) {
             this.agoraSettings.tokenURL?.let { tokenURL ->
                 AgoraRtmController.Companion.fetchToken(
                     tokenURL,
@@ -440,7 +447,8 @@ open class AgoraVideoViewer : FrameLayout {
                         override fun onError(error: RtmTokenError) {
                             Logger.getLogger("AgoraUIKit", "Could not get RTM token: ${error.name}")
                         }
-                    })
+                    }
+                )
             }
             return
         }
@@ -494,5 +502,4 @@ open class AgoraVideoViewer : FrameLayout {
         this.setupAgoraVideo()
         this.agkit.joinChannel(token, channel, null, this.userID)
     }
-
 }
