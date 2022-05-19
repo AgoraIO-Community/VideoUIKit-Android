@@ -68,29 +68,31 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
     init {
         this.uid = uid
 
-        val canvasView = RtcEngine.CreateRendererView(context);
+        val canvasView = RtcEngine.CreateRendererView(context)
         canvasView.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
         this.canvas = VideoCanvas(canvasView)
         this.canvas.uid = uid
         addView(canvasView)
         this.backgroundView = FrameLayout(context)
         this.setBackground()
-
         this.mutedFlag = ImageView(context)
         this.setupMutedFlag()
+
         this.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
     }
-    
+
     private fun setupMutedFlag() {
 
         val mutedLayout = FrameLayout.LayoutParams(DPToPx(context, 40), DPToPx(context, 40))
 //        mutedLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-        mutedLayout.gravity = Gravity.END
+//        mutedLayout.gravity = Gravity.RIGHT
+        mutedLayout.gravity = Gravity.BOTTOM
 //        mutedLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
         mutedLayout.bottomMargin = DPToPx(context, 5)
-        mutedLayout.rightMargin = DPToPx(context, 5)
+        mutedLayout.leftMargin = DPToPx(context, 5)
 
         mutedFlag.setImageResource(android.R.drawable.stat_notify_call_mute)
+
         mutedFlag.setColorFilter(this.micFlagColor)
         addView(mutedFlag, mutedLayout)
         this.audioMuted = true
@@ -98,8 +100,8 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
 
     fun setBackground() {
         backgroundView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
         )
         backgroundView.setBackgroundColor(Color.LTGRAY)
         addView(backgroundView)

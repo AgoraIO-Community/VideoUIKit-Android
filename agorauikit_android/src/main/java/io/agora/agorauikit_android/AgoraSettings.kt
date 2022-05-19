@@ -1,6 +1,7 @@
 package io.agora.agorauikit_android
 
 import android.graphics.Color
+import io.agora.agorauikit_android.AgoraRtmController.UserData
 import io.agora.rtc.Constants
 import io.agora.rtc.video.VideoEncoderConfiguration
 
@@ -8,6 +9,13 @@ import io.agora.rtc.video.VideoEncoderConfiguration
  * Settings used for the display and behaviour of AgoraVideoViewer
  */
 class AgoraSettings {
+    internal var userRtmMap = mutableMapOf<String, UserData>()
+    internal var uidToUserIdMap = mutableMapOf<Int, String>()
+
+    /**
+     * Whether RTM should be initialised and used
+     */
+    public var rtmEnabled: Boolean = true
     /** URL to fetch tokens from. If supplied, this package will automatically fetch tokens
      * when the Agora Engine indicates it will be needed.
      * It will follow the URL pattern found in
@@ -19,13 +27,24 @@ class AgoraSettings {
      * Position, top, left, bottom or right.
      */
     public enum class Position {
-        /// At the top of the view
+        /**
+         *  At the top of the view
+         */
         TOP,
-        /// At the right of the view
+
+        /**
+         *  At the right of the view
+         */
         RIGHT,
-        /// At the bottom of the view
+
+        /**
+         *  At the bottom of the view
+         */
         BOTTOM,
-        /// At the left of the view
+
+        /**
+         *  At the left of the view
+         */
         LEFT
     }
     public enum class BuiltinButton {
