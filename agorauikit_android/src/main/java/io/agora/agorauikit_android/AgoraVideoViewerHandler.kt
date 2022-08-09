@@ -9,6 +9,11 @@ import io.agora.rtc.models.UserInfo
 import java.util.logging.Level
 import java.util.logging.Logger
 
+/**
+ * Class for all the Agora RTC event handlers
+ *
+ * @param hostView [AgoraVideoViewer]
+ */
 @ExperimentalUnsignedTypes
 class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     IRtcEngineEventHandler() {

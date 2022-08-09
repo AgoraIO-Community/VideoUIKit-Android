@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import org.jetbrains.annotations.NotNull
 
 private const val PERMISSION_REQ_ID = 22
 
@@ -23,7 +25,7 @@ private val REQUESTED_PERMISSIONS = arrayOf<String>(
  * @return True if all the permissions were already granted
  */
 @ExperimentalUnsignedTypes
-public fun AgoraVideoViewer.Companion.requestPermissions(context: Context): Boolean {
+public @JvmOverloads fun AgoraVideoViewer.Companion.requestPermission(context: Context): Boolean {
     return checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) &&
         checkSelfPermission(context, Manifest.permission.CAMERA)
 }
@@ -36,7 +38,7 @@ public fun AgoraVideoViewer.Companion.requestPermissions(context: Context): Bool
  * @param permission Permission String
  * @return True if Permission is granted
  */
-public fun AgoraVideoViewer.Companion.checkSelfPermission(context: Context, permission: String): Boolean {
+public @JvmOverloads fun AgoraVideoViewer.Companion.checkSelfPermission(context: Context, permission: String): Boolean {
     if (ContextCompat.checkSelfPermission(context, permission) !=
         PackageManager.PERMISSION_GRANTED
     ) {

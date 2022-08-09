@@ -64,7 +64,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.1")
     api("io.agora.rtc:full-sdk:3.7.0")
     api("io.agora.rtm:rtm-sdk:1.4.10")
-    implementation("com.squareup.okhttp3:okhttp:3.14.6")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

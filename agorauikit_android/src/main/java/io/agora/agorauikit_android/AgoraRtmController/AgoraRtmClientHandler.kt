@@ -8,7 +8,11 @@ import io.agora.rtm.RtmMediaOperationProgress
 import io.agora.rtm.RtmMessage
 import java.util.logging.Level
 import java.util.logging.Logger
-
+/**
+ * Class for all the Agora RTM Client event handlers
+ *
+ * @param hostView [AgoraVideoViewer]
+ */
 @ExperimentalUnsignedTypes
 class AgoraRtmClientHandler(private val hostView: AgoraVideoViewer) : RtmClientListener {
     override fun onConnectionStateChanged(state: Int, reason: Int) {

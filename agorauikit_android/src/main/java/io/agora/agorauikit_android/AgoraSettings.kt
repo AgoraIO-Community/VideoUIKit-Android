@@ -9,7 +9,15 @@ import io.agora.rtc.video.VideoEncoderConfiguration
  * Settings used for the display and behaviour of AgoraVideoViewer
  */
 class AgoraSettings {
+
+    /**
+     * Maps user RTM ID to the user data
+     */
     internal var userRtmMap = mutableMapOf<String, UserData>()
+
+    /**
+     * Maps RTC ID to RTM ID
+     */
     internal var uidToUserIdMap = mutableMapOf<Int, String>()
 
     /**
@@ -47,6 +55,10 @@ class AgoraSettings {
          */
         LEFT
     }
+
+    /**
+     * Enum value for all the default buttons offered by the UIKit
+     */
     public enum class BuiltinButton {
         CAMERA,
         MIC,
@@ -106,6 +118,10 @@ class AgoraSettings {
                 this.lowBitRateStream = null
             }
         }
+
+    /**
+     * A mutable list to add buttons to the default list of [BuiltinButton]
+     */
     public var extraButtons: MutableList<AgoraButton> = mutableListOf()
     companion object {
         private const val defaultLowBitrateParam = "{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":5,\"bitRate\":140}}"

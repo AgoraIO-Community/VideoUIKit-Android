@@ -15,6 +15,9 @@ class AgoraRtmController(
     private var generatedRtmId: String? = null
     private var isInRtmChannel: Boolean = false
 
+    /**
+     * Enum for the Login Status of a user to Agora RTM
+     */
     public enum class LoginStatus {
         OFFLINE, LOGGING_IN, LOGGED_IN, LOGIN_FAILED
     }
@@ -23,6 +26,9 @@ class AgoraRtmController(
 
     companion object {}
 
+    /**
+     * Initializes the Agora RTM SDK
+     */
     fun initAgoraRtm(context: Context) {
         try {
             this.hostView.agRtmClient =
@@ -37,6 +43,9 @@ class AgoraRtmController(
         }
     }
 
+    /**
+     * Function to login to Agora RTM
+     */
     fun loginToRtm() {
         if (this.hostView.connectionData.rtmId.isNullOrEmpty()) {
             generateRtmId()
@@ -71,6 +80,9 @@ class AgoraRtmController(
         }
     }
 
+    /**
+     * Function to create a RTM channel
+     */
     fun createRtmChannel() {
         try {
             this.hostView.connectionData.rtmChannelName = this.hostView.connectionData.rtmChannelName
@@ -91,6 +103,9 @@ class AgoraRtmController(
         }
     }
 
+    /**
+     * Function to join a RTM channel
+     */
     private fun joinRtmChannel() {
         this.hostView.agRtmChannel.join(object : ResultCallback<Void> {
             override fun onSuccess(responseInfo: Void?) {
@@ -109,6 +124,9 @@ class AgoraRtmController(
         })
     }
 
+    /**
+     * Function to generate a random RTM ID if not specified by the user
+     */
     fun generateRtmId() {
         val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 

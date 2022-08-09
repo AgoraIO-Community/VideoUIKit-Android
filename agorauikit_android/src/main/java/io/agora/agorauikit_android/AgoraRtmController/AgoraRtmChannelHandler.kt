@@ -10,18 +10,21 @@ import io.agora.rtm.RtmMessage
 import java.util.logging.Level
 import java.util.logging.Logger
 
+/**
+ * Class for all the Agora RTM Channel event handlers
+ *
+ * @param hostView [AgoraVideoViewer]
+ */
 @ExperimentalUnsignedTypes
 open class AgoraRtmChannelHandler(private val hostView: AgoraVideoViewer) : RtmChannelListener {
     override fun onMemberCountUpdated(memberCount: Int) {
         Logger.getLogger("AgoraUIKit").log(Level.INFO, "RTM member count updated : $memberCount")
         this.hostView.rtmChannelOverrideHandler?.onMemberCountUpdated(memberCount)
     }
-
     override fun onAttributesUpdated(attributeList: MutableList<RtmChannelAttribute>?) {
         Logger.getLogger("AgoraUIKit").log(Level.INFO, "RTM Channel attributes updated")
         this.hostView.rtmChannelOverrideHandler?.onAttributesUpdated(attributeList)
     }
-
     override fun onMessageReceived(
         rtmMessage: RtmMessage,
         rtmChannelMember: RtmChannelMember
@@ -30,25 +33,21 @@ open class AgoraRtmChannelHandler(private val hostView: AgoraVideoViewer) : RtmC
         AgoraRtmController.messageReceived(rtmMessage.text, hostView)
         this.hostView.rtmChannelOverrideHandler?.onMessageReceived(rtmMessage, rtmChannelMember)
     }
-
     override fun onImageMessageReceived(
         p0: RtmImageMessage?,
         p1: RtmChannelMember?
     ) {
         this.hostView.rtmChannelOverrideHandler?.onImageMessageReceived(p0, p1)
     }
-
     override fun onFileMessageReceived(p0: RtmFileMessage?, p1: RtmChannelMember?) {
         this.hostView.rtmChannelOverrideHandler?.onFileMessageReceived(p0, p1)
     }
-
     override fun onMemberJoined(rtmChannelMember: RtmChannelMember) {
         Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "RTM member : ${rtmChannelMember.userId}  joined channel : ${rtmChannelMember.channelId}")
         AgoraRtmController.sendUserData(toChannel = false, peerRtmId = rtmChannelMember.userId, hostView = this.hostView)
 
         this.hostView.rtmChannelOverrideHandler?.onMemberJoined(rtmChannelMember)
     }
-
     override fun onMemberLeft(rtmChannelMember: RtmChannelMember) {
         Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "RTM member left ${rtmChannelMember.userId} from channel ${rtmChannelMember.channelId}")
 

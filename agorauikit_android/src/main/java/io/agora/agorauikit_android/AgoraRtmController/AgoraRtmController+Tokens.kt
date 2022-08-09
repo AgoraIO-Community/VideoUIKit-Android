@@ -41,7 +41,7 @@ fun AgoraRtmController.Companion.fetchToken(urlBase: String, rtmId: String, comp
             }
 
             override fun onResponse(call: Call, response: Response) {
-                response.body()?.string()?.let {
+                response.body?.string()?.let {
                     val jObject = JSONObject(it)
                     val token = jObject.getString("rtmToken")
                     if (!token.isEmpty()) {

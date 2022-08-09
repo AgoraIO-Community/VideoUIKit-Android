@@ -1,5 +1,6 @@
 package io.agora.agorauikit_android
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
@@ -20,6 +21,7 @@ import io.agora.agorauikit_android.AgoraRtmController.fetchToken
 import io.agora.agorauikit_android.AgoraRtmController.sendMuteRequest
 import io.agora.rtc.Constants
 import io.agora.rtc.IRtcEngineEventHandler
+import io.agora.rtc.IVideoFrameObserver
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.BeautyOptions
 import io.agora.rtc.video.VideoEncoderConfiguration
@@ -63,6 +65,7 @@ interface AgoraVideoViewerDelegate {
 }
 
 @ExperimentalUnsignedTypes
+
 /**
  * View to contain all the video session objects, including camera feeds and buttons for settings
  */
@@ -98,7 +101,9 @@ open class AgoraVideoViewer : FrameLayout {
     internal val userVideosForGrid: Map<Int, AgoraSingleVideoView>
         get() {
             return if (this.style == Style.FLOATING) {
-                this.userVideoLookup.filterKeys { it == this.overrideActiveSpeaker ?: this.activeSpeaker ?: this.userID }
+                this.userVideoLookup.filterKeys {
+                    it == (this.overrideActiveSpeaker ?: this.activeSpeaker ?: this.userID)
+                }
             } else if (this.style == Style.GRID) {
                 this.userVideoLookup
             } else {
@@ -136,6 +141,9 @@ open class AgoraVideoViewer : FrameLayout {
     public var userID: Int = 0
         internal set
 
+    /**
+     * A boolean to check whether the user has joined the RTC channel or not.
+     */
     var isInRtcChannel: Boolean? = false
 
     /**
@@ -261,7 +269,7 @@ open class AgoraVideoViewer : FrameLayout {
      * @param delegate: Delegate for the AgoraVideoViewer, used for some important callback methods.
      */
     @Throws(Exception::class)
-    public constructor(
+    public @JvmOverloads constructor(
         context: Context,
         connectionData: AgoraConnectionData,
         style: Style = Style.FLOATING,
@@ -342,6 +350,10 @@ open class AgoraVideoViewer : FrameLayout {
      */
     public lateinit var agkit: RtcEngine
         internal set
+
+    /**
+     * RTM client used by this [AgoraVideoViewer]
+     */
     public lateinit var agRtmClient: RtmClient
         internal set
     lateinit var agRtmChannel: RtmChannel
@@ -398,7 +410,7 @@ open class AgoraVideoViewer : FrameLayout {
      * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as. Default: `.broadcaster`
      * @param uid: UID to be set when user joins the channel, default will be 0.
      */
-    fun join(channel: String, fetchToken: Boolean, role: Int? = null, uid: Int? = null) {
+    @JvmOverloads fun join(channel: String, fetchToken: Boolean, role: Int? = null, uid: Int? = null) {
         this.setupAgoraVideo()
         getRtcToken(channel, role, uid, fetchToken)
 
@@ -454,6 +466,9 @@ open class AgoraVideoViewer : FrameLayout {
         }
     }
 
+    /**
+     * Login to Agora RTM
+     */
     fun triggerLoginToRtm() {
         if (agoraSettings.rtmEnabled && isAgRtmClientInitialized()) {
             agoraRtmController.loginToRtm()
@@ -470,10 +485,10 @@ open class AgoraVideoViewer : FrameLayout {
      * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as.
      * @param uid: UID to be set when user joins the channel, default will be 0.
      */
-    fun join(channel: String, token: String? = null, role: Int? = null, uid: Int? = null) {
+    @JvmOverloads fun join(channel: String, token: String? = null, role: Int? = null, uid: Int? = null) {
 
         if (role == Constants.CLIENT_ROLE_BROADCASTER) {
-            AgoraVideoViewer.requestPermissions(this.context)
+            AgoraVideoViewer.requestPermission(this.context)
         }
         if (this.connectionData.channel != null) {
             if (this.connectionData.channel == channel) {
