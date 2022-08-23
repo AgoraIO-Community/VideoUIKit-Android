@@ -1,6 +1,7 @@
 package io.agora.agorauikit_android
 
 import android.graphics.Color
+import io.agora.agorauikit_android.AgoraRtmController.UserData
 import io.agora.rtc2.Constants
 import io.agora.rtc2.video.VideoEncoderConfiguration
 
@@ -8,6 +9,21 @@ import io.agora.rtc2.video.VideoEncoderConfiguration
  * Settings used for the display and behaviour of AgoraVideoViewer
  */
 class AgoraSettings {
+
+    /**
+     * Maps user RTM ID to the user data
+     */
+    internal var userRtmMap = mutableMapOf<String, UserData>()
+
+    /**
+     * Maps RTC ID to RTM ID
+     */
+    internal var uidToUserIdMap = mutableMapOf<Int, String>()
+
+    /**
+     * Whether RTM should be initialised and used
+     */
+    public var rtmEnabled: Boolean = true
     /** URL to fetch tokens from. If supplied, this package will automatically fetch tokens
      * when the Agora Engine indicates it will be needed.
      * It will follow the URL pattern found in
@@ -19,15 +35,30 @@ class AgoraSettings {
      * Position, top, left, bottom or right.
      */
     public enum class Position {
-        /// At the top of the view
+        /**
+         *  At the top of the view
+         */
         TOP,
-        /// At the right of the view
+
+        /**
+         *  At the right of the view
+         */
         RIGHT,
-        /// At the bottom of the view
+
+        /**
+         *  At the bottom of the view
+         */
         BOTTOM,
-        /// At the left of the view
+
+        /**
+         *  At the left of the view
+         */
         LEFT
     }
+
+    /**
+     * Enum value for all the default buttons offered by the UIKit
+     */
     public enum class BuiltinButton {
         CAMERA,
         MIC,
@@ -87,6 +118,10 @@ class AgoraSettings {
                 this.lowBitRateStream = null
             }
         }
+
+    /**
+     * A mutable list to add buttons to the default list of [BuiltinButton]
+     */
     public var extraButtons: MutableList<AgoraButton> = mutableListOf()
     companion object {
         private const val defaultLowBitrateParam = "{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":5,\"bitRate\":140}}"

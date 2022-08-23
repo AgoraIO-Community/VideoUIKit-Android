@@ -3,7 +3,9 @@ package io.agora.agorauikit_android
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
-import android.view.*
+import android.view.Gravity
+import android.view.SurfaceView
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -72,22 +74,24 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
         addView(surfaceView, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT))
         this.backgroundView = FrameLayout(context)
         this.setBackground()
-
         this.mutedFlag = ImageView(context)
         this.setupMutedFlag()
+
         this.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
     }
-    
+
     private fun setupMutedFlag() {
 
         val mutedLayout = FrameLayout.LayoutParams(DPToPx(context, 40), DPToPx(context, 40))
 //        mutedLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-        mutedLayout.gravity = Gravity.END
+//        mutedLayout.gravity = Gravity.RIGHT
+        mutedLayout.gravity = Gravity.BOTTOM
 //        mutedLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
         mutedLayout.bottomMargin = DPToPx(context, 5)
-        mutedLayout.rightMargin = DPToPx(context, 5)
+        mutedLayout.leftMargin = DPToPx(context, 5)
 
         mutedFlag.setImageResource(android.R.drawable.stat_notify_call_mute)
+
         mutedFlag.setColorFilter(this.micFlagColor)
         addView(mutedFlag, mutedLayout)
         this.audioMuted = true
@@ -95,8 +99,8 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
 
     fun setBackground() {
         backgroundView.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
         )
         backgroundView.setBackgroundColor(Color.LTGRAY)
         addView(backgroundView)

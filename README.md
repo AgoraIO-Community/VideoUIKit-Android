@@ -70,7 +70,7 @@ agView.join("test", role=Constants.CLIENT_ROLE_BROADCASTER)
 
 ### Roadmap
 
-- [ ] Muting/Unmuting a remote member
+- [x] Muting/Unmuting a remote member
 - [ ] Usernames
 - [ ] Promoting an audience member to a broadcaster role.
 - [ ] Layout for Voice Calls
