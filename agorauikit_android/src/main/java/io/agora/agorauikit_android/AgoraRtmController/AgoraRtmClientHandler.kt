@@ -16,7 +16,7 @@ import java.util.logging.Logger
 @ExperimentalUnsignedTypes
 class AgoraRtmClientHandler(private val hostView: AgoraVideoViewer) : RtmClientListener {
     override fun onConnectionStateChanged(state: Int, reason: Int) {
-        Logger.getLogger("AgoraUIKit")
+        Logger.getLogger("AgoraVideoUIKit")
             .log(Level.INFO, "RTM Connection State Changed. state: $state, reason: $reason")
 
         this.hostView.rtmClientOverrideHandler?.onConnectionStateChanged(state, reason)
@@ -55,7 +55,7 @@ class AgoraRtmClientHandler(private val hostView: AgoraVideoViewer) : RtmClientL
     }
 
     override fun onPeersOnlineStatusChanged(peerStatus: MutableMap<String, Int>?) {
-        Logger.getLogger("AgoraUIKit").log(Level.INFO, "onPeerOnlineStatusChanged: $peerStatus")
+        Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "onPeerOnlineStatusChanged: $peerStatus")
 
         this.hostView.rtmClientOverrideHandler?.onPeersOnlineStatusChanged(peerStatus)
     }

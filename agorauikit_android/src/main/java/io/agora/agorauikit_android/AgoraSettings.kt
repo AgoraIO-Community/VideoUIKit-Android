@@ -57,7 +57,7 @@ class AgoraSettings {
     }
 
     /**
-     * Enum value for all the default buttons offered by the UIKit
+     * Enum value for all the default buttons offered by the VideoUIKit
      */
     public enum class BuiltinButton {
         CAMERA,

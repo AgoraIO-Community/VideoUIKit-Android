@@ -307,7 +307,7 @@ open class AgoraVideoViewer : FrameLayout {
     @Throws(Exception::class)
     private fun initAgoraEngine() {
         if (connectionData.appId == "my-app-id") {
-            Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "Change the App ID!")
+            Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "Change the App ID!")
             throw IllegalArgumentException("Change the App ID!")
         }
         val rtcEngineConfig = RtcEngineConfig()
@@ -380,7 +380,7 @@ open class AgoraVideoViewer : FrameLayout {
 
     internal fun setupAgoraVideo() {
         if (this.agkit.enableVideo() < 0) {
-            Logger.getLogger("AgoraUIKit").log(Level.WARNING, "Could not enable video")
+            Logger.getLogger("AgoraVideoUIKit").log(Level.WARNING, "Could not enable video")
             return
         }
         if (this.controlContainer == null) {
@@ -444,7 +444,7 @@ open class AgoraVideoViewer : FrameLayout {
                         }
 
                         override fun onError(error: TokenError) {
-                            Logger.getLogger("AgoraUIKit", "Could not get RTC token: ${error.name}")
+                            Logger.getLogger("AgoraVideoUIKit", "Could not get RTC token: ${error.name}")
                         }
                     }
                 )
@@ -470,7 +470,7 @@ open class AgoraVideoViewer : FrameLayout {
                         }
 
                         override fun onError(error: RtmTokenError) {
-                            Logger.getLogger("AgoraUIKit", "Could not get RTM token: ${error.name}")
+                            Logger.getLogger("AgoraVideoUIKit", "Could not get RTM token: ${error.name}")
                         }
                     }
                 )
@@ -486,7 +486,7 @@ open class AgoraVideoViewer : FrameLayout {
         if (agoraSettings.rtmEnabled && isAgRtmClientInitialized()) {
             agoraRtmController.loginToRtm()
         } else {
-            Logger.getLogger("AgoraUIKit")
+            Logger.getLogger("AgoraVideoUIKit")
                 .log(Level.WARNING, "Username is null or RTM client has not been initialized")
         }
     }
@@ -511,7 +511,7 @@ open class AgoraVideoViewer : FrameLayout {
             val leaveChannelRtn = this.leaveChannel()
             if (leaveChannelRtn < 0) {
                 // could not leave channel
-                Logger.getLogger("AgoraUIKit")
+                Logger.getLogger("AgoraVideoUIKit")
                     .log(Level.WARNING, "Could not leave channel: $leaveChannelRtn")
             } else {
                 this.join(channel, token, role, uid)

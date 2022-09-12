@@ -32,7 +32,7 @@ enum class TokenError {
  */
 @ExperimentalUnsignedTypes
 fun AgoraVideoViewer.Companion.fetchToken(urlBase: String, channelName: String, userId: Int, completion: TokenCallback) {
-    val log: Logger = Logger.getLogger("AgoraUIKit")
+    val log: Logger = Logger.getLogger("AgoraVideoUIKit")
     val client = OkHttpClient()
     val url = "$urlBase/rtc/$channelName/publisher/uid/$userId/"
     val request: okhttp3.Request = Request.Builder()
@@ -81,7 +81,7 @@ internal fun AgoraVideoViewer.fetchRenewToken() {
                 }
 
                 override fun onError(error: TokenError) {
-                    Logger.getLogger("AgoraUIKit", error.name)
+                    Logger.getLogger("AgoraVideoUIKit", error.name)
                 }
             }
 

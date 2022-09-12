@@ -37,7 +37,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     }
 
     override fun onUserJoined(uid: Int, elapsed: Int) {
-        Logger.getLogger("AgoraUIKit").log(Level.INFO, "onUserJoined: $uid")
+        Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "onUserJoined: $uid")
         super.onUserJoined(uid, elapsed)
         this.hostView.remoteUserIDs.add(uid)
 
@@ -51,7 +51,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         elapsed: Int
     ) {
         super.onRemoteAudioStateChanged(uid, state, reason, elapsed)
-        Logger.getLogger("AgoraUIKit").log(Level.WARNING, "setting muted state: " + state)
+        Logger.getLogger("AgoraVideoUIKit").log(Level.WARNING, "setting muted state: " + state)
         (this.hostView.context as Activity).runOnUiThread {
             if (state == REMOTE_AUDIO_STATE.REMOTE_AUDIO_STATE_STOPPED || state == REMOTE_AUDIO_STATE.REMOTE_AUDIO_STATE_STARTING) {
                 if (state == REMOTE_AUDIO_STATE.REMOTE_AUDIO_STATE_STARTING && !this.hostView.userVideoLookup.containsKey(
@@ -72,7 +72,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
 
     override fun onUserOffline(uid: Int, reason: Int) {
         super.onUserOffline(uid, reason)
-        Logger.getLogger("AgoraUIKit").log(Level.WARNING, "User offline: $reason")
+        Logger.getLogger("AgoraVideoUIKit").log(Level.WARNING, "User offline: $reason")
         if (reason == Constants.USER_OFFLINE_QUIT || reason == Constants.USER_OFFLINE_DROPPED) {
             this.hostView.remoteUserIDs.remove(uid)
         }
@@ -156,7 +156,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         super.onJoinChannelSuccess(channel, uid, elapsed)
 
         this.hostView.connectionData.channel = channel
-        Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "join channel success")
+        Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "join channel success")
         this.hostView.userID = uid
         if (this.hostView.userRole == Constants.CLIENT_ROLE_BROADCASTER) {
             (this.hostView.context as Activity).runOnUiThread(
