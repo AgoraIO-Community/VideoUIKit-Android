@@ -29,7 +29,6 @@ import io.agora.rtm.RtmClient
 import java.util.logging.Level
 import java.util.logging.Logger
 
-
 /**
  * An interface for getting some common delegate callbacks without needing to subclass.
  */
@@ -315,9 +314,9 @@ open class AgoraVideoViewer : FrameLayout {
         rtcEngineConfig.mContext = context.applicationContext
         rtcEngineConfig.mEventHandler = this.newHandler
 
-        try{
+        try {
             this.agkit = RtcEngine.create(rtcEngineConfig)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             println("Exception while initializing the SDK : ${e.message}")
         }
 

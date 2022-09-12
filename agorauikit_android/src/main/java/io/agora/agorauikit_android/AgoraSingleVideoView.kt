@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.video.VideoCanvas
 
 /**
@@ -22,7 +21,7 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
      * Canvas used to render the Agora RTC Video.
      */
     var canvas: VideoCanvas
-    internal set
+        internal set
     internal var uid: Int = uid
 //    internal var textureView: AgoraTextureView = AgoraTextureView(context)
 

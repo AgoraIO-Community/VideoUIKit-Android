@@ -118,9 +118,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         super.onLocalVideoStateChanged(localVideoState, error)
         (this.hostView.context as Activity).runOnUiThread {
             if (localVideoState == Constants.LOCAL_VIDEO_STREAM_STATE_CAPTURING || localVideoState == Constants.LOCAL_VIDEO_STREAM_STATE_ENCODING || localVideoState == Constants.LOCAL_VIDEO_STREAM_STATE_STOPPED) {
-                this.hostView.userVideoLookup[
-                        this.hostView.userID
-                ]?.videoMuted = localVideoState == Constants.LOCAL_VIDEO_STREAM_STATE_STOPPED
+                this.hostView.userVideoLookup[this.hostView.userID]?.videoMuted = localVideoState == Constants.LOCAL_VIDEO_STREAM_STATE_STOPPED
             }
         }
         this.hostView.rtcOverrideHandler?.onLocalVideoStateChanged(localVideoState, error)
@@ -143,7 +141,6 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
 
         this.hostView.rtcOverrideHandler?.onLocalAudioStateChanged(state, error)
     }
-
 
     override fun onFirstLocalAudioFramePublished(elapsed: Int) {
         super.onFirstLocalAudioFramePublished(elapsed)
@@ -224,7 +221,6 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
 
         this.hostView.rtcOverrideHandler?.onAudioPublishStateChanged(channel, oldState, newState, elapseSinceLastState)
     }
-
 
     override fun onAudioRouteChanged(routing: Int) {
         super.onAudioRouteChanged(routing)

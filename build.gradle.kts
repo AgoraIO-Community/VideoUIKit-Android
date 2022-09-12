@@ -21,8 +21,14 @@ allprojects {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven { setUrl("https://jitpack.io") }
+        maven {
+            setUrl("https://jitpack.io")
+        }
     }
+}
+
+plugins {
+    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
 }
 
 tasks.register("clean", Delete::class) {
