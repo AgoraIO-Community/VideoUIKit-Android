@@ -320,6 +320,7 @@ open class AgoraVideoViewer : FrameLayout {
             println("Exception while initializing the SDK : ${e.message}")
         }
 
+        agkit.setParameters("{\"rtc.using_ui_kit\": 1}")
         agkit.enableAudioVolumeIndication(1000, 3, true)
         agkit.setClientRole(this.userRole)
         agkit.enableVideo()
