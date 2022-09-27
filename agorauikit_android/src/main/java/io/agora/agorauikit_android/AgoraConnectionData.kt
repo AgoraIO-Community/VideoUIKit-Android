@@ -5,7 +5,7 @@ package io.agora.agorauikit_android
  * @param appId: Agora App ID from https://agora.io
  * @param appToken: Token to be used to connect to a channel, can be nil.
  */
-public class AgoraConnectionData(
+data class AgoraConnectionData @JvmOverloads constructor(
     var appId: String,
     var appToken: String? = null,
     var username: String? = null,

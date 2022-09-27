@@ -11,8 +11,8 @@ import io.agora.agorauikit_android.AgoraButton
 import io.agora.agorauikit_android.AgoraConnectionData
 import io.agora.agorauikit_android.AgoraSettings
 import io.agora.agorauikit_android.AgoraVideoViewer
-import io.agora.agorauikit_android.requestPermissions
-import io.agora.rtc.Constants
+import io.agora.agorauikit_android.requestPermission
+import io.agora.rtc2.Constants
 
 // Ask for Android device permissions at runtime.
 private const val PERMISSION_REQ_ID = 22
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         try {
             agView = AgoraVideoViewer(
                 this, AgoraConnectionData("my-app-id"),
-                agoraSettings = this.settingsWithExtraButtons(),
+                agoraSettings = this.settingsWithExtraButtons()
             )
         } catch (e: Exception) {
             println("Could not initialise AgoraVideoViewer. Check your App ID is valid. ${e.message}")
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         this.addContentView(agView, set)
 
         // Check that the camera and mic permissions are accepted before attempting to join
-        if (AgoraVideoViewer.requestPermissions(this)) {
+        if (AgoraVideoViewer.requestPermission(this)) {
             agView!!.join("test", role = Constants.CLIENT_ROLE_BROADCASTER)
         } else {
             val joinButton = Button(this)
@@ -53,14 +53,13 @@ class MainActivity : AppCompatActivity() {
             joinButton.setOnClickListener {
                 // When the button is clicked, check permissions again and join channel
                 // if permissions are granted.
-                if (AgoraVideoViewer.requestPermissions(this)) {
+                if (AgoraVideoViewer.requestPermission(this)) {
                     (joinButton.parent as ViewGroup).removeView(joinButton)
                     agView!!.join("test", role = Constants.CLIENT_ROLE_BROADCASTER)
                 }
             }
             joinButton.setBackgroundColor(Color.GREEN)
             joinButton.setTextColor(Color.RED)
-
             this.addContentView(
                 joinButton,
                 FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 300)

@@ -9,8 +9,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.agora.rtc.Constants
-import io.agora.rtc.RtcEngine
+import io.agora.rtc2.Constants
+import io.agora.rtc2.RtcEngine
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.sqrt

@@ -18,11 +18,12 @@ import io.agora.agorauikit_android.AgoraRtmController.RtmTokenCallback
 import io.agora.agorauikit_android.AgoraRtmController.RtmTokenError
 import io.agora.agorauikit_android.AgoraRtmController.fetchToken
 import io.agora.agorauikit_android.AgoraRtmController.sendMuteRequest
-import io.agora.rtc.Constants
-import io.agora.rtc.IRtcEngineEventHandler
-import io.agora.rtc.RtcEngine
-import io.agora.rtc.video.BeautyOptions
-import io.agora.rtc.video.VideoEncoderConfiguration
+import io.agora.rtc2.Constants
+import io.agora.rtc2.IRtcEngineEventHandler
+import io.agora.rtc2.RtcEngine
+import io.agora.rtc2.RtcEngineConfig
+import io.agora.rtc2.video.BeautyOptions
+import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtm.RtmChannel
 import io.agora.rtm.RtmClient
 import java.util.logging.Level
@@ -63,6 +64,7 @@ interface AgoraVideoViewerDelegate {
 }
 
 @ExperimentalUnsignedTypes
+
 /**
  * View to contain all the video session objects, including camera feeds and buttons for settings
  */
@@ -98,7 +100,9 @@ open class AgoraVideoViewer : FrameLayout {
     internal val userVideosForGrid: Map<Int, AgoraSingleVideoView>
         get() {
             return if (this.style == Style.FLOATING) {
-                this.userVideoLookup.filterKeys { it == this.overrideActiveSpeaker ?: this.activeSpeaker ?: this.userID }
+                this.userVideoLookup.filterKeys {
+                    it == (this.overrideActiveSpeaker ?: this.activeSpeaker ?: this.userID)
+                }
             } else if (this.style == Style.GRID) {
                 this.userVideoLookup
             } else {
@@ -136,6 +140,9 @@ open class AgoraVideoViewer : FrameLayout {
     public var userID: Int = 0
         internal set
 
+    /**
+     * A boolean to check whether the user has joined the RTC channel or not.
+     */
     var isInRtcChannel: Boolean? = false
 
     /**
@@ -242,9 +249,13 @@ open class AgoraVideoViewer : FrameLayout {
         if (this.userID == 0 || this.userVideoLookup.containsKey(this.userID)) {
             return this.userVideoLookup[this.userID]
         }
+        this.agkit.enableVideo()
+        this.agkit.startPreview()
         val vidView = AgoraSingleVideoView(this.context, 0, this.agoraSettings.colors.micFlag)
         vidView.canvas.renderMode = this.agoraSettings.videoRenderMode
+        this.agkit.enableVideo()
         this.agkit.setupLocalVideo(vidView.canvas)
+        this.agkit.startPreview()
         this.userVideoLookup[this.userID] = vidView
         this.reorganiseVideos()
         return vidView
@@ -261,7 +272,7 @@ open class AgoraVideoViewer : FrameLayout {
      * @param delegate: Delegate for the AgoraVideoViewer, used for some important callback methods.
      */
     @Throws(Exception::class)
-    public constructor(
+    @JvmOverloads public constructor(
         context: Context,
         connectionData: AgoraConnectionData,
         style: Style = Style.FLOATING,
@@ -295,13 +306,23 @@ open class AgoraVideoViewer : FrameLayout {
     @Throws(Exception::class)
     private fun initAgoraEngine() {
         if (connectionData.appId == "my-app-id") {
-            Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "Change the App ID!")
+            Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "Change the App ID!")
             throw IllegalArgumentException("Change the App ID!")
         }
-        this.agkit = RtcEngine.create(context, connectionData.appId, this.newHandler)
+        val rtcEngineConfig = RtcEngineConfig()
+        rtcEngineConfig.mAppId = connectionData.appId
+        rtcEngineConfig.mContext = context.applicationContext
+        rtcEngineConfig.mEventHandler = this.newHandler
+
+        try {
+            this.agkit = RtcEngine.create(rtcEngineConfig)
+        } catch (e: Exception) {
+            println("Exception while initializing the SDK : ${e.message}")
+        }
+
+        agkit.setParameters("{\"rtc.using_ui_kit\": 1}")
         agkit.enableAudioVolumeIndication(1000, 3, true)
-        agkit.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
-        agkit.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
+        agkit.setClientRole(this.userRole)
         agkit.enableVideo()
         agkit.setVideoEncoderConfiguration(VideoEncoderConfiguration())
         if (agoraSettings.rtmEnabled) {
@@ -342,6 +363,10 @@ open class AgoraVideoViewer : FrameLayout {
      */
     public lateinit var agkit: RtcEngine
         internal set
+
+    /**
+     * RTM client used by this [AgoraVideoViewer]
+     */
     public lateinit var agRtmClient: RtmClient
         internal set
     lateinit var agRtmChannel: RtmChannel
@@ -355,7 +380,7 @@ open class AgoraVideoViewer : FrameLayout {
 
     internal fun setupAgoraVideo() {
         if (this.agkit.enableVideo() < 0) {
-            Logger.getLogger("AgoraUIKit").log(Level.WARNING, "Could not enable video")
+            Logger.getLogger("AgoraVideoUIKit").log(Level.WARNING, "Could not enable video")
             return
         }
         if (this.controlContainer == null) {
@@ -398,7 +423,7 @@ open class AgoraVideoViewer : FrameLayout {
      * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as. Default: `.broadcaster`
      * @param uid: UID to be set when user joins the channel, default will be 0.
      */
-    fun join(channel: String, fetchToken: Boolean, role: Int? = null, uid: Int? = null) {
+    @JvmOverloads fun join(channel: String, fetchToken: Boolean, role: Int? = null, uid: Int? = null) {
         this.setupAgoraVideo()
         getRtcToken(channel, role, uid, fetchToken)
 
@@ -419,7 +444,7 @@ open class AgoraVideoViewer : FrameLayout {
                         }
 
                         override fun onError(error: TokenError) {
-                            Logger.getLogger("AgoraUIKit", "Could not get RTC token: ${error.name}")
+                            Logger.getLogger("AgoraVideoUIKit", "Could not get RTC token: ${error.name}")
                         }
                     }
                 )
@@ -445,7 +470,7 @@ open class AgoraVideoViewer : FrameLayout {
                         }
 
                         override fun onError(error: RtmTokenError) {
-                            Logger.getLogger("AgoraUIKit", "Could not get RTM token: ${error.name}")
+                            Logger.getLogger("AgoraVideoUIKit", "Could not get RTM token: ${error.name}")
                         }
                     }
                 )
@@ -454,11 +479,14 @@ open class AgoraVideoViewer : FrameLayout {
         }
     }
 
+    /**
+     * Login to Agora RTM
+     */
     fun triggerLoginToRtm() {
         if (agoraSettings.rtmEnabled && isAgRtmClientInitialized()) {
             agoraRtmController.loginToRtm()
         } else {
-            Logger.getLogger("AgoraUIKit")
+            Logger.getLogger("AgoraVideoUIKit")
                 .log(Level.WARNING, "Username is null or RTM client has not been initialized")
         }
     }
@@ -470,10 +498,10 @@ open class AgoraVideoViewer : FrameLayout {
      * @param role: [AgoraClientRole](https://docs.agora.io/en/Video/API%20Reference/oc/Constants/AgoraClientRole.html) to join the channel as.
      * @param uid: UID to be set when user joins the channel, default will be 0.
      */
-    fun join(channel: String, token: String? = null, role: Int? = null, uid: Int? = null) {
+    @JvmOverloads fun join(channel: String, token: String? = null, role: Int? = null, uid: Int? = null) {
 
         if (role == Constants.CLIENT_ROLE_BROADCASTER) {
-            AgoraVideoViewer.requestPermissions(this.context)
+            AgoraVideoViewer.requestPermission(this.context)
         }
         if (this.connectionData.channel != null) {
             if (this.connectionData.channel == channel) {
@@ -483,7 +511,7 @@ open class AgoraVideoViewer : FrameLayout {
             val leaveChannelRtn = this.leaveChannel()
             if (leaveChannelRtn < 0) {
                 // could not leave channel
-                Logger.getLogger("AgoraUIKit")
+                Logger.getLogger("AgoraVideoUIKit")
                     .log(Level.WARNING, "Could not leave channel: $leaveChannelRtn")
             } else {
                 this.join(channel, token, role, uid)
@@ -500,6 +528,6 @@ open class AgoraVideoViewer : FrameLayout {
         }
 
         this.setupAgoraVideo()
-        this.agkit.joinChannel(token, channel, null, this.userID)
+        this.agkit.joinChannel(token ?: this.agoraSettings.tokenURL, channel, null, this.userID)
     }
 }

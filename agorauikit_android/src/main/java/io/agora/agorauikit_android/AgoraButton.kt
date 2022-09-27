@@ -9,7 +9,7 @@ import androidx.annotation.DimenRes
 import androidx.core.view.setPadding
 
 /**
- * A button to fit the style of builtin Agora UIKit Buttons
+ * A button to fit the style of builtin Agora VideoUIKit Buttons
  *
  * @param context the context for the application.
  * @param attrs the attribute set for the button.

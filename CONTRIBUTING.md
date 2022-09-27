@@ -1,4 +1,4 @@
-# How to contribute to Agora UIKit
+# How to contribute to Agora VideoUIKit
 
 ## **Did you find a bug?**
 
@@ -16,13 +16,13 @@
 
 ## **Did you fix whitespace, format code, or make a purely cosmetic patch?**
 
-Changes that are cosmetic in nature and do not add anything substantial to the stability, functionality, or testability of Agora UIKit will generally not be accepted.
+Changes that are cosmetic in nature and do not add anything substantial to the stability, functionality, or testability of Agora VideoUIKit will generally not be accepted.
 
 ## **Do you intend to add a new feature or change an existing one?**
 
 * Suggest your change in the form of a Feature Request Issue on this repository.
 
-* One of the team at Agora will respond to your issue, and together we can figure out whether this feature is applicable to be added to Agora UIKit.
+* One of the team at Agora will respond to your issue, and together we can figure out whether this feature is applicable to be added to Agora VideoUIKit.
 
 ## **Do you have questions about the source code?**
 

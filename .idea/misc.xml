@@ -5,16 +5,18 @@
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.391156462585034" />
         <entry key="../../../../../layout/custom_preview.xml" value="0.1461038961038961" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.225" />
         <entry key="agorauikit_android/src/main/res/drawable/baseline_push_pin_20.xml" value="0.125" />
         <entry key="agorauikit_android/src/main/res/drawable/button_background.xml" value="0.125" />
         <entry key="agorauikit_android/src/main/res/drawable/ic_person.xml" value="0.125" />
         <entry key="agorauikit_android/src/main/res/drawable/ic_round_pending_24.xml" value="0.125" />
         <entry key="agorauikit_android/src/main/res/drawable/ic_video_mute.xml" value="0.125" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.24375" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="jbr-11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_14" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

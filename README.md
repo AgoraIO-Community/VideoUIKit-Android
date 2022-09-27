@@ -1,4 +1,4 @@
-# Agora UIKit for Android
+# Agora VideoUIKit for Android
 
 <p align="center">
 	<a href="https://jitpack.io/#AgoraIO-Community/Android-UIKit">
@@ -70,12 +70,12 @@ agView.join("test", role=Constants.CLIENT_ROLE_BROADCASTER)
 
 ### Roadmap
 
-- [ ] Muting/Unmuting a remote member
+- [x] Muting/Unmuting a remote member
 - [ ] Usernames
 - [ ] Promoting an audience member to a broadcaster role.
 - [ ] Layout for Voice Calls
 - [ ] Cloud recording
 
-## UIKits
+## VideoUIKits
 
-The plan is to grow this library and have similar offerings across all supported platforms. There are already similar libraries for [Flutter](https://github.com/AgoraIO-Community/Flutter-UIKit/), [React Native](https://github.com/AgoraIO-Community/ReactNative-UIKit), and [iOS](https://github.com/AgoraIO-Community/iOS-UIKit/), so be sure to check them out.
+The plan is to grow this library and have similar offerings across all supported platforms. There are already similar libraries for [Flutter](https://github.com/AgoraIO-Community/VideoUIKit-Flutter/), [React Native](https://github.com/AgoraIO-Community/ReactNative-UIKit), and [iOS](https://github.com/AgoraIO-Community/iOS-UIKit/), so be sure to check them out.

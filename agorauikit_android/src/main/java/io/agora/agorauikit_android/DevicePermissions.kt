@@ -23,7 +23,7 @@ private val REQUESTED_PERMISSIONS = arrayOf<String>(
  * @return True if all the permissions were already granted
  */
 @ExperimentalUnsignedTypes
-public fun AgoraVideoViewer.Companion.requestPermissions(context: Context): Boolean {
+@JvmOverloads public fun AgoraVideoViewer.Companion.requestPermission(context: Context): Boolean {
     return checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) &&
         checkSelfPermission(context, Manifest.permission.CAMERA)
 }
@@ -36,7 +36,7 @@ public fun AgoraVideoViewer.Companion.requestPermissions(context: Context): Bool
  * @param permission Permission String
  * @return True if Permission is granted
  */
-public fun AgoraVideoViewer.Companion.checkSelfPermission(context: Context, permission: String): Boolean {
+@JvmOverloads public fun AgoraVideoViewer.Companion.checkSelfPermission(context: Context, permission: String): Boolean {
     if (ContextCompat.checkSelfPermission(context, permission) !=
         PackageManager.PERMISSION_GRANTED
     ) {

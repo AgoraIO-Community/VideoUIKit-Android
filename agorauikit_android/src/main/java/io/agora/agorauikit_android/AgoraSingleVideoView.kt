@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
+import android.view.SurfaceView
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import io.agora.rtc.RtcEngine
-import io.agora.rtc.video.VideoCanvas
+import io.agora.rtc2.video.VideoCanvas
 
 /**
  * View for the individual Agora Camera Feed.
@@ -22,7 +22,7 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
      */
     var canvas: VideoCanvas
         internal set
-    internal var uid: Int
+    internal var uid: Int = uid
 //    internal var textureView: AgoraTextureView = AgoraTextureView(context)
 
     /**
@@ -66,13 +66,11 @@ class AgoraSingleVideoView(context: Context, uid: Int, micColor: Int) : FrameLay
      * @param micColor: Color to be applied when the local or remote user mutes their microphone
      */
     init {
-        this.uid = uid
 
-        val canvasView = RtcEngine.CreateRendererView(context)
-        canvasView.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-        this.canvas = VideoCanvas(canvasView)
+        val surfaceView = SurfaceView(getContext())
+        this.canvas = VideoCanvas(surfaceView)
         this.canvas.uid = uid
-        addView(canvasView)
+        addView(surfaceView, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT))
         this.backgroundView = FrameLayout(context)
         this.setBackground()
         this.mutedFlag = ImageView(context)

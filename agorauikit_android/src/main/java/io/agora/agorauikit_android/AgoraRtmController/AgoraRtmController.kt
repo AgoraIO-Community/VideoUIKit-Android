@@ -15,6 +15,9 @@ class AgoraRtmController(
     private var generatedRtmId: String? = null
     private var isInRtmChannel: Boolean = false
 
+    /**
+     * Enum for the Login Status of a user to Agora RTM
+     */
     public enum class LoginStatus {
         OFFLINE, LOGGING_IN, LOGGED_IN, LOGIN_FAILED
     }
@@ -23,6 +26,9 @@ class AgoraRtmController(
 
     companion object {}
 
+    /**
+     * Initializes the Agora RTM SDK
+     */
     fun initAgoraRtm(context: Context) {
         try {
             this.hostView.agRtmClient =
@@ -32,18 +38,21 @@ class AgoraRtmController(
                     this.hostView.agoraRtmClientHandler
                 )
         } catch (e: Exception) {
-            Logger.getLogger("AgoraUIKit")
+            Logger.getLogger("AgoraVideoUIKit")
                 .log(Level.SEVERE, "Failed to initialize Agora RTM SDK. Error: $e")
         }
     }
 
+    /**
+     * Function to login to Agora RTM
+     */
     fun loginToRtm() {
         if (this.hostView.connectionData.rtmId.isNullOrEmpty()) {
             generateRtmId()
         }
         if (loginStatus != LoginStatus.LOGGED_IN && hostView.isAgRtmClientInitialized()) {
             loginStatus = LoginStatus.LOGGING_IN
-            Logger.getLogger("AgoraUIKit")
+            Logger.getLogger("AgoraVideoUIKit")
                 .log(Level.INFO, "Trying to do RTM login")
             this.hostView.agRtmClient.login(
                 this.hostView.connectionData.rtmToken,
@@ -51,7 +60,7 @@ class AgoraRtmController(
                 object : ResultCallback<Void?> {
                     override fun onSuccess(responseInfo: Void?) {
                         loginStatus = LoginStatus.LOGGED_IN
-                        Logger.getLogger("AgoraUIKit")
+                        Logger.getLogger("AgoraVideoUIKit")
                             .log(Level.INFO, "RTM user logged in successfully")
                         if (!isInRtmChannel) {
                             createRtmChannel()
@@ -60,17 +69,20 @@ class AgoraRtmController(
 
                     override fun onFailure(errorInfo: ErrorInfo) {
                         loginStatus = LoginStatus.LOGIN_FAILED
-                        Logger.getLogger("AgoraUIKit")
+                        Logger.getLogger("AgoraVideoUIKit")
                             .log(Level.SEVERE, "RTM user login failed. Error: $errorInfo")
                     }
                 }
             )
         } else {
-            Logger.getLogger("AgoraUIKit")
+            Logger.getLogger("AgoraVideoUIKit")
                 .log(Level.INFO, "RTM user already logged in")
         }
     }
 
+    /**
+     * Function to create a RTM channel
+     */
     fun createRtmChannel() {
         try {
             this.hostView.connectionData.rtmChannelName = this.hostView.connectionData.rtmChannelName
@@ -83,7 +95,7 @@ class AgoraRtmController(
                     this.hostView.agoraRtmChannelHandler
                 )
         } catch (e: RuntimeException) {
-            Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "Failed to create RTM channel. Error: $e")
+            Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "Failed to create RTM channel. Error: $e")
         }
 
         if (hostView.isAgRtmChannelInitialized()) {
@@ -91,11 +103,14 @@ class AgoraRtmController(
         }
     }
 
+    /**
+     * Function to join a RTM channel
+     */
     private fun joinRtmChannel() {
         this.hostView.agRtmChannel.join(object : ResultCallback<Void> {
             override fun onSuccess(responseInfo: Void?) {
                 isInRtmChannel = true
-                Logger.getLogger("AgoraUIKit").log(Level.SEVERE, "RTM Channel Joined Successfully")
+                Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "RTM Channel Joined Successfully")
                 if (isInRtmChannel) {
                     sendUserData(toChannel = true, hostView = hostView)
                 }
@@ -103,12 +118,15 @@ class AgoraRtmController(
 
             override fun onFailure(errorInfo: ErrorInfo) {
                 isInRtmChannel = false
-                Logger.getLogger("AgoraUIKit")
+                Logger.getLogger("AgoraVideoUIKit")
                     .log(Level.SEVERE, "Failed to join RTM Channel. Error: $errorInfo")
             }
         })
     }
 
+    /**
+     * Function to generate a random RTM ID if not specified by the user
+     */
     fun generateRtmId() {
         val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
@@ -117,7 +135,7 @@ class AgoraRtmController(
             .map(charPool::get)
             .joinToString("")
 
-        Logger.getLogger("AgoraUIKit").log(Level.INFO, "Generated RTM ID: $generatedRtmId")
+        Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "Generated RTM ID: $generatedRtmId")
 
         this.hostView.connectionData.rtmId = generatedRtmId
     }

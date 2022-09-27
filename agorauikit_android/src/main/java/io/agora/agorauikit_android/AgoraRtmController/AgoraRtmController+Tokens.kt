@@ -25,7 +25,7 @@ enum class RtmTokenError {
 
 @ExperimentalUnsignedTypes
 fun AgoraRtmController.Companion.fetchToken(urlBase: String, rtmId: String, completion: RtmTokenCallback) {
-    val log: Logger = Logger.getLogger("AgoraUIKit")
+    val log: Logger = Logger.getLogger("AgoraVideoUIKit")
     val client = OkHttpClient()
     val url = "$urlBase/rtm/$rtmId"
     val request: okhttp3.Request = Request.Builder()
@@ -41,7 +41,7 @@ fun AgoraRtmController.Companion.fetchToken(urlBase: String, rtmId: String, comp
             }
 
             override fun onResponse(call: Call, response: Response) {
-                response.body()?.string()?.let {
+                response.body?.string()?.let {
                     val jObject = JSONObject(it)
                     val token = jObject.getString("rtmToken")
                     if (!token.isEmpty()) {
