@@ -87,7 +87,6 @@ fun AgoraRtmController.Companion.sendUserData(
     Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, message.text)
 
     val option = SendMessageOptions()
-    option.enableOfflineMessaging = true
 
     if (!toChannel) {
         hostView.agRtmClient.sendMessageToPeer(
@@ -142,7 +141,6 @@ fun AgoraRtmController.Companion.sendMuteRequest(
     val message: RtmMessage = hostView.agRtmClient.createMessage(data)
 
     val option = SendMessageOptions()
-    option.enableOfflineMessaging = true
 
     if (peerRtcId == hostView.userID) {
         Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "Can't send message to local user")
