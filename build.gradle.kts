@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:4.2.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.6.21")
 //        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.15.0")
 //        classpath("com.novoda:bintray-release:0.9")
 //        classpath("com.github.dcendents:android-maven-gradle-plugin:2.1")
