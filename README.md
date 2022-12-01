@@ -16,6 +16,7 @@ Instantly integrate Agora in your own Android application or prototype.
 <p align="center"><img src="https://camo.githubusercontent.com/affd109caf06f0014a55bc411b66b34b8dc68f8d86befe6a2f27dad1fc7c6a5b/68747470733a2f2f692e6962622e636f2f5853576d57397a2f4e65772d50726f6a6563742d372e706e67"/>
 </p>
 
+[See documentation here](https://agoraio-community.github.io/VideoUIKit-Android/agorauikit_android/io.agora.agorauikit_android/index.html).
 
 ## Requirements
 
