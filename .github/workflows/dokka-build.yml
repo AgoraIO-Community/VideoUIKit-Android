@@ -1,11 +1,9 @@
-name: Build, test, and deploy docs
+name: Deploy docs
 
 on:
   push:
-    branches: [ master, dokka-updates ]
+    branches: "main"
     paths-ignore: [ 'docs/**', 'README.md' ]
-  release:
-    types: [published]
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
