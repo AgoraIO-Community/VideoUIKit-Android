@@ -4,6 +4,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("org.jetbrains.dokka")
+    id("org.jlleitschuh.gradle.ktlint")
     kotlin("plugin.serialization") version "1.4.10"
 }
 // group = "com.github.agoraio-community"
