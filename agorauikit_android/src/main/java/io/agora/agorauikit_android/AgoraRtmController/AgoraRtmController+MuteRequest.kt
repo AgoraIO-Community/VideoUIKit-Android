@@ -127,7 +127,7 @@ fun AgoraRtmController.Companion.sendMuteRequest(
     deviceType: DeviceType,
     isForceful: Boolean = false
 ) {
-    var peerRtmId: String? = null
+    var peerRtmId: String?
 
     val muteRequest = MuteRequest(
         rtcId = peerRtcId,

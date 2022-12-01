@@ -95,6 +95,7 @@ internal fun AgoraVideoViewer.getScreenShareButton(): AgoraButton? {
     return null
 }
 
+@ExperimentalUnsignedTypes
 internal fun AgoraVideoViewer.builtinButtons(): MutableList<AgoraButton> {
     val rtnButtons = mutableListOf<AgoraButton>()
     for (button in this.agoraSettings.enabledButtons) {
@@ -110,7 +111,7 @@ internal fun AgoraVideoViewer.builtinButtons(): MutableList<AgoraButton> {
 
 @ExperimentalUnsignedTypes
 internal fun AgoraVideoViewer.addVideoButtons() {
-    var container = this.getControlContainer()
+    val container = this.getControlContainer()
     val buttons = this.builtinButtons() + this.agoraSettings.extraButtons
     container.visibility = if (buttons.isEmpty()) View.INVISIBLE else View.VISIBLE
 

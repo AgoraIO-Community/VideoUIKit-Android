@@ -131,7 +131,7 @@ class AgoraRtmController(
         val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
         generatedRtmId = (1..10)
-            .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
             .map(charPool::get)
             .joinToString("")
 
