@@ -3,6 +3,8 @@ package io.agora.agora_android_uikit
 import android.Manifest
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.util.Log.println
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
@@ -13,6 +15,7 @@ import io.agora.agorauikit_android.AgoraSettings
 import io.agora.agorauikit_android.AgoraVideoViewer
 import io.agora.agorauikit_android.requestPermission
 import io.agora.rtc2.Constants
+import kotlin.collections.MutableList
 
 // Ask for Android device permissions at runtime.
 private const val PERMISSION_REQ_ID = 22
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 agoraSettings = this.settingsWithExtraButtons()
             )
         } catch (e: Exception) {
-            println("Could not initialise AgoraVideoViewer. Check your App ID is valid. ${e.message}")
+            println(Log.ERROR, "VideoUIKit App","Could not initialise AgoraVideoViewer. Check your App ID is valid. ${e.message}")
             return
         }
         val set = FrameLayout.LayoutParams(

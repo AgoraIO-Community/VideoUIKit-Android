@@ -1,0 +1,45 @@
+name: Build, test, and deploy docs
+
+on:
+  push:
+    branches: [ master, dokka-updates ]
+    paths-ignore: [ 'docs/**', 'README.md' ]
+  release:
+    types: [published]
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 17
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+
+    - name: Build and run tests
+      run: ./gradlew build
+
+    - name: Generate API documentation
+      run: |
+        LIB_VERSION=$(grep 'UIKitData = UIKitData' agorauikit_android/src/main/java/io/agora/agorauikit_android/AgoraRtmController/AgoraRtmController+MuteRequest.kt | sed -e 's,.*\"\(.*\)\"),\1,')
+        echo Generating API documentation for version $LIB_VERSION
+        ./gradlew -Pversion=$LIB_VERSION dokkaHtml
+    - name: Upload artifact 📜
+      uses: actions/upload-pages-artifact@v1
+      with:
+        # Upload docs directory
+        path: 'agorauikit_android/build/dokka/html'
+    - name: Deploy to GitHub Pages 🐙
+      id: deployment
+      uses: actions/deploy-pages@v1

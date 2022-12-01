@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion(31)
+    compileSdkVersion(33)
     buildToolsVersion("30.0.3")
 
     defaultConfig {
 
         applicationId = "io.agora.agora_android_uikit"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.7.0")
