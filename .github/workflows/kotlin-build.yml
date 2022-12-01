@@ -23,6 +23,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: ktlint
-        uses: vroy/gha-kotlin-linter@v4
+        run: ./gradlew ktlintCheck
       - name: Build with Gradle
         run: ./gradlew build publishToMavenLocal
