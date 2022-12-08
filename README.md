@@ -40,11 +40,11 @@ allprojects {
 
 ```css
 dependencies {
-  implementation 'com.github.AgoraIO-Community:Android-UIKit:version'
+  implementation 'com.github.AgoraIO-Community:VideoUIKit-Android:version'
 }
 ```
 
-Then sync gradle build files. More information on [JitPack](https://jitpack.io/#AgoraIO-Community/Android-UIKit).
+Then sync gradle build files. More information on [JitPack](https://jitpack.io/#AgoraIO-Community/VideoUIKit-Android).
 
 ## Usage
 
@@ -79,4 +79,4 @@ agView.join("test", role=Constants.CLIENT_ROLE_BROADCASTER)
 
 ## VideoUIKits
 
-The plan is to grow this library and have similar offerings across all supported platforms. There are already similar libraries for [Flutter](https://github.com/AgoraIO-Community/VideoUIKit-Flutter/), [React Native](https://github.com/AgoraIO-Community/ReactNative-UIKit), and [iOS](https://github.com/AgoraIO-Community/iOS-UIKit/), so be sure to check them out.
+The plan is to grow this library and have similar offerings across all supported platforms. There are already similar libraries for [Flutter](https://github.com/AgoraIO-Community/VideoUIKit-Flutter/), [React Native](https://github.com/AgoraIO-Community/VideoUIKit-ReactNative), and [iOS](https://github.com/AgoraIO-Community/VideoUIKit-iOS/), so be sure to check them out.
