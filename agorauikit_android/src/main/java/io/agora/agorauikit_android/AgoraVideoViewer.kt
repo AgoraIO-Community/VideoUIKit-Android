@@ -72,7 +72,6 @@ open class AgoraVideoViewer : FrameLayout {
 
     val TAG = resources.getString(R.string.TAG)
 
-
     /**
      * Style and organisation to be applied to all the videos in this view.
      */
