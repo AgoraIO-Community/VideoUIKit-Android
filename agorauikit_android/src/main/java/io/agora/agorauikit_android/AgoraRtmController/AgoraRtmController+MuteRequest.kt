@@ -1,6 +1,8 @@
 package io.agora.agorauikit_android.AgoraRtmController
 
 import io.agora.agorauikit_android.AgoraVideoViewer
+import io.agora.agorauikit_android.R
+import io.agora.agorauikit_android.fetchToken
 import io.agora.rtc2.RtcEngine
 import io.agora.rtm.ErrorInfo
 import io.agora.rtm.ResultCallback
@@ -69,6 +71,8 @@ fun AgoraRtmController.Companion.sendUserData(
     peerRtmId: String? = null,
     hostView: AgoraVideoViewer
 ) {
+    val TAG = hostView.resources.getString(R.string.TAG)
+
     val rtmId = hostView.connectionData.rtmId as String
 
     val userData = UserData(
@@ -84,7 +88,7 @@ fun AgoraRtmController.Companion.sendUserData(
     val data = json.encodeToString(userData)
     val message: RtmMessage = hostView.agRtmClient.createMessage(data)
 
-    Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, message.text)
+    Logger.getLogger(TAG).log(Level.INFO, message.text)
 
     val option = SendMessageOptions()
 
@@ -95,11 +99,11 @@ fun AgoraRtmController.Companion.sendUserData(
             option,
             object : ResultCallback<Void> {
                 override fun onSuccess(p0: Void?) {
-                    Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "UserData message sent to $peerRtmId")
+                    Logger.getLogger(TAG).log(Level.INFO, "UserData message sent to $peerRtmId")
                 }
 
                 override fun onFailure(p0: ErrorInfo?) {
-                    Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "Failed to send UserData message to $peerRtmId")
+                    Logger.getLogger(TAG).log(Level.INFO, "Failed to send UserData message to $peerRtmId")
                 }
             }
         )
@@ -108,11 +112,11 @@ fun AgoraRtmController.Companion.sendUserData(
             message, option,
             object : ResultCallback<Void> {
                 override fun onSuccess(p0: Void?) {
-                    Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "UserData message sent to channel")
+                    Logger.getLogger(TAG).log(Level.INFO, "UserData message sent to channel")
                 }
 
                 override fun onFailure(p0: ErrorInfo?) {
-                    Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "Failed to send UserData message to channel")
+                    Logger.getLogger(TAG).log(Level.INFO, "Failed to send UserData message to channel")
                 }
             }
         )
@@ -127,6 +131,8 @@ fun AgoraRtmController.Companion.sendMuteRequest(
     deviceType: DeviceType,
     isForceful: Boolean = false
 ) {
+    val TAG = hostView.resources.getString(R.string.TAG)
+
     var peerRtmId: String?
 
     val muteRequest = MuteRequest(
@@ -143,7 +149,7 @@ fun AgoraRtmController.Companion.sendMuteRequest(
     val option = SendMessageOptions()
 
     if (peerRtcId == hostView.userID) {
-        Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "Can't send message to local user")
+        Logger.getLogger(TAG).log(Level.SEVERE, "Can't send message to local user")
     } else {
         if (hostView.agoraSettings.uidToUserIdMap.containsKey(peerRtcId)) {
             peerRtmId = hostView.agoraSettings.uidToUserIdMap.getValue(peerRtcId)
@@ -154,11 +160,11 @@ fun AgoraRtmController.Companion.sendMuteRequest(
                 option,
                 object : ResultCallback<Void> {
                     override fun onSuccess(p0: Void?) {
-                        Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "Mute Request sent to $peerRtmId")
+                        Logger.getLogger(TAG).log(Level.INFO, "Mute Request sent to $peerRtmId")
                     }
 
                     override fun onFailure(p0: ErrorInfo?) {
-                        Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "Failed to send Mute Request to $peerRtmId. Error $p0")
+                        Logger.getLogger(TAG).log(Level.INFO, "Failed to send Mute Request to $peerRtmId. Error $p0")
                     }
                 }
             )
