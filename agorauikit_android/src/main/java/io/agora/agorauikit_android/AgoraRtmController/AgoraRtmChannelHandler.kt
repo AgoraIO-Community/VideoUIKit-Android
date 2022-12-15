@@ -2,7 +2,6 @@ package io.agora.agorauikit_android.AgoraRtmController
 
 import io.agora.agorauikit_android.AgoraVideoViewer
 import io.agora.agorauikit_android.R
-import io.agora.agorauikit_android.fetchToken
 import io.agora.rtm.RtmChannelAttribute
 import io.agora.rtm.RtmChannelListener
 import io.agora.rtm.RtmChannelMember

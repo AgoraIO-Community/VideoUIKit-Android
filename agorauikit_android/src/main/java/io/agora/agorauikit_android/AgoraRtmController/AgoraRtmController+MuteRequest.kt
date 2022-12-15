@@ -2,7 +2,6 @@ package io.agora.agorauikit_android.AgoraRtmController
 
 import io.agora.agorauikit_android.AgoraVideoViewer
 import io.agora.agorauikit_android.R
-import io.agora.agorauikit_android.fetchToken
 import io.agora.rtc2.RtcEngine
 import io.agora.rtm.ErrorInfo
 import io.agora.rtm.ResultCallback
