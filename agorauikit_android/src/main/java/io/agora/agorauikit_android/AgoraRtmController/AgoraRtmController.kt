@@ -2,6 +2,7 @@ package io.agora.agorauikit_android.AgoraRtmController
 
 import android.content.Context
 import io.agora.agorauikit_android.AgoraVideoViewer
+import io.agora.agorauikit_android.R
 import io.agora.rtm.ErrorInfo
 import io.agora.rtm.ResultCallback
 import io.agora.rtm.RtmClient
@@ -26,6 +27,8 @@ class AgoraRtmController(
 
     companion object {}
 
+    val TAG = this.hostView.resources.getString(R.string.TAG)
+
     /**
      * Initializes the Agora RTM SDK
      */
@@ -38,7 +41,7 @@ class AgoraRtmController(
                     this.hostView.agoraRtmClientHandler
                 )
         } catch (e: Exception) {
-            Logger.getLogger("AgoraVideoUIKit")
+            Logger.getLogger(TAG)
                 .log(Level.SEVERE, "Failed to initialize Agora RTM SDK. Error: $e")
         }
     }
@@ -52,7 +55,7 @@ class AgoraRtmController(
         }
         if (loginStatus != LoginStatus.LOGGED_IN && hostView.isAgRtmClientInitialized()) {
             loginStatus = LoginStatus.LOGGING_IN
-            Logger.getLogger("AgoraVideoUIKit")
+            Logger.getLogger(TAG)
                 .log(Level.INFO, "Trying to do RTM login")
             this.hostView.agRtmClient.login(
                 this.hostView.connectionData.rtmToken,
@@ -60,7 +63,7 @@ class AgoraRtmController(
                 object : ResultCallback<Void?> {
                     override fun onSuccess(responseInfo: Void?) {
                         loginStatus = LoginStatus.LOGGED_IN
-                        Logger.getLogger("AgoraVideoUIKit")
+                        Logger.getLogger(TAG)
                             .log(Level.INFO, "RTM user logged in successfully")
                         if (!isInRtmChannel) {
                             createRtmChannel()
@@ -69,13 +72,13 @@ class AgoraRtmController(
 
                     override fun onFailure(errorInfo: ErrorInfo) {
                         loginStatus = LoginStatus.LOGIN_FAILED
-                        Logger.getLogger("AgoraVideoUIKit")
+                        Logger.getLogger(TAG)
                             .log(Level.SEVERE, "RTM user login failed. Error: $errorInfo")
                     }
                 }
             )
         } else {
-            Logger.getLogger("AgoraVideoUIKit")
+            Logger.getLogger(TAG)
                 .log(Level.INFO, "RTM user already logged in")
         }
     }
@@ -95,7 +98,7 @@ class AgoraRtmController(
                     this.hostView.agoraRtmChannelHandler
                 )
         } catch (e: RuntimeException) {
-            Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "Failed to create RTM channel. Error: $e")
+            Logger.getLogger(TAG).log(Level.SEVERE, "Failed to create RTM channel. Error: $e")
         }
 
         if (hostView.isAgRtmChannelInitialized()) {
@@ -110,7 +113,7 @@ class AgoraRtmController(
         this.hostView.agRtmChannel.join(object : ResultCallback<Void> {
             override fun onSuccess(responseInfo: Void?) {
                 isInRtmChannel = true
-                Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "RTM Channel Joined Successfully")
+                Logger.getLogger(TAG).log(Level.SEVERE, "RTM Channel Joined Successfully")
                 if (isInRtmChannel) {
                     sendUserData(toChannel = true, hostView = hostView)
                 }
@@ -118,7 +121,7 @@ class AgoraRtmController(
 
             override fun onFailure(errorInfo: ErrorInfo) {
                 isInRtmChannel = false
-                Logger.getLogger("AgoraVideoUIKit")
+                Logger.getLogger(TAG)
                     .log(Level.SEVERE, "Failed to join RTM Channel. Error: $errorInfo")
             }
         })
@@ -135,7 +138,7 @@ class AgoraRtmController(
             .map(charPool::get)
             .joinToString("")
 
-        Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "Generated RTM ID: $generatedRtmId")
+        Logger.getLogger(TAG).log(Level.INFO, "Generated RTM ID: $generatedRtmId")
 
         this.hostView.connectionData.rtmId = generatedRtmId
     }

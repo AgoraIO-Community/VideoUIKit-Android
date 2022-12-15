@@ -3,6 +3,7 @@ package io.agora.agorauikit_android
 import android.app.Activity
 import android.graphics.Rect
 import io.agora.agorauikit_android.AgoraRtmController.AgoraRtmController
+import io.agora.rtc2.ClientRoleOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.UserInfo
@@ -18,8 +19,10 @@ import java.util.logging.Logger
 class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     IRtcEngineEventHandler() {
 
-    override fun onClientRoleChanged(oldRole: Int, newRole: Int) {
-        super.onClientRoleChanged(oldRole, newRole)
+    val TAG = this.hostView.resources.getString(R.string.TAG)
+
+    override fun onClientRoleChanged(oldRole: Int, newRole: Int, newRoleOptions: ClientRoleOptions?) {
+        super.onClientRoleChanged(oldRole, newRole, newRoleOptions)
         val isHost = newRole == Constants.CLIENT_ROLE_BROADCASTER
         if (!isHost) {
             this.hostView.userVideoLookup.remove(this.hostView.userID)
@@ -31,11 +34,11 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         // Only show the camera options when we are a broadcaster
 //            this.getControlContainer().isHidden = !isHost
 
-        this.hostView.rtcOverrideHandler?.onClientRoleChanged(oldRole, newRole)
+        this.hostView.rtcOverrideHandler?.onClientRoleChanged(oldRole, newRole, newRoleOptions)
     }
 
     override fun onUserJoined(uid: Int, elapsed: Int) {
-        Logger.getLogger("AgoraVideoUIKit").log(Level.INFO, "onUserJoined: $uid")
+        Logger.getLogger(TAG).log(Level.INFO, "onUserJoined: $uid")
         super.onUserJoined(uid, elapsed)
         this.hostView.remoteUserIDs.add(uid)
 
@@ -44,7 +47,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
 
     override fun onRemoteAudioStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
         super.onRemoteAudioStateChanged(uid, state, reason, elapsed)
-        Logger.getLogger("AgoraVideoUIKit").log(Level.WARNING, "setting muted state: $state")
+        Logger.getLogger(TAG).log(Level.WARNING, "setting muted state: $state")
         (this.hostView.context as Activity).runOnUiThread {
             if (state == Constants.REMOTE_AUDIO_STATE_STOPPED || state == Constants.REMOTE_AUDIO_STATE_STARTING) {
                 if (state == Constants.REMOTE_AUDIO_STATE_STARTING && !this.hostView.userVideoLookup.containsKey(
@@ -65,7 +68,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
 
     override fun onUserOffline(uid: Int, reason: Int) {
         super.onUserOffline(uid, reason)
-        Logger.getLogger("AgoraVideoUIKit").log(Level.WARNING, "User offline: $reason")
+        Logger.getLogger(TAG).log(Level.WARNING, "User offline: $reason")
         if (reason == Constants.USER_OFFLINE_QUIT || reason == Constants.USER_OFFLINE_DROPPED) {
             this.hostView.remoteUserIDs.remove(uid)
         }
@@ -146,7 +149,7 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         super.onJoinChannelSuccess(channel, uid, elapsed)
 
         this.hostView.connectionData.channel = channel
-        Logger.getLogger("AgoraVideoUIKit").log(Level.SEVERE, "join channel success")
+        Logger.getLogger(TAG).log(Level.SEVERE, "join channel success")
         this.hostView.userID = uid
         if (this.hostView.userRole == Constants.CLIENT_ROLE_BROADCASTER) {
             (this.hostView.context as Activity).runOnUiThread {
@@ -182,12 +185,6 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         this.hostView.fetchRenewToken()
 
         this.hostView.rtcOverrideHandler?.onRequestToken()
-    }
-
-    override fun onApiCallExecuted(error: Int, api: String?, result: String?) {
-        super.onApiCallExecuted(error, api, result)
-
-        this.hostView.rtcOverrideHandler?.onApiCallExecuted(error, api, result)
     }
 
     override fun onAudioEffectFinished(soundId: Int) {
@@ -309,12 +306,6 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         super.onFirstLocalVideoFramePublished(source, elapsed)
 
         this.hostView.rtcOverrideHandler?.onFirstLocalVideoFramePublished(source, elapsed)
-    }
-
-    override fun onFirstRemoteVideoDecoded(uid: Int, width: Int, height: Int, elapsed: Int) {
-        super.onFirstRemoteVideoDecoded(uid, width, height, elapsed)
-
-        this.hostView.rtcOverrideHandler?.onFirstRemoteVideoDecoded(uid, width, height, elapsed)
     }
 
     override fun onFirstRemoteVideoFrame(uid: Int, width: Int, height: Int, elapsed: Int) {
@@ -471,18 +462,6 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
         super.onUploadLogResult(requestId, success, reason)
 
         this.hostView.rtcOverrideHandler?.onUploadLogResult(requestId, success, reason)
-    }
-
-    override fun onUserEnableLocalVideo(uid: Int, enabled: Boolean) {
-        super.onUserEnableLocalVideo(uid, enabled)
-
-        this.hostView.rtcOverrideHandler?.onUserEnableLocalVideo(uid, enabled)
-    }
-
-    override fun onUserEnableVideo(uid: Int, enabled: Boolean) {
-        super.onUserEnableVideo(uid, enabled)
-
-        this.hostView.rtcOverrideHandler?.onUserEnableVideo(uid, enabled)
     }
 
     override fun onUserInfoUpdated(uid: Int, userInfo: UserInfo?) {

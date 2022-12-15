@@ -10,7 +10,7 @@ plugins {
 // group = "com.github.agoraio-community"
 
 android {
-    compileSdkVersion(32)
+    compileSdkVersion(33)
     buildToolsVersion("30.0.3")
 
     defaultConfig {
@@ -63,7 +63,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.5.1")
-    api("io.agora.rtc:full-sdk:4.0.1")
+    api("io.agora.rtc:full-sdk:4.1.0")
     api("io.agora.rtm:rtm-sdk:1.5.3")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
