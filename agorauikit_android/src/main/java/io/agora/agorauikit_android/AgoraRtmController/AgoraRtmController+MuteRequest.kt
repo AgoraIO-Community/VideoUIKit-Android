@@ -51,7 +51,7 @@ data class UIKitData(
     @SerialName("version") var version: String,
 ) : java.io.Serializable {
     companion object {
-        val current: UIKitData = UIKitData("android", "native", "4.0.1")
+        val current: UIKitData = UIKitData("android", "native", "4.0.2")
     }
 }
 

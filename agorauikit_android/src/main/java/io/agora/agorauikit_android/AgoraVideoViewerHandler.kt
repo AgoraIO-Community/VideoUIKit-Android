@@ -140,7 +140,9 @@ class AgoraVideoViewerHandler(private val hostView: AgoraVideoViewer) :
     }
     override fun onFirstLocalAudioFramePublished(elapsed: Int) {
         super.onFirstLocalAudioFramePublished(elapsed)
-        this.hostView.addLocalVideo()?.audioMuted = false
+        (this.hostView.context as Activity).runOnUiThread {
+            this.hostView.addLocalVideo()?.audioMuted = false
+        }
 
         this.hostView.rtcOverrideHandler?.onFirstLocalAudioFramePublished(elapsed)
     }
