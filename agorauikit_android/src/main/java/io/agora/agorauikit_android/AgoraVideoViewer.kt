@@ -263,7 +263,11 @@ open class AgoraVideoViewer : FrameLayout {
         return vidView
     }
 
-    internal var connectionData: AgoraConnectionData
+    /**
+     * Data about the connection to Agora. Including user ID, rtm username, etc.
+     */
+    var connectionData: AgoraConnectionData
+        internal set
 
     /**
      * Creates an AgoraVideoViewer object, to be placed anywhere in your application.
